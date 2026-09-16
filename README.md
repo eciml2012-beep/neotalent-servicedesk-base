@@ -54,8 +54,21 @@ Los datos son inventados de cero — cero relación con clientes reales.
 | `README.md` | Qué es el proyecto y cómo empezar | Brief del proyecto, esta misma tabla | Es lo primero que lee cualquiera al abrir el repo — humano o Claude Code |
 | `CLAUDE.md` | Contexto del proyecto para Claude Code | Se genera en la Sesión 2 | Se genera en la Sesión 2 a partir de lo que Claude Code entienda del resto de archivos |
 
-No hay carpetas de dependencias ni de build — el proyecto es HTML/CSS/JS plano, se abre
-`index.html` directamente en el navegador, sin instalar nada.
+No hay carpetas de dependencias ni de build — el proyecto es HTML/CSS/JS plano, sin instalar nada.
+
+## Cómo ver la app
+
+No abras `index.html` con doble clic: `js/app.js` carga `data/tickets.json` con `fetch`, y el
+navegador bloquea esa petición cuando la página se abre como archivo local (`file://`). Verías el
+mensaje "No se ha podido cargar data/tickets.json".
+
+Levanta un servidor local desde la raíz del repo:
+
+```bash
+python -m http.server 8000
+```
+
+y abre http://localhost:8000 en el navegador. Para pararlo, `Ctrl+C` en la terminal.
 
 ## Cómo empezar (Sesión 2)
 
@@ -67,6 +80,7 @@ Si tu empresa bloquea GitHub, descarga el ZIP del repo desde el botón verde **C
 
 ## Stack
 
-HTML + CSS + JS plano, sin build — para que funcione en cualquier portátil sin instalar nada.
+HTML + CSS + JS plano, sin build — para que funcione en cualquier portátil sin instalar nada
+(solo hace falta Python para el servidor local, ver "Cómo ver la app").
 La clasificación de tickets la hace Claude Code sobre el repo, no el navegador: no hace falta
 ninguna API key propia.
