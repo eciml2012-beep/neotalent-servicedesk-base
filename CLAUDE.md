@@ -29,7 +29,7 @@ El orden importa. Si dos documentos chocan, gana el de más arriba:
 | 1 | `docs/constitution.md` | Seis principios no negociables, cada uno con su comprobación. Para cambiarlos hay que editar ese archivo **antes** de tocar nada más |
 | 2 | `docs/spec.md` | Qué construir: requisitos R1–R7, casos límite, fuera de alcance y criterios de finalización |
 | 3 | `docs/diseno.md` | Cómo se ve: flujo de pantallas, la decisión tabla clara + interruptor oscuro, tipografía y contraste |
-| — | `docs/revision-qa-spec.md` | Revisión QA del spec: conflictos y ambigüedades **detectados y aún no resueltos**. Consúltalo antes de implementar algo que toque uno de esos puntos |
+| — | `docs/revision-qa-spec.md` | Revisión QA del spec, **ya resuelta**. Registro de qué se detectó y qué se decidió, con el archivo donde quedó cada decisión |
 | — | `docs/categorias-triaje.md` | Las 7 categorías de triaje con su definición y su reparto sobre los 60 tickets |
 | — | `deep-research/` | La evidencia de la que salen los principios. Consulta solo si necesitas la fuente de una decisión |
 
@@ -144,8 +144,11 @@ Array de 60 tickets, ids `SVD-4100` a `SVD-4159`, fechas del 2026-09-01 al 2026-
 
 - `categoria`: una de las 7 de `docs/categorias-triaje.md`, o `"Sin clasificar"`.
 - `urgencia`: `Alta` | `Media` | `Baja`. `impacto`: `Alto` | `Medio` | `Bajo`.
-- `motivo`: **nunca vacío**, y cita hechos del propio ticket (principio 4).
+  Con `"Sin clasificar"`, ambos valen `null`.
+- `motivo`: **nunca vacío** (tampoco en «Sin clasificar»: ahí explica por qué no se pudo),
+  mínimo 40 caracteres, y cita hechos del propio ticket (principio 4).
 - **Sin prioridad**: la calcula la app con la matriz del spec R3.
+- La combinación categoría × urgencia debe cumplir la tabla de coherencia del spec R8.
 
 Reglas del dataset:
 
@@ -157,18 +160,26 @@ Reglas del dataset:
 
 ## Antes de implementar la Fase 3
 
-`docs/revision-qa-spec.md` recoge lo detectado y **no resuelto**. Además, quedan abiertos:
+`docs/revision-qa-spec.md` está **resuelto**: sus 20 hallazgos tienen decisión y cada uno dice
+en qué archivo quedó. Léelo si te preguntas por qué una regla del spec es como es.
 
-- Los 10 tickets **cerrados** reciben sugerencia (spec, decisión 5) pero el diseño abre la
-  bandeja filtrada a los 50 abiertos y R4 los excluye de "pendientes de confirmar": hoy no hay
-  ninguna vista donde alguien los confirme, y el criterio de finalización 1 los exige.
-- El interruptor claro/oscuro de `docs/diseno.md` guarda preferencia, pero el spec R6 solo
-  define la clave `svd-triaje` para las confirmaciones. El segundo uso de `localStorage` no
-  está especificado.
-- Las decisiones 4, 5 y 6 del spec se tomaron con la opción por defecto y están marcadas como
-  **pendientes de validar** en grupo.
+Lo único que sigue siendo criterio del equipo y no evidencia:
 
-Si tocas uno de esos puntos, pregunta antes de decidir.
+- **Las tres zonas críticas** de R2 (`Perímetro exterior`, `Sala de servidores`,
+  `Torre de control`) definen el impacto Alto y por tanto la prioridad de 21 de los 60 tickets.
+  Es una decisión editable, no un dato del dominio. Si cambia, hay que reclasificar.
+- **La tasa de corrección** (R7) como proxy de precisión: el deep research no respalda ninguna
+  metodología de medición, así que es decisión propia. Está declarado como tal.
+
+Trampas al implementar, todas trazadas a una decisión:
+
+- La **prioridad no se guarda ni se edita**: es una función pura de urgencia × impacto. Añadirla
+  como campo del JSON rompe el principio 5.
+- Los **10 tickets cerrados sí entran** en "Pendientes de confirmar". El filtro por defecto de la
+  bandeja es por estado del triaje, no por estado del ticket.
+- **Dos claves de `localStorage`**, no una: `svd-triaje` y `svd-tema`.
+- Con `categoria: "Sin clasificar"`, **`urgencia` e `impacto` son `null`** y `motivo` sigue siendo
+  obligatorio.
 
 ## Hoja de ruta
 

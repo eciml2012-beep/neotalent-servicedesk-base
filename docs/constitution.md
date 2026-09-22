@@ -20,16 +20,23 @@ categoría y prioridad.
 El sistema solo clasifica y muestra. No bloquea credenciales, no avisa a guardias y no escala
 alarmas. Esas acciones las hace una persona fuera de la herramienta.
 
-**Cómo se comprueba:** no hay en la interfaz ni en el código ningún botón, función o llamada que
-ejecute una acción fuera de la bandeja.
+Lo que este principio prohíbe son acciones **sobre personas o sobre instalaciones**. Manejar los
+propios datos del triaje no lo es: descargar el JSON confirmado o guardar en el navegador sí
+están permitidos.
+
+**Cómo se comprueba:** no hay en el código ninguna llamada de red de salida ni ninguna
+integración con un sistema de seguridad. Las únicas salidas de la app son pintar en pantalla,
+escribir en `localStorage` y descargar un archivo.
 
 ## 3. Solo datos sintéticos
 
 Nunca se usan nombres, documentos de identidad, matrículas ni patrones de acceso de personas
 reales, tampoco en pruebas.
 
-**Cómo se comprueba:** `data/tickets.json` y cualquier dato nuevo son ficticios. Si se añade un
-ticket, se revisa antes del commit que no contenga datos de nadie real.
+**Cómo se comprueba:** el dataset está cerrado en 60 tickets, de `SVD-4100` a `SVD-4159`. No se
+añaden tickets nuevos en este proyecto, así que la comprobación es automática: si el número de
+tickets o el rango de ids cambia, el commit no pasa. Los campos que sí se añaden (`sugerencia`,
+`triaje`) los escribe Claude Code a partir del texto que ya existe, nunca de una fuente externa.
 
 ## 4. Toda sugerencia se explica
 
@@ -52,5 +59,9 @@ matriz del spec para su urgencia y su impacto.
 HTML, CSS y JavaScript planos. Sin npm, sin build, sin frameworks, sin backend, sin
 dependencias externas y sin API keys.
 
-**Cómo se comprueba:** no existen `package.json` ni `node_modules`, `index.html` no carga ningún
-script externo, y la app funciona con `python -m http.server 8000`.
+Esto incluye las **fuentes tipográficas**: nada de Google Fonts ni de CDNs. Se usa la pila de
+fuentes del sistema.
+
+**Cómo se comprueba:** no existen `package.json` ni `node_modules`; `index.html` y `styles.css`
+no contienen ninguna URL externa (ni `<script src="http`, ni `<link href="http`, ni `@import`,
+ni `url(http` ); y la app funciona sin conexión a internet con `python -m http.server 8000`.

@@ -16,7 +16,10 @@ Bandeja ──────────────────> Ficha ───�
 Panel de métricas ──> vuelve a Bandeja
 ```
 
-- **Bandeja** es la entrada. Abre con las 50 incidencias abiertas y se filtra por estado, sistema y zona.
+- **Bandeja** es la entrada. Abre con los **pendientes de confirmar** —abiertos y cerrados, los 60
+  entran en el triaje— y se filtra por estado, sistema, zona, prioridad y estado del triaje.
+  Abrirla filtrada a «abiertos» dejaría los 10 cerrados sin ninguna vista donde confirmarlos
+  (spec, decisión 9).
 - **Ficha** muestra una incidencia entera y vuelve siempre a la bandeja.
 - **Panel de métricas** es solo lectura.
 - Los 60 tickets se cargan una vez al abrir; filtrar o abrir una ficha no vuelve a pedir datos.
@@ -31,7 +34,7 @@ Claude Code sobre el repositorio, no el navegador: la pantalla la muestra, no la
 | Organización | Una tabla con todas las incidencias, ordenable por columna | Tres columnas, una por categoría de triaje, con tarjetas |
 | Fondo | Hueso `#F4F3EF` | Azul grisáceo oscuro `#16202B` |
 | Fuerte en | Buscar un ticket concreto, comparar filas, ver muchos datos a la vez | Decidir qué atender primero; la carga de trabajo se ve de un vistazo |
-| Flojo en | No prioriza: 50 filas se parecen entre sí | Esconde el resto de categorías detrás de un «ver las 12» |
+| Flojo en | No prioriza: 50 filas se parecen entre sí | Solo caben 3 de las 7 categorías; las otras 4 quedan detrás de un «ver todas» |
 
 La ficha y el panel de métricas sirven igual para las dos.
 
@@ -50,17 +53,26 @@ Lo que dice la evidencia sobre sesiones largas:
   claro de las leyendas y los rellenos suaves bajo texto blanco son los que suelen fallar.
 - **La respuesta buena es dejar elegir.** Un interruptor claro/oscuro en la cabecera, que recuerde
   la preferencia, cubre al que trabaja de día y al turno de noche sin discutir cuál es mejor.
+  La preferencia se guarda en `localStorage` bajo la clave `svd-tema`, separada de `svd-triaje`,
+  que es donde van las confirmaciones (spec, R6). Son dos cosas distintas y no comparten clave.
 
 Entonces: se construye **A**, y la paleta de **B** queda como el tema oscuro de ese interruptor.
 
 ## Reglas visuales que se llevan a la Fase 3
 
-- Tipografía IBM Plex Sans para todo; IBM Plex Mono solo para los identificadores (`SVD-4102`).
+- Tipografía: **pila del sistema**, sin descargar fuentes. Cargar IBM Plex desde Google Fonts
+  sería una dependencia externa y lo prohíbe el principio 6 de la constitución.
+  - Texto: `system-ui, -apple-system, "Segoe UI", Roboto, sans-serif`.
+  - Identificadores (`SVD-4102`): `ui-monospace, "Cascadia Mono", Consolas, monospace`.
 - Cuerpo de texto a 14 px, títulos de pantalla a 26 px. Nada por debajo de 12 px.
 - Botones y campos de 44 px de alto, para que se acierten con el ratón sin apuntar.
 - Color con significado, no de adorno: ámbar `#A5601A` para abierto, verde azulado `#1F6F6B`
   para cerrado y para las acciones, rojo terroso `#8A2F1E` solo para brecha de seguridad activa.
 - Cada fila lleva su categoría de triaje debajo del título: es el dato que decide qué se atiende antes.
+- **Sugerido y confirmado no se ven igual.** Mientras el ticket esté `Pendiente de confirmar`, su
+  categoría y su prioridad van atenuadas, con borde punteado y la palabra «sugerido» al lado.
+  Al confirmar o corregir pasan a sólido. El color nunca es la única diferencia: también cambia
+  el borde, para no depender de distinguir tonos (spec R4, constitución principio 1).
 - Elementos reales de HTML (`<button>`, `<a>`, `<label>` con su campo), no `div` que parecen botones.
 
 ## Estilo elegido: la piel de KirriDesk sobre la paleta de la Fase 2
