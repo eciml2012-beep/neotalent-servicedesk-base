@@ -92,10 +92,16 @@ suponer algo que el texto no contiene, la categoría es «Sin clasificar». *(A1
 |---|---|
 | Alto | La `zona` del ticket es una de las tres **zonas críticas**: `Perímetro exterior`, `Sala de servidores`, `Torre de control` |
 | Medio | Cualquier otra de las 12 zonas |
-| Bajo | El ticket afecta **a una sola persona** (su credencial, su fichaje, su alta), sea cual sea la zona |
+| Bajo | El ticket afecta **a una sola persona** (su credencial, su fichaje, su alta), sea cual sea la zona — **salvo que la categoría sea «Brecha de seguridad activa»** |
 
 El nivel Bajo manda sobre la zona: un alta de acceso de un guardia en Sala de servidores es
 impacto Bajo, no Alto, porque afecta a una persona y no a la protección de la zona.
+
+**Excepción: las brechas nunca son impacto Bajo.** Si la categoría es «Brecha de seguridad
+activa», el impacto sale siempre de la zona. Un permiso sin revocar expone **la zona**, no a la
+persona que conserva el permiso: quien queda desprotegido es todo lo que hay detrás de esa
+puerta. Como una brecha es siempre urgencia Alta (R8), esto deja las brechas en prioridad
+Crítica (zona crítica) o Alta (resto), nunca Media. *(punto 16 de la 2ª revisión)*
 
 > **Las tres zonas críticas son una decisión del equipo, no un dato del dominio.** Salen de que
 > `Perímetro exterior` es la primera línea de defensa, `Sala de servidores` concentra el activo
@@ -120,6 +126,12 @@ impacto Bajo, no Alto, porque afecta a una persona y no a la protección de la z
 
 - Cada fila muestra: id, título, categoría, prioridad, motivo (visible sin desplegar) y estado del triaje.
 - El estado del triaje es uno de estos tres: `Pendiente de confirmar`, `Confirmado` o `Corregido`.
+- **«Sin clasificar» no es un estado del triaje: es un valor de `categoria`.** Son dos ejes
+  independientes. Un ticket «Sin clasificar» nace en `Pendiente de confirmar` y **sí cuenta** en
+  «Pendientes de confirmar»; cuando el operador le pone categoría pasa a `Corregido`. La única
+  combinación imposible es «Sin clasificar» + `Confirmado`: aceptar una sugerencia que no
+  clasifica nada no significa nada, así que en un «Sin clasificar» el botón «Aceptar» no
+  aparece. *(punto 2 de la 2ª revisión)*
 - **Mientras el estado sea `Pendiente de confirmar`, la categoría y la prioridad se pintan como
   sugeridas**: atenuadas y con la marca «sugerido» al lado. Confirmado y Corregido se pintan en
   sólido. En ningún momento una sugerencia sin confirmar se ve igual que una decidida por una
@@ -182,6 +194,16 @@ posible. Si no lo es, el ticket se trata como «Sin clasificar» y se avisa en l
 Esta es la segunda capa de validación: la primera comprueba que los valores existan en su enum,
 esta comprueba que la combinación tenga sentido. Un JSON válido puede contener una clasificación
 imposible.
+
+**La tabla vale igual para las correcciones del operador**, pero se aplica de otra forma: en vez
+de rechazar, la interfaz **no ofrece la combinación imposible**. Al elegir una categoría con
+urgencia obligatoria, el desplegable de urgencia queda fijado en ese valor y explica por qué; con
+«Falsa alarma recurrente», `Alta` no aparece entre las opciones. No se bloquea a la persona: se
+le quita una opción que no existe. Si discrepa, cambia la categoría. *(punto 8 de la 2ª revisión)*
+
+Esto no choca con el principio 1: el operador sigue decidiendo qué categoría tiene el ticket, que
+es la decisión de fondo. Lo que la interfaz impide es describir un ticket de forma contradictoria
+consigo misma.
 
 ## Casos límite
 

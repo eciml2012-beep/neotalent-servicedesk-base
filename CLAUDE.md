@@ -186,6 +186,10 @@ Trampas al implementar, todas trazadas a una decisión:
   como campo del JSON rompe el principio 5.
 - Los **10 tickets cerrados sí entran** en "Pendientes de confirmar". El filtro por defecto de la
   bandeja es por estado del triaje, no por estado del ticket.
+- Una **«Brecha de seguridad activa» nunca es impacto Bajo**: su impacto sale siempre de la zona,
+  aunque el ticket hable de una sola persona. Un permiso sin revocar expone la zona.
+- **«Sin clasificar» no es un estado del triaje**, es un valor de `categoria`. Los dos ejes son
+  independientes y un «Sin clasificar» cuenta como pendiente.
 - **Dos claves de `localStorage`**, no una: `svd-triaje` y `svd-tema`.
 - Con `categoria: "Sin clasificar"`, **`urgencia` e `impacto` son `null`** y `motivo` sigue siendo
   obligatorio.

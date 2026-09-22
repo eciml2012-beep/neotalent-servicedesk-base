@@ -10,7 +10,8 @@ Se apoya en `deep-research/deep-research-triaje-ia-seguridad-fisica.md` y `deep-
 ## 1. La IA sugiere, la persona decide
 
 Ningún ticket queda clasificado hasta que el operador acepta o corrige la sugerencia de
-categoría y prioridad.
+**categoría, urgencia e impacto**. La prioridad no se sugiere ni se confirma: sale de la matriz
+a partir de la urgencia y el impacto ya confirmados (principio 5).
 
 **Cómo se comprueba:** en los datos, un ticket sin confirmación del operador aparece como
 "pendiente de confirmar", nunca como clasificado.
@@ -24,9 +25,10 @@ Lo que este principio prohíbe son acciones **sobre personas o sobre instalacion
 propios datos del triaje no lo es: descargar el JSON confirmado o guardar en el navegador sí
 están permitidos.
 
-**Cómo se comprueba:** no hay en el código ninguna llamada de red de salida ni ninguna
-integración con un sistema de seguridad. Las únicas salidas de la app son pintar en pantalla,
-escribir en `localStorage` y descargar un archivo.
+**Cómo se comprueba:** la app **no hace ninguna petición a un host externo**. La única petición
+de red es `fetch("data/tickets.json")`, que lee un archivo del propio repo servido desde el mismo
+origen: no sale a ninguna parte. No hay integraciones con sistemas de seguridad. Las únicas
+salidas son pintar en pantalla, escribir en `localStorage` y descargar un archivo.
 
 ## 3. Solo datos sintéticos
 
@@ -34,9 +36,19 @@ Nunca se usan nombres, documentos de identidad, matrículas ni patrones de acces
 reales, tampoco en pruebas.
 
 **Cómo se comprueba:** el dataset está cerrado en 60 tickets, de `SVD-4100` a `SVD-4159`. No se
-añaden tickets nuevos en este proyecto, así que la comprobación es automática: si el número de
-tickets o el rango de ids cambia, el commit no pasa. Los campos que sí se añaden (`sugerencia`,
-`triaje`) los escribe Claude Code a partir del texto que ya existe, nunca de una fuente externa.
+añaden tickets nuevos en este proyecto, así que se comprueba con un comando antes de subir
+cualquier cambio del dataset:
+
+```bash
+python -c "import json;t=json.load(open('data/tickets.json',encoding='utf-8'));ids=[x['id'] for x in t];assert len(t)==60 and ids[0]=='SVD-4100' and ids[-1]=='SVD-4159' and len(set(ids))==60;print('dataset intacto: 60 tickets, SVD-4100 a SVD-4159')"
+```
+
+Si falla, hay tickets nuevos o borrados y el cambio no se sube. Los campos que sí se añaden
+(`sugerencia`, `triaje`) los escribe Claude Code a partir del texto que ya existe, nunca de una
+fuente externa.
+
+*No hay hook de git que lo ejecute solo: es un comando que se corre a mano o desde el script de
+validación de la Fase 4.*
 
 ## 4. Toda sugerencia se explica
 
