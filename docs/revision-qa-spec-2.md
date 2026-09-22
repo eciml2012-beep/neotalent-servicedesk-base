@@ -3,9 +3,10 @@
 22/09/2026. Se hizo sobre `docs/spec.md` después de resolver la primera revisión (commit `0e22339`), cruzándolo con `docs/constitution.md` y `docs/diseno.md`.
 Solo detecta: no propone soluciones.
 
-> **Estado: 6 de 20 resueltos** (22/09/2026). Cerrados los tres bloqueantes (2, 8, 16) y los tres
-> conflictos con la constitución (17, 18, 19). Cada uno lleva debajo su resolución y el archivo
-> donde quedó. El resto sigue abierto y pasa a la Fase 3, tal como decía el veredicto.
+> **Estado: 7 de 20 resueltos** (22/09/2026). Cerrados los tres bloqueantes (2, 8, 16), los tres
+> conflictos con la constitución (17, 18, 19) y el 15, que era una errata de conteo. Cada uno
+> lleva debajo su resolución y el archivo donde quedó. El resto sigue abierto y pasa a la Fase 3,
+> tal como decía el veredicto.
 
 ## Ambigüedades
 
@@ -32,6 +33,7 @@ Solo detecta: no propone soluciones.
 
 14. **Mínimo de 40 caracteres.** Solo aparece en el criterio de finalización 1. R1 no lo exige, y los casos límite solo tratan el motivo vacío.
 15. **Número de hallazgos.** La cabecera del spec habla de «los 17 hallazgos» y el commit `0e22339` de «los 20 hallazgos».
+    - ✅ **RESUELTO** → `spec.md`, cabecera. Son **20**: los 17 de la revisión original más 3 que salieron de cruzar spec con diseño. La cabecera lo dice ya, y añade la segunda revisión. Donde sigue apareciendo «17» es correcto: son las frases del tipo «los 17 originales más 3».
 16. **Brecha activa con prioridad Media.** Una brecha es siempre urgencia Alta (R8). Si afecta a una persona («permiso que debería estar revocado»), el impacto es Bajo y la matriz da prioridad **Media**. Choca con la intención del diseño, donde el rojo se reserva para las brechas, y con la historia 4 (atender primero lo crítico).
    - ✅ **RESUELTO** → `spec.md` R2, decidido en grupo el 22/09/2026 entre tres opciones. **Una brecha nunca es impacto Bajo**: si la categoría es «Brecha de seguridad activa», el impacto sale siempre de la zona. El razonamiento: un permiso sin revocar expone **la zona**, no a la persona que conserva el permiso — quien queda desprotegido es todo lo que hay detrás de esa puerta. Las brechas quedan en Crítica (zona crítica) o Alta (resto), nunca Media.
    - Se descartaron: un **suelo de prioridad por categoría** (añadía un segundo mecanismo encima de la matriz y rozaba el principio 5) y **dejarlo como está** moviendo el rojo a la etiqueta de categoría.
@@ -52,7 +54,7 @@ Solo detecta: no propone soluciones.
 
 - ~~**Bloqueantes:** el 2, el 8 y el 16.~~ ✅ **Resueltos** el 22/09/2026.
 - ~~**Deberían resolverse:** el 17, el 18 y el 19.~~ ✅ **Resueltos** el 22/09/2026.
-- **Pueden pasar a diseño y cerrarse en la Fase 3:** el resto (1, 3–7, 9–15, 20).
+- **Pueden pasar a diseño y cerrarse en la Fase 3:** el resto (1, 3–7, 9–14, 20). El 15 se cerró de paso al corregir la cabecera del spec.
 
 ## Estado tras la resolución
 
@@ -60,7 +62,7 @@ Los seis puntos que bloqueaban están cerrados: el spec ya define qué ve y qué
 operador, y las tres comprobaciones de la constitución que no se podían cumplir ahora son
 ejecutables.
 
-Quedan **14 abiertos**, ninguno bloqueante. Los tres que más conviene no olvidar en la Fase 3:
+Quedan **13 abiertos**, ninguno bloqueante. Los tres que más conviene no olvidar en la Fase 3:
 
 - **9 · Impacto que no cuadra con la zona.** R8 cruza categoría × urgencia, pero nadie valida que
   un impacto Alto corresponda a una zona crítica. Con el punto 16 resuelto, el impacto pasa a

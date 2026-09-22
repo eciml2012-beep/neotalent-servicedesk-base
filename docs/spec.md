@@ -3,8 +3,11 @@
 Escrito el 22/09/2026 siguiendo Spec Driven Development. Cumple `docs/constitution.md`: si algo de
 aquí choca con un principio, gana la constitución.
 
-Revisado el 22/09/2026 tras `docs/revision-qa-spec.md`. Los 17 hallazgos de esa revisión están
+Revisado el 22/09/2026 tras `docs/revision-qa-spec.md`. Los 20 hallazgos de esa revisión están
 resueltos y trazados en la tabla de decisiones.
+
+Segunda revisión el 22/09/2026 (`docs/revision-qa-spec-2.md`): 20 hallazgos nuevos, de los que
+están resueltos los 6 bloqueantes. Los otros 14 son menores y se cierran en la Fase 3.
 
 Fuentes: `deep-research/deep-research-triaje-ia-seguridad-fisica.md`, `deep-research/deep-research-2a-pasada.md`,
 `docs/categorias-triaje.md`, `docs/diseno.md` y `data/tickets.json`.
