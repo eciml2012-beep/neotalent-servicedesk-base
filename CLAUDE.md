@@ -6,6 +6,13 @@ Contexto para Claude Code en el repo **Mini Service Desk**: bandeja de incidenci
 servicio de seguridad ficticio. Es el proyecto hilo de la formación de Neotalent y se construye
 por fases entre la Sesión 2 y la Sesión 4. El detalle del proyecto está en `README.md`.
 
+## Cómo se pide un diseño aquí
+
+**Nunca se pide una pantalla sin enseñar antes una referencia.** La estructura de la app ya está
+decidida —la piel de KirriDesk sobre la paleta de la Fase 2, ver `docs/diseno.md`— así que no
+propongas un diseño nuevo: aplica ese. Si hiciera falta una pantalla que el diseño no cubre,
+busca antes una referencia y compárala con los 6 criterios de `assets/referencias/README.md`.
+
 ## Estado actual
 
 **Sesión 3 — Fases 1 y 2 terminadas, Fase 3 (desarrollo) sin empezar.**
@@ -31,6 +38,8 @@ El orden importa. Si dos documentos chocan, gana el de más arriba:
 | 3 | `docs/diseno.md` | Cómo se ve: flujo de pantallas, la decisión tabla clara + interruptor oscuro, tipografía y contraste |
 | — | `docs/revision-qa-spec.md` | Revisión QA del spec, **ya resuelta**. Registro de qué se detectó y qué se decidió, con el archivo donde quedó cada decisión |
 | — | `docs/categorias-triaje.md` | Las 7 categorías de triaje con su definición y su reparto sobre los 60 tickets |
+| — | `assets/referencias/` | Las capturas de la Fase 2, los 6 criterios con los que se filtraron y la comparación. La estructura elegida es **KirriDesk** (`dribbble/captura-2.png`) |
+| — | `docs/proceso-sesion3.md` | Cómo se llegó hasta aquí, paso a paso. Contexto, no normativa |
 | — | `deep-research/` | La evidencia de la que salen los principios. Consulta solo si necesitas la fuente de una decisión |
 
 **No implementes nada que contradiga un principio de la constitución.** Si el spec pide algo que
