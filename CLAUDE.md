@@ -1,84 +1,179 @@
 # CLAUDE.md
 
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
 Contexto para Claude Code en el repo **Mini Service Desk**: bandeja de incidencias de un
 servicio de seguridad ficticio. Es el proyecto hilo de la formación de Neotalent y se construye
-por fases entre la Sesión 2 y la Sesión 4. El detalle está en `README.md`.
+por fases entre la Sesión 2 y la Sesión 4. El detalle del proyecto está en `README.md`.
 
 ## Estado actual
 
-- Estamos en la **Sesión 2**. `index.html`, `css/styles.css` y `js/app.js` son placeholders: solo
-  comprueban que `data/tickets.json` carga.
-- `docs/spec.md` y `docs/diseno.md` están vacíos. Se completan en la Sesión 3 (Fases 1 y 2).
+**Sesión 3 — Fases 1 y 2 terminadas, Fase 3 (desarrollo) sin empezar.**
+
+- `docs/constitution.md`, `docs/spec.md` y `docs/diseno.md` están escritos.
+- `index.html`, `css/styles.css` y `js/app.js` siguen siendo **placeholders**: solo comprueban
+  que `data/tickets.json` carga.
 - `js/components/` y `js/utils/` solo tienen un README.
-- **No adelantes fases.** No construyas la interfaz sin un spec escrito en `docs/spec.md`. Si
-  te piden implementar algo y el spec está vacío, avisa y propón escribirlo primero.
+- `data/tickets.json` **todavía no tiene** el objeto `sugerencia`. Escribirlo es la primera
+  tarea de la Fase 3.
+
+Cuando termine una fase, actualiza esta sección y, si cambió la estructura, la tabla del
+`README.md`.
+
+## Jerarquía documental (Spec Driven Development)
+
+El orden importa. Si dos documentos chocan, gana el de más arriba:
+
+| Orden | Archivo | Qué manda |
+|---|---|---|
+| 1 | `docs/constitution.md` | Seis principios no negociables, cada uno con su comprobación. Para cambiarlos hay que editar ese archivo **antes** de tocar nada más |
+| 2 | `docs/spec.md` | Qué construir: requisitos R1–R7, casos límite, fuera de alcance y criterios de finalización |
+| 3 | `docs/diseno.md` | Cómo se ve: flujo de pantallas, la decisión tabla clara + interruptor oscuro, tipografía y contraste |
+| — | `docs/revision-qa-spec.md` | Revisión QA del spec: conflictos y ambigüedades **detectados y aún no resueltos**. Consúltalo antes de implementar algo que toque uno de esos puntos |
+| — | `docs/categorias-triaje.md` | Las 7 categorías de triaje con su definición y su reparto sobre los 60 tickets |
+| — | `deep-research/` | La evidencia de la que salen los principios. Consulta solo si necesitas la fuente de una decisión |
+
+**No implementes nada que contradiga un principio de la constitución.** Si el spec pide algo que
+choca, dilo en vez de elegir por tu cuenta.
+
+## Los seis principios, en corto
+
+1. **La IA sugiere, la persona decide.** Ningún ticket queda clasificado sin que el operador
+   acepte o corrija. Nunca hay un "aceptar todo".
+2. **Ninguna acción sobre personas ni sobre el mundo físico.** No se bloquean credenciales, no
+   se avisa a guardias, no se escalan alarmas. El sistema clasifica y muestra.
+3. **Solo datos sintéticos.** Nunca nombres, DNI, matrículas ni patrones de acceso reales,
+   tampoco en pruebas.
+4. **Toda sugerencia se explica.** Una sugerencia sin `motivo` no se muestra.
+5. **Prioridad por matriz propia**, no por intuición ni copiada de TI. La IA no inventa la
+   prioridad: la calcula la app.
+6. **Stack plano, sin instalar nada.** Sin npm, sin build, sin frameworks, sin backend, sin
+   dependencias externas, sin API keys.
 
 ## Stack y restricciones
 
 - HTML, CSS y JavaScript planos. **Sin build, sin npm, sin frameworks y sin dependencias
   externas.** Tiene que funcionar en cualquier portátil sin instalar nada.
-- Sin backend. Todo es estático.
-- Sin API keys. La clasificación de tickets (prioridad y categoría) la hace **Claude Code sobre el
-  repo**, no el navegador.
-- Idioma: español para textos de la interfaz, comentarios, documentación y mensajes de commit.
+- Sin backend. Todo es estático. La persistencia es `localStorage` + exportar un JSON.
+- Sin API keys. La clasificación de tickets la hace **Claude Code sobre el repo**, no el
+  navegador.
+- Idioma: español para textos de interfaz, comentarios, documentación y mensajes de commit.
   Los identificadores de los datos ya están en español (`titulo`, `zona`…); sigue esa convención.
 
-## Cómo ver la app
+## Comandos
 
-`js/app.js` usa `fetch("data/tickets.json")`, y los navegadores bloquean `fetch` sobre `file://`.
-Al abrir `index.html` con doble clic puede aparecer "No se ha podido cargar data/tickets.json".
-Para probar, sirve la carpeta con un servidor estático, por ejemplo:
+No hay build, ni linter, ni framework de tests. Lo único que se ejecuta:
+
+**Levantar la app** (obligatorio: `fetch` sobre `file://` está bloqueado por el navegador):
 
 ```bash
 python -m http.server 8000
 ```
 
-y abre http://localhost:8000.
+Luego abre http://localhost:8000. Con doble clic sobre `index.html` verás
+"No se ha podido cargar data/tickets.json".
 
-## Arquitectura (responsabilidades)
+**Validar el JSON después de editarlo** — obligatorio tras cualquier clasificación:
+
+```bash
+python -m json.tool data/tickets.json > /dev/null && echo "JSON valido"
+```
+
+**Comprobar el criterio de finalización 1** (los 60 tickets con sugerencia y ningún motivo vacío):
+
+```bash
+python -c "import json;t=json.load(open('data/tickets.json',encoding='utf-8'));print(len(t),'tickets;',sum(1 for x in t if x.get('sugerencia',{}).get('motivo')),'con motivo')"
+```
+
+Los tests de la Fase 4 (Sesión 4) todavía no existen.
+
+## Arquitectura
+
+La frontera que define el proyecto: **Claude Code clasifica sobre el repo, el navegador solo
+muestra.** El modelo nunca corre en el cliente.
+
+```
+Claude Code (aquí)          data/tickets.json          Navegador
+─────────────────────       ─────────────────          ─────────────────────
+lee los 60 tickets    ───>  escribe "sugerencia"  ───> app.js lo carga (1 vez)
+                            {categoria, urgencia,       utils/ calcula prioridad
+                             impacto, motivo}           components/ pintan
+                                                        confirmaciones → localStorage
+                                                        "Exportar" → JSON de vuelta
+```
 
 | Ruta | Responsabilidad | Reglas |
 |---|---|---|
 | `index.html` | Punto de entrada y estructura del DOM | Carga `css/styles.css` y `js/app.js` |
 | `css/styles.css` | Estilos | Sin lógica |
-| `js/app.js` | Orquesta: carga el dataset, gestiona el estado y monta la pantalla | Es el **único** que lee `data/tickets.json` en el navegador |
-| `js/components/` | UI reutilizable (fila de ticket, ficha, filtro), un archivo por pieza | Reciben datos por parámetro; **no** hacen `fetch` del dataset |
-| `js/utils/` | Funciones puras (filtrar, formatear fecha, agrupar) | Sin estado y **sin tocar el DOM** |
+| `js/app.js` | Orquesta: carga el dataset, gestiona el estado, monta la pantalla | **Único** que lee `data/tickets.json` en el navegador |
+| `js/components/` | UI reutilizable (fila, ficha, filtro), un archivo por pieza | Reciben datos por parámetro; **no** hacen `fetch` |
+| `js/utils/` | Funciones puras (matriz de prioridad, filtrar, formatear, agrupar) | Sin estado y **sin tocar el DOM** |
 | `data/tickets.json` | Dataset sintético | Ver abajo |
-| `docs/` | `spec.md` (Fase 1) y `diseno.md` (Fase 2) | El spec es la entrada del desarrollo |
+
+La prioridad **no se guarda**: es una función pura de `js/utils/` sobre urgencia × impacto. Esto
+es lo que hace verificable el principio 5.
+
+El texto de un ticket se pinta siempre con `textContent`, nunca con `innerHTML` (spec, casos
+límite).
 
 ## Dataset: `data/tickets.json`
 
-Array de 60 tickets, ids `SVD-4100` a `SVD-4159`, con fechas del 2026-09-01 al 2026-09-14.
-Campos de cada ticket:
+Array de 60 tickets, ids `SVD-4100` a `SVD-4159`, fechas del 2026-09-01 al 2026-09-14.
 
 | Campo | Tipo | Valores |
 |---|---|---|
 | `id` | string | `SVD-NNNN` |
-| `titulo` | string | libre |
-| `descripcion` | string | libre |
+| `titulo` / `descripcion` | string | libre |
 | `sistema_afectado` | string | Control de accesos, SailPoint (identidades), CCTV / videovigilancia, Central de alarmas, Centralita de guardia, App de rondas |
 | `reportado_por` | string | Guardia de seguridad, Jefe de turno, Coordinador de zona, Recepción cliente, Administración, Técnico de mantenimiento |
 | `zona` | string | 12 zonas (Aparcamiento -1, Nave logística 2, Perímetro exterior, Sala de servidores…) |
 | `fecha` | string | `YYYY-MM-DD` |
 | `estado` | string | `abierto` (50) o `cerrado` (10) |
 
-Reglas:
+**Campo que añade la Fase 3** (spec R1), sin tocar los originales:
+
+```json
+"sugerencia": {
+  "categoria": "Brecha de seguridad activa",
+  "urgencia": "Alta",
+  "impacto": "Alto",
+  "motivo": "La alarma perimetral quedó desactivada tras un mantenimiento: el perímetro está sin vigilancia ahora."
+}
+```
+
+- `categoria`: una de las 7 de `docs/categorias-triaje.md`, o `"Sin clasificar"`.
+- `urgencia`: `Alta` | `Media` | `Baja`. `impacto`: `Alto` | `Medio` | `Bajo`.
+- `motivo`: **nunca vacío**, y cita hechos del propio ticket (principio 4).
+- **Sin prioridad**: la calcula la app con la matriz del spec R3.
+
+Reglas del dataset:
 
 - Los datos son **inventados**. No añadas nombres, empresas ni datos de clientes reales.
-- Los tickets **todavía no tienen** `prioridad` ni `categoria`. Los valores posibles de esos campos
-  y el lugar donde se guardan se deciden en el spec. No inventes los valores antes.
-- No borres ni reescribas tickets existentes sin que te lo pidan. Si clasificas, añade campos y
-  conserva los originales.
-- Después de editar el JSON, comprueba que sigue siendo JSON válido.
+- No borres ni reescribas tickets existentes. Al clasificar, **añade** `sugerencia` y conserva
+  todo lo demás.
+- Comprueba que el JSON sigue siendo válido después de editarlo.
+- El navegador **nunca** sobrescribe `data/tickets.json`; exporta un archivo aparte.
+
+## Antes de implementar la Fase 3
+
+`docs/revision-qa-spec.md` recoge lo detectado y **no resuelto**. Además, quedan abiertos:
+
+- Los 10 tickets **cerrados** reciben sugerencia (spec, decisión 5) pero el diseño abre la
+  bandeja filtrada a los 50 abiertos y R4 los excluye de "pendientes de confirmar": hoy no hay
+  ninguna vista donde alguien los confirme, y el criterio de finalización 1 los exige.
+- El interruptor claro/oscuro de `docs/diseno.md` guarda preferencia, pero el spec R6 solo
+  define la clave `svd-triaje` para las confirmaciones. El segundo uso de `localStorage` no
+  está especificado.
+- Las decisiones 4, 5 y 6 del spec se tomaron con la opción por defecto y están marcadas como
+  **pendientes de validar** en grupo.
+
+Si tocas uno de esos puntos, pregunta antes de decidir.
 
 ## Hoja de ruta
 
-| Sesión | Fase |
-|---|---|
-| 2 | Fork del repo, Project en Claude y este `CLAUDE.md` |
-| 3 | Fase 1 Spec (`docs/spec.md`), Fase 2 Diseño con Artifacts (`docs/diseno.md`), Fase 3 Desarrollo |
-| 4 | Fase 4 Tests y validación del dataset, Fase 5 Despliegue, Fase 6 Automatización del triaje en n8n |
-
-Cuando termine una fase, actualiza la sección **Estado actual** de este archivo y, si cambió la
-estructura, la tabla del `README.md`.
+| Sesión | Fase | Estado |
+|---|---|---|
+| 2 | Fork del repo, Project en Claude y este `CLAUDE.md` | ✅ |
+| 3 | Fase 1 Spec, Fase 2 Diseño con Artifacts, Fase 3 Desarrollo | Fases 1-2 ✅, Fase 3 pendiente |
+| 4 | Fase 4 Tests y validación del dataset, Fase 5 Despliegue, Fase 6 Automatización del triaje en n8n | Pendiente |
