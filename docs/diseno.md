@@ -63,6 +63,48 @@ Entonces: se construye **A**, y la paleta de **B** queda como el tema oscuro de 
 - Cada fila lleva su categoría de triaje debajo del título: es el dato que decide qué se atiende antes.
 - Elementos reales de HTML (`<button>`, `<a>`, `<label>` con su campo), no `div` que parecen botones.
 
+## Estilo elegido: la piel de KirriDesk sobre la paleta de la Fase 2
+
+Referencia: `assets/referencias/dribbble/captura-2.png`. Decidido el 22/09/2026 en grupo.
+Se aplica a **toda la app**, no solo a la ficha. Se toma la **estructura**; la paleta y la
+tipografía siguen siendo las de arriba.
+
+### Qué se copia de la referencia
+
+- **Carril de navegación fijo a la izquierda**, con las secciones agrupadas bajo etiquetas
+  cortas en mayúsculas pequeñas. La sección activa se marca con un relleno suave, no con color.
+- **El contenido vive en paneles** sobre el fondo, con borde de 1 px y esquinas suaves. El
+  fondo se ve entre los paneles: es lo que da el aire.
+- **Cabecera de pantalla en una línea**: volver, el id en monoespaciada (`SVD-4102`), el título,
+  y la acción primaria pegada a la derecha.
+- **Pestañas bajo la cabecera** para las vistas de un mismo ticket, con subrayado en la activa.
+- **Un solo color de acción por pantalla.** Todo lo demás es gris. La referencia usa verde para
+  lo accionable y negro para el botón primario, y no usa color en ningún otro sitio.
+- **Densidad sin apretar**: filas compactas, pero con separadores finos y no líneas de tabla.
+
+### La regla que de verdad importa
+
+**La sugerencia de la IA va dentro de un bloque delimitado, con su propio fondo y su borde. Las
+acciones de la persona van fuera del bloque.**
+
+En la referencia, la propuesta de la IA está en una caja verde clara con su explicación dentro
+y un «Was this helpful?» en la esquina; el botón «Accept & Send» está fuera, abajo, en la barra
+de acciones. Se ve sin leer nada dónde acaba lo que propone la máquina y dónde empieza lo que
+decide la persona. Eso es el principio 1 de la constitución dibujado, y el R5 del spec.
+
+Traducido a nuestra bandeja: el `motivo` y la categoría sugerida se pintan dentro de la caja.
+«Aceptar», «Corregir» y «Deshacer» se pintan fuera. Nunca al revés.
+
+### Qué no se copia
+
+| De la referencia | Qué hacemos | Por qué |
+|---|---|---|
+| Fondo gris azulado frío | Hueso `#F4F3EF` | Decisión de la Fase 2, tomada por la fatiga en turnos de ocho horas. Los dos evitan el blanco puro; se mantiene el que ya estaba razonado |
+| Paneles en blanco puro `#FFFFFF` | Hueso más claro `#FDFCFA` | Misma razón: ningún plano grande en blanco puro. El contraste con el fondo sigue siendo suficiente para separar el panel |
+| Verde brillante de acción | Verde azulado `#1F6F6B` | Ya era el color de las acciones en la Fase 2 |
+| Botón primario negro | Verde azulado `#1F6F6B` | El negro sólido sobre hueso pesa demasiado en una pantalla que se mira todo el día |
+| Avatares y fotos de persona | Nada | Principio 3: solo datos sintéticos, tampoco caras |
+
 ## Pendiente del spec (Fase 1)
 
 La **prioridad** aparece en el diseño como hueco vacío a propósito. Sus valores no existen todavía

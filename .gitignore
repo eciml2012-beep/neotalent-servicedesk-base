@@ -1,3 +1,4 @@
 # Permisos y ajustes de Claude Code propios de cada máquina.
 # El resto de .claude/ (skills) sí se versiona: es contexto del proyecto.
 .claude/settings.local.json
+.playwright-mcp/
