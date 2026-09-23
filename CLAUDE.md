@@ -117,6 +117,11 @@ npx playwright test -g "texto del título"  # un solo test
 **No edites `data/tickets.json` para montar un caso de prueba**: sirve un dataset alterado con
 `servirDataset()` de `tests/soporte/app.js`.
 
+**Hook de commit** (`.claude/settings.json` → `.claude/hooks/pruebas-antes-de-commit.mjs`): cada
+`git commit` que lance Claude Code pasa antes `npm test`; si no está en verde, el commit se
+bloquea y el error vuelve a Claude. No lo esquives: arregla la causa. Solo vigila a Claude Code;
+en GitHub lo hace el workflow `.github/workflows/pruebas.yml`.
+
 ## Arquitectura
 
 La frontera que define el proyecto: **Claude Code clasifica sobre el repo, el navegador solo

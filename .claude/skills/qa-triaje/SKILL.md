@@ -121,6 +121,10 @@ cada push a `main`.
 
 ## Puertas antes de commitear
 
+La primera la hace cumplir un hook (`.claude/settings.json`): cada `git commit` de Claude Code
+pasa antes `npm test` y se bloquea si falla. En GitHub, el workflow `pruebas.yml` hace lo mismo en
+cada PR y en cada push a `main`. Las demás son responsabilidad de quien commitea.
+
 Un cambio en `js/`, `css/`, `index.html` o `data/` no se commitea si falla cualquiera:
 
 1. `npm test` en verde.
