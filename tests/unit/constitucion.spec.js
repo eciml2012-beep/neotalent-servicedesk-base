@@ -3,8 +3,9 @@
 import { test, expect } from "@playwright/test";
 import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
+import { fileURLToPath } from "node:url";
 
-const raiz = new URL("../../", import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, "$1");
+const raiz = fileURLToPath(new URL("../../", import.meta.url));
 const leer = (ruta) => readFileSync(join(raiz, ruta), "utf8");
 const archivosJs = (dir) =>
   readdirSync(join(raiz, dir), { withFileTypes: true }).flatMap((e) =>
