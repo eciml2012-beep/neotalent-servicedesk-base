@@ -42,6 +42,7 @@ El orden importa. Si dos documentos chocan, gana el de más arriba:
 | 3 | `docs/diseno.md` | Cómo se ve: flujo de pantallas, la decisión tabla clara + interruptor oscuro, tipografía y contraste |
 | — | `docs/revision-qa-spec.md` | Primera revisión QA del spec, **ya resuelta**. Registro de qué se detectó y qué se decidió, con el archivo donde quedó cada decisión |
 | — | `docs/revision-qa-spec-2.md` | Segunda revisión QA, cruzando spec con diseño, **ya resuelta** (20/20, la última tanda el 23/09/2026). Mismo formato que la primera |
+| — | `docs/pruebas-fase3.md` | Registro de las pruebas manuales de la Fase 3 sobre un navegador real: qué se probó, cómo, y los 3 bugs que salieron y se corrigieron. No sustituye los tests de la Fase 4 |
 | — | `docs/categorias-triaje.md` | Las 7 categorías de triaje con su definición y su reparto sobre los 60 tickets |
 | — | `assets/referencias/` | Las capturas de la Fase 2, los 6 criterios con los que se filtraron y la comparación. La estructura elegida es **KirriDesk** (`dribbble/captura-2.png`) |
 | — | `docs/proceso-sesion3.md` | Cómo se llegó hasta aquí, paso a paso. Contexto, no normativa |
