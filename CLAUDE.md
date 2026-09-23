@@ -132,6 +132,32 @@ es lo que hace verificable el principio 5.
 El texto de un ticket se pinta siempre con `textContent`, nunca con `innerHTML` (spec, casos
 límite).
 
+**Cómo se combina el dato con lo que confirma el operador** (hay que leer `app.js` +
+`utils/estado-ticket.js` juntos para verlo): `app.js` nunca pasa un ticket "en crudo" a un
+componente. Cada uno pasa primero por `estado-ticket.js#derivarTicket(ticketOriginal,
+triajeGuardado)`, que:
+
+1. Valida la `sugerencia` con `utils/prioridad.js#esSugerenciaCoherente` (categoría en el enum,
+   motivo no vacío, categoría × urgencia y, cuando aplica, impacto × zona según R8). Si falla
+   cualquiera, el ticket se trata como "Sin clasificar" ahí mismo — nunca llega una sugerencia
+   rota a un componente.
+2. Compara la confirmación guardada contra un `sugerenciaSnapshot` (la sugerencia que había en el
+   momento de confirmar). Si no coincide con la sugerencia actual, la confirmación se invalida y
+   el ticket vuelve a "Pendiente de confirmar" — es como se resuelve que Claude Code pueda
+   reclasificar un ticket ya confirmado (spec R6).
+
+Rutas por `location.hash` (`#/bandeja`, `#/ticket/:id`, `#/ticket/:id/corregir`, `#/metricas`), sin
+router externo: `app.js#render()` limpia `#app` y repinta según el hash en cada `hashchange`.
+
+`localStorage` en `svd-triaje` guarda un objeto `{ [id]: {estado, categoria, urgencia, impacto,
+sugerenciaSnapshot, fecha}, _meta: {ultimaModificacion, ultimoExport} }`. `_meta` es aparte de las
+entradas por ticket a propósito: "Deshacer" borra la entrada de ese ticket, así que el aviso de
+"cambios sin exportar" no puede depender de que sobreviva un `fecha` por ticket.
+
+El `fetch` de `data/tickets.json` lleva `{ cache: "no-store" }` a propósito: si no, el navegador
+puede servir una copia cacheada y nunca notar que alguien sustituyó el archivo (spec R6, "el JSON
+reimportado manda sobre `localStorage`").
+
 ## Dataset: `data/tickets.json`
 
 Array de 60 tickets, ids `SVD-4100` a `SVD-4159`, fechas del 2026-09-01 al 2026-09-14.
@@ -173,21 +199,24 @@ Reglas del dataset:
 - Comprueba que el JSON sigue siendo válido después de editarlo.
 - El navegador **nunca** sobrescribe `data/tickets.json`; exporta un archivo aparte.
 
-## Antes de implementar la Fase 3
+## Invariantes de la Fase 3 (no romper al tocar el código)
 
 `docs/revision-qa-spec.md` y `docs/revision-qa-spec-2.md` están **resueltos**: entre los dos, 40
 hallazgos con decisión, cada uno con el archivo donde quedó. Léelos si te preguntas por qué una
-regla del spec es como es.
+regla del spec es como es. `docs/pruebas-fase3.md` registra cómo se probó todo esto a mano y los 3
+bugs que salieron — léelo antes de tocar `estado-ticket.js` o `app.js`, para no reintroducirlos.
 
 Lo único que sigue siendo criterio del equipo y no evidencia:
 
 - **Las tres zonas críticas** de R2 (`Perímetro exterior`, `Sala de servidores`,
   `Torre de control`) definen el impacto Alto y por tanto la prioridad de 21 de los 60 tickets.
-  Es una decisión editable, no un dato del dominio. Si cambia, hay que reclasificar.
+  Es una decisión editable, no un dato del dominio. Si cambia, hay que reclasificar (y está en
+  `ZONAS_CRITICAS`, en `js/utils/constantes.js`).
 - **La tasa de corrección** (R7) como proxy de precisión: el deep research no respalda ninguna
   metodología de medición, así que es decisión propia. Está declarado como tal.
 
-Trampas al implementar, todas trazadas a una decisión:
+Trampas ya resueltas en el código, todas trazadas a una decisión — si algo deja de cumplirlas, es
+una regresión, no un cambio de criterio:
 
 - La **prioridad no se guarda ni se edita**: es una función pura de urgencia × impacto. Añadirla
   como campo del JSON rompe el principio 5.
