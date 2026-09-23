@@ -42,7 +42,8 @@ El orden importa. Si dos documentos chocan, gana el de más arriba:
 | 3 | `docs/diseno.md` | Cómo se ve: flujo de pantallas, la decisión tabla clara + interruptor oscuro, tipografía y contraste |
 | — | `docs/revision-qa-spec.md` | Primera revisión QA del spec, **ya resuelta**. Registro de qué se detectó y qué se decidió, con el archivo donde quedó cada decisión |
 | — | `docs/revision-qa-spec-2.md` | Segunda revisión QA, cruzando spec con diseño, **ya resuelta** (20/20, la última tanda el 23/09/2026). Mismo formato que la primera |
-| — | `docs/pruebas-fase3.md` | Registro de las pruebas manuales de la Fase 3 sobre un navegador real: qué se probó, cómo, y los 3 bugs que salieron y se corrigieron. No sustituye los tests de la Fase 4 |
+| — | `docs/pruebas/` | Plan de pruebas, matriz de trazabilidad requisito → test, guion de UAT e informe de resultados (ISO/IEC/IEEE 29119-3). La skill `qa-triaje` explica cómo usarlos |
+| — | `docs/pruebas-fase3.md` | Registro histórico de las pruebas manuales de la Fase 3, antes de que existiera la suite |
 | — | `docs/categorias-triaje.md` | Las 7 categorías de triaje con su definición y su reparto sobre los 60 tickets |
 | — | `assets/referencias/` | Las capturas de la Fase 2, los 6 criterios con los que se filtraron y la comparación. La estructura elegida es **KirriDesk** (`dribbble/captura-2.png`) |
 | — | `docs/proceso-sesion3.md` | Cómo se llegó hasta aquí, paso a paso. Contexto, no normativa |
@@ -63,7 +64,8 @@ choca, dilo en vez de elegir por tu cuenta.
 5. **Prioridad por matriz propia**, no por intuición ni copiada de TI. La IA no inventa la
    prioridad: la calcula la app.
 6. **Stack plano, sin instalar nada.** Sin npm, sin build, sin frameworks, sin backend, sin
-   dependencias externas, sin API keys.
+   dependencias externas, sin API keys. *Enmienda del 23/09/2026:* se permite `package.json` con
+   solo `devDependencies` de test (Playwright Test); la app nunca carga nada de `node_modules`.
 
 ## Stack y restricciones
 
@@ -77,7 +79,8 @@ choca, dilo en vez de elegir por tu cuenta.
 
 ## Comandos
 
-No hay build, ni linter, ni framework de tests. Lo único que se ejecuta:
+No hay build ni linter. **Para usar la app no hace falta instalar nada**; para probarla, Node y
+`npm install` una vez.
 
 **Levantar la app** (obligatorio: `fetch` sobre `file://` está bloqueado por el navegador):
 
@@ -100,7 +103,19 @@ python -m json.tool data/tickets.json > /dev/null && echo "JSON valido"
 python -c "import json;t=json.load(open('data/tickets.json',encoding='utf-8'));print(len(t),'tickets;',sum(1 for x in t if x.get('sugerencia',{}).get('motivo')),'con motivo')"
 ```
 
-Los tests de la Fase 4 (Sesión 4) todavía no existen.
+**Pruebas** (Playwright Test; levanta solo el servidor en `127.0.0.1:8000`). Cómo escribirlas,
+cuándo ejecutarlas y qué registrar: skill `qa-triaje`.
+
+```bash
+npm test                      # regresión completa, ~20 s (puerta obligatoria antes de commitear)
+npm run test:humo             # camino crítico, ~8 s
+npm run test:unit             # solo Node, ~2 s
+npx playwright test --grep "@R6( |$)"      # lo que prueba un requisito
+npx playwright test -g "texto del título"  # un solo test
+```
+
+**No edites `data/tickets.json` para montar un caso de prueba**: sirve un dataset alterado con
+`servirDataset()` de `tests/soporte/app.js`.
 
 ## Arquitectura
 
@@ -242,4 +257,4 @@ una regresión, no un cambio de criterio:
 |---|---|---|
 | 2 | Fork del repo, Project en Claude y este `CLAUDE.md` | ✅ |
 | 3 | Fase 1 Spec, Fase 2 Diseño con Artifacts, Fase 3 Desarrollo | ✅ |
-| 4 | Fase 4 Tests y validación del dataset, Fase 5 Despliegue, Fase 6 Automatización del triaje en n8n | Pendiente |
+| 4 | Fase 4 Tests y validación del dataset, Fase 5 Despliegue, Fase 6 Automatización del triaje en n8n | Fase 4: suite de 220 tests hecha por adelantado; falta la UAT con una persona. Fases 5-6 pendientes |

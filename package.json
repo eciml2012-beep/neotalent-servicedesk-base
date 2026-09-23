@@ -1,0 +1,20 @@
+{
+  "name": "mini-service-desk",
+  "private": true,
+  "type": "module",
+  "description": "Solo herramientas de test. La app no carga nada de node_modules (constitución, principio 6).",
+  "scripts": {
+    "test": "playwright test",
+    "test:humo": "playwright test --grep @humo",
+    "test:unit": "playwright test --project=unit",
+    "test:e2e": "playwright test --project=e2e",
+    "test:aceptacion": "playwright test --grep @aceptacion",
+    "test:accesibilidad": "playwright test --grep @accesibilidad",
+    "test:visual": "playwright test --grep @visual",
+    "test:capturas": "playwright test --grep @visual --update-snapshots",
+    "test:informe": "playwright show-report"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.63.0"
+  }
+}

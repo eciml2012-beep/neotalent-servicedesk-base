@@ -2,3 +2,8 @@
 # El resto de .claude/ (skills) sí se versiona: es contexto del proyecto.
 .claude/settings.local.json
 .playwright-mcp/
+
+# Herramientas de test (constitución, principio 6: la app no las necesita).
+node_modules/
+test-results/
+playwright-report/

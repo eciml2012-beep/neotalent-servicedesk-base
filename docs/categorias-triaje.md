@@ -101,6 +101,10 @@ Es el mismo ejemplo que usa `docs/wireframes-fase3/` para esa pantalla.
 Reparto real en `data/tickets.json`: Equipo de campo averiado queda en **8** (no 12) y **Sin
 clasificar** se queda con esos 4. El resto de categorías no cambia. Sigue sumando 60.
 
+**Decisión cerrada (23/09/2026):** se quedan como «Sin clasificar». Reclasificarlas como Equipo de
+campo averiado habría sido urgencia Alta (vigilancia que no graba ahora, R2), con `SVD-4113` en
+Crítica, pero habría dejado la app sin ningún ticket que enseñe el flujo de «Sin clasificar».
+
 ## Verificación
 
 - Tickets en el fichero: **60**

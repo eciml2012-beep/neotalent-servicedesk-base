@@ -69,11 +69,20 @@ matriz del spec para su urgencia y su impacto.
 ## 6. Stack plano, sin instalar nada
 
 HTML, CSS y JavaScript planos. Sin npm, sin build, sin frameworks, sin backend, sin
-dependencias externas y sin API keys.
+dependencias externas y sin API keys. **Para usar la app** no hace falta instalar nada.
 
 Esto incluye las **fuentes tipográficas**: nada de Google Fonts ni de CDNs. Se usa la pila de
 fuentes del sistema.
 
-**Cómo se comprueba:** no existen `package.json` ni `node_modules`; `index.html` y `styles.css`
-no contienen ninguna URL externa (ni `<script src="http`, ni `<link href="http`, ni `@import`,
-ni `url(http` ); y la app funciona sin conexión a internet con `python -m http.server 8000`.
+**Excepción acotada, solo para probar (enmienda del 23/09/2026):** los tests end-to-end usan
+Playwright Test, que necesita Node. Se permite un `package.json` con **solo `devDependencies`**
+de herramientas de test. La app nunca carga nada de `node_modules`: quien solo quiera usarla o
+enseñarla sigue sin instalar nada. Se decidió así porque los flujos de la bandeja no se pueden
+probar de forma repetible sin un navegador automatizado, y probarlos a mano dejó bugs sin ver
+(`docs/pruebas-fase3.md`).
+
+**Cómo se comprueba:** `package.json`, si existe, no tiene `dependencies` (solo
+`devDependencies`); `index.html`, `css/styles.css` y todo `js/` no contienen ninguna URL externa
+(ni `<script src="http`, ni `<link href="http`, ni `@import`, ni `url(http`) ni referencias a
+`node_modules`; y la app funciona sin conexión a internet con `python -m http.server 8000` en una
+copia del repo **sin** `node_modules`.

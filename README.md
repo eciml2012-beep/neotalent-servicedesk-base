@@ -43,7 +43,14 @@ Los datos son inventados de cero — cero relación con clientes reales.
 │   ├── revision-qa-spec.md   → primera revisión QA, resuelta
 │   ├── revision-qa-spec-2.md → segunda revisión QA, resuelta
 │   ├── proceso-sesion3.md    → cómo se llegó hasta aquí (contexto, no normativa)
+│   ├── pruebas/              → plan, trazabilidad, UAT e informe de pruebas (ISO 29119-3)
 │   └── wireframes-fase3/     → wireframes de flujo previos a implementar
+├── tests/
+│   ├── unit/                 → Node: funciones puras, dataset, estáticos, integración
+│   ├── e2e/                  → Chromium: flujos, aceptación, accesibilidad, visual…
+│   └── soporte/app.js        → arnés compartido de los e2e
+├── package.json          → solo devDependencies de test (la app no lo necesita)
+├── playwright.config.js  → proyectos unit y e2e, servidor de pruebas
 ├── assets/referencias/  → capturas y criterios de la Fase 2 (referencia visual)
 ├── deep-research/       → evidencia de la que salen los principios
 ├── README.md
@@ -64,7 +71,19 @@ Los datos son inventados de cero — cero relación con clientes reales.
 | `README.md` | Qué es el proyecto y cómo empezar | Brief del proyecto, esta misma tabla | Es lo primero que lee cualquiera al abrir el repo — humano o Claude Code |
 | `CLAUDE.md` | Contexto del proyecto para Claude Code | Se genera en la Sesión 2 y se actualiza al terminar cada fase | Se genera en la Sesión 2 a partir de lo que Claude Code entienda del resto de archivos |
 
-No hay carpetas de dependencias ni de build — el proyecto es HTML/CSS/JS plano, sin instalar nada.
+| `tests/` | Pruebas automatizadas (220) | Unitarias, de datos, estáticas, de integración, e2e, aceptación, accesibilidad, seguridad, visuales, rendimiento y cobertura | Las ejecuta Playwright Test contra la app real; nunca modifican `data/tickets.json` |
+
+La app es HTML/CSS/JS plano y **no necesita instalar nada**. Solo las pruebas usan Node
+(`package.json` con devDependencies; constitución, principio 6 enmendado).
+
+## Cómo probar
+
+```bash
+npm install      # una vez: instala Playwright Test
+npm test         # regresión completa (~20 s)
+```
+
+Qué se prueba y por qué está en `docs/pruebas/`. La UAT con una persona, en `docs/pruebas/uat.md`.
 
 ## Cómo ver la app
 
