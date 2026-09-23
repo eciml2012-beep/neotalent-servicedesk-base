@@ -41,8 +41,9 @@ function crearCabecera(ticket, { onVolver, extra } = {}) {
   if (extra) {
     cabecera.append(extra);
   } else {
+    // docs/diseno.md: ámbar para abierto, verde azulado para cerrado.
     const estado = document.createElement("span");
-    estado.className = "ficha__estado-ticket";
+    estado.className = `ficha__estado-ticket ficha__estado-ticket--${ticket.estado}`;
     estado.textContent = ticket.estado;
     cabecera.append(estado);
   }
@@ -87,7 +88,11 @@ function crearCajaSugerencia(ticket) {
 
   const cabecera = document.createElement("div");
   cabecera.className = "caja-ia__cabecera";
-  cabecera.textContent = confirmado ? `CLASIFICACIÓN · ${ticket.estadoTriaje}` : "SUGERENCIA DE LA IA · sin confirmar";
+  cabecera.textContent = confirmado
+    ? `CLASIFICACIÓN · ${ticket.estadoTriaje}`
+    : ticket.avisoSugerencia
+    ? `SUGERENCIA DE LA IA · ${ticket.avisoSugerencia.toLowerCase()}`
+    : "SUGERENCIA DE LA IA · sin confirmar";
   caja.append(cabecera);
 
   const grid = document.createElement("div");
@@ -102,7 +107,13 @@ function crearCajaSugerencia(ticket) {
 
   const motivo = document.createElement("div");
   motivo.className = "caja-ia__motivo";
-  motivo.append(fila("Motivo", ticket.sugerenciaEfectiva.motivo));
+  motivo.append(fila(ticket.avisoSugerencia ? "Aviso" : "Motivo de la IA", ticket.sugerenciaEfectiva.motivo));
+  // Principio 1: tras una corrección, lo que propuso la IA sigue a la vista.
+  if (ticket.estadoTriaje === "Corregido") {
+    const s = ticket.sugerenciaEfectiva;
+    const original = [s.categoria, s.urgencia, s.impacto].filter(Boolean).join(" · ");
+    motivo.append(fila("Sugerencia original de la IA", original));
+  }
   caja.append(motivo);
 
   const nota = document.createElement("div");
@@ -245,6 +256,23 @@ export function crearFichaCorregir(ticket, zonasCriticas, callbacks) {
   const camposCont = document.createElement("div");
   camposCont.className = "caja-corregir__campos";
 
+  const guardar = document.createElement("button");
+  guardar.type = "button";
+  guardar.className = "boton boton--primario";
+  guardar.textContent = "Guardar corrección";
+  const notaGuardar = document.createElement("p");
+  notaGuardar.className = "ficha__acciones-nota";
+
+  // "Sin clasificar" + Confirmado es la única combinación imposible (R4). Si la IA ya
+  // dijo "Sin clasificar" y el operador lo deja igual, no hay nada que guardar.
+  function pintarGuardar() {
+    const sigueSinClasificar = categoria === SIN_CLASIFICAR && ticket.sugerenciaEfectiva.categoria === SIN_CLASIFICAR;
+    guardar.disabled = sigueSinClasificar;
+    notaGuardar.textContent = sigueSinClasificar
+      ? "Sigue sin clasificar: elige una categoría para poder guardar."
+      : "Cuenta como Confirmado si coincide con la sugerencia de la IA; si no, como Corregido.";
+  }
+
   function pintarCampos() {
     camposCont.replaceChildren();
 
@@ -274,7 +302,7 @@ export function crearFichaCorregir(ticket, zonasCriticas, callbacks) {
         valor: categoria,
         opciones: [...CATEGORIAS, SIN_CLASIFICAR],
         deshabilitado: false,
-        onChange: (v) => { categoria = v; pintarCampos(); pintarPrioridad(); },
+        onChange: (v) => { categoria = v; pintarCampos(); pintarPrioridad(); pintarGuardar(); },
       }),
       crearSelectCorregir({
         etiqueta: "Urgencia",
@@ -296,24 +324,18 @@ export function crearFichaCorregir(ticket, zonasCriticas, callbacks) {
 
   pintarCampos();
   pintarPrioridad();
+  pintarGuardar();
   caja.append(camposCont, resumenPrioridad);
 
   const acciones = document.createElement("div");
   acciones.className = "ficha__acciones";
-  const guardar = document.createElement("button");
-  guardar.type = "button";
-  guardar.className = "boton boton--primario";
-  guardar.textContent = "Guardar corrección";
   guardar.addEventListener("click", () => callbacks.onGuardar?.({ categoria, urgencia, impacto }));
   const cancelar = document.createElement("button");
   cancelar.type = "button";
   cancelar.className = "boton boton--fantasma";
   cancelar.textContent = "Cancelar";
   cancelar.addEventListener("click", () => callbacks.onCancelar?.());
-  const nota = document.createElement("p");
-  nota.className = "ficha__acciones-nota";
-  nota.textContent = "Cuenta como Corregido si cambias al menos un campo; si no, cuenta como Confirmado.";
-  acciones.append(guardar, cancelar, nota);
+  acciones.append(guardar, cancelar, notaGuardar);
 
   columnaDerecha.append(caja, acciones);
   cuerpo.append(crearPanelDatos(ticket, zonasCriticas), columnaDerecha);

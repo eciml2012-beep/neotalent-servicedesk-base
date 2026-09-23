@@ -24,7 +24,7 @@ pierda al cerrar la conversación donde se hizo.
 | Ficha ver: Aceptar visible/oculto, Deshacer deshabilitado/activo según estado | Clics reales | ✅ |
 | Sin clasificar: sin botón Aceptar | Clics reales | ✅ |
 | R8 en Corregir, las 7 categorías: Brecha (urgencia fija Alta), Petición de acceso y de información (fija Baja), Falsa alarma (excluye Alta), Equipo averiado / Pérdida de registro / Fallo de integración (libres) | Cambiar el `<select>` de categoría y leer las opciones resultantes de urgencia | ✅ las 7 |
-| «Guardar sin cambiar nada» sobre un ticket ya Corregido → pasa a Confirmado | Corregir dos veces seguidas sobre el mismo ticket | ✅ |
+| ~~«Guardar sin cambiar nada» sobre un ticket ya Corregido → pasa a Confirmado~~ | Corregir dos veces seguidas sobre el mismo ticket | ❌ **La aserción estaba mal**: ese comportamiento era un bug (ver la auditoría de abajo, hallazgo 1). Lo correcto es que siga Corregido |
 | Exportar: JSON con 60 tickets, `triaje: null` en pendientes, estado correcto en revisados, aviso desaparece | Interceptar `URL.createObjectURL` y leer el Blob generado | ✅ |
 | Filtro «Todos» con pendientes + confirmados + corregidos mezclados | Cambiar el filtro y comprobar orden y conteo | ✅ |
 | Ticket inexistente por URL (`#/ticket/SVD-9999`) | Navegación directa por hash | ✅ no rompe la app |
@@ -44,6 +44,28 @@ Quedan anotados porque forman parte de cómo se llegó al resultado, no para esc
   CSS (`text-transform`), no cambian el texto real.
 - Al probar `localStorage` bloqueado no limpié el estado de una prueba anterior, así que esperaba
   60 filas pendientes cuando ya había 3 tickets confirmados de antes: lo correcto era 57.
+
+## Auditoría completa contra el spec (23/09/2026, segunda pasada)
+
+Relectura del spec requisito por requisito contra todo el código, sin fiarse de las pruebas de
+arriba. Salieron 3 bugs más, 4 huecos y varias reglas de `docs/diseno.md` sin cumplir.
+
+| # | Tipo | Hallazgo | Arreglo |
+|---|---|---|---|
+| 1 | Bug (R5, R7) | «Corregido» se medía contra el último valor guardado, no contra la sugerencia de la IA. Reabrir un Corregido y guardarlo sin tocar lo pasaba a Confirmado, y la tasa de corrección decía que la IA acertó. **Una prueba anterior lo daba por bueno.** | `estadoAlGuardar()` en `utils/estado-ticket.js`, compara contra `sugerenciaEfectiva`. Precisado en `spec.md` R5 |
+| 2 | Bug (R6 p. 11) | La siembra desde un `data/tickets.json` con `triaje` se repetía en cada recarga: pisaba lo que el operador hacía después (corregir, deshacer) | `_meta.sembrados` guarda la huella de lo ya sembrado; solo se vuelve a sembrar si el JSON cambia |
+| 3 | Bug (R7) | La tasa de corrección por categoría se agrupaba por la categoría final, no por la sugerida: escondía justo la categoría en la que falla la IA | `calcularMetricas` agrupa por `sugerenciaEfectiva.categoria`. Precisado en `spec.md` R7 |
+| 4 | Hueco (R8, casos límite) | Una sugerencia inválida se convertía en «Sin clasificar» en silencio y enseñaba el motivo de la clasificación descartada | Aviso en la fila y en la ficha; el motivo descartado ya no se enseña |
+| 5 | Hueco (decisión 4) | «Sin clasificar sale destacado»: solo iba primero, sin distinción visual | Borde de 2 px (distinción que no depende del color) |
+| 6 | Hueco (R4) | El filtro por estado del triaje solo tenía Pendientes y Todos | Añadidos Confirmados y Corregidos |
+| 7 | Hueco (casos límite) | Las confirmaciones de ids que ya no existen se ignoraban pero no se descartaban | `descartarHuerfanos()` al cargar |
+| 8 | Caso nuevo (R4) | Si la IA dijo «Sin clasificar» y el operador lo deja igual, guardar produciría «Sin clasificar» + Confirmado, la combinación imposible | Guardar deshabilitado con explicación |
+| 9 | `diseno.md` | Textos a 11 px, controles a 36–40 px, rojo en avisos que no son brechas, ámbar/verde de abierto/cerrado sin usar | 12 px mínimo, 44 px en controles, avisos en ámbar, estado del ticket coloreado |
+| 10 | Robustez | Exportar: el enlace de descarga no estaba en el documento y la URL se revocaba en el acto (Firefox puede cancelar la descarga) | Se añade al documento y se revoca en el siguiente tick |
+
+Verificado en el navegador (38 comprobaciones, todas bien), incluidos los casos límite de
+sugerencia inválida llamando a `derivarTicket()` con tickets inventados, porque el dataset real no
+tiene ninguno. `data/tickets.json` quedó intacto (el `triaje` de prueba se añadió y se quitó).
 
 ## Qué no se ha probado
 

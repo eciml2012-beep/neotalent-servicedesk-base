@@ -150,9 +150,15 @@ Rutas por `location.hash` (`#/bandeja`, `#/ticket/:id`, `#/ticket/:id/corregir`,
 router externo: `app.js#render()` limpia `#app` y repinta según el hash en cada `hashchange`.
 
 `localStorage` en `svd-triaje` guarda un objeto `{ [id]: {estado, categoria, urgencia, impacto,
-sugerenciaSnapshot, fecha}, _meta: {ultimaModificacion, ultimoExport} }`. `_meta` es aparte de las
-entradas por ticket a propósito: "Deshacer" borra la entrada de ese ticket, así que el aviso de
-"cambios sin exportar" no puede depender de que sobreviva un `fecha` por ticket.
+sugerenciaSnapshot, fecha}, _meta: {ultimaModificacion, ultimoExport, sembrados} }`. `_meta` es
+aparte de las entradas por ticket a propósito: "Deshacer" borra la entrada de ese ticket, así que el
+aviso de "cambios sin exportar" no puede depender de que sobreviva un `fecha` por ticket.
+`sembrados` guarda la huella de cada `triaje` que ya se aplicó desde el JSON, para no volver a
+pisar con él lo que el operador haga después.
+
+"Corregido" se mide **contra la sugerencia de la IA**, no contra el último valor guardado
+(`estado-ticket.js#estadoAlGuardar`), y la tasa de corrección por categoría se agrupa por la
+categoría **sugerida**: los dos son lo que hace que R7 mida de verdad si la IA acierta.
 
 El `fetch` de `data/tickets.json` lleva `{ cache: "no-store" }` a propósito: si no, el navegador
 puede servir una copia cacheada y nunca notar que alguien sustituyó el archivo (spec R6, "el JSON

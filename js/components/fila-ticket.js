@@ -19,7 +19,9 @@ function crearBadge(texto, { sugerido = false, claseTono = "" } = {}) {
 export function crearFilaTicket(ticket, { onAbrir } = {}) {
   const fila = document.createElement("button");
   fila.type = "button";
-  fila.className = "fila-ticket";
+  // Decisión 4 del spec: un "Sin clasificar" pendiente sale destacado para revisión.
+  const destacado = ticket.categoria === "Sin clasificar" && ticket.esSugerido;
+  fila.className = destacado ? "fila-ticket fila-ticket--destacada" : "fila-ticket";
   fila.dataset.id = ticket.id;
 
   const id = document.createElement("span");
@@ -32,8 +34,10 @@ export function crearFilaTicket(ticket, { onAbrir } = {}) {
   titulo.className = "fila-ticket__titulo";
   titulo.textContent = ticket.titulo;
   const motivo = document.createElement("div");
-  motivo.className = "fila-ticket__motivo";
-  motivo.textContent = `Motivo IA: ${ticket.motivo}`;
+  // R8 / casos límite: si la sugerencia se descartó, la fila lo dice en vez de
+  // enseñar un motivo como si fuera válido.
+  motivo.className = ticket.avisoSugerencia ? "fila-ticket__motivo fila-ticket__motivo--aviso" : "fila-ticket__motivo";
+  motivo.textContent = ticket.avisoSugerencia ? `⚠ ${ticket.avisoSugerencia}: ${ticket.motivo}` : `Motivo IA: ${ticket.motivo}`;
   tituloCol.append(titulo, motivo);
 
   const categoriaCol = document.createElement("div");

@@ -34,6 +34,8 @@ export function crearBarraFiltros({ sistemas, zonas, filtros, onChange }) {
       campo: "estadoTriaje",
       opciones: [
         { value: "pendientes", texto: "Estado triaje: Pendientes de confirmar" },
+        { value: "Confirmado", texto: "Estado triaje: Confirmados" },
+        { value: "Corregido", texto: "Estado triaje: Corregidos" },
         { value: "todos", texto: "Estado triaje: Todos" },
       ],
       valorActual: filtros.estadoTriaje ?? "pendientes",

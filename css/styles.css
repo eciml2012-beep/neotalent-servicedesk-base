@@ -85,7 +85,7 @@ a {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 11px;
+  font-size: 12px;
   color: var(--color-texto-tenue);
 }
 
@@ -94,7 +94,7 @@ a {
 }
 
 .rail__nav-etiqueta {
-  font-size: 11px;
+  font-size: 12px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--color-texto-tenue);
@@ -105,7 +105,7 @@ a {
 .rail__enlace {
   display: flex;
   align-items: center;
-  height: 40px;
+  height: 44px;
   padding: 0 12px;
   border-radius: 7px;
   color: var(--color-texto-tenue);
@@ -121,7 +121,7 @@ a {
 
 .rail__tema {
   margin-top: auto;
-  height: 40px;
+  height: 44px;
   border: 1px solid var(--color-borde);
   border-radius: 7px;
   background: none;
@@ -130,9 +130,10 @@ a {
   font-size: 13px;
 }
 
+/* Rojo solo para brechas (docs/diseno.md): los avisos van en ámbar. */
 .rail__aviso {
   font-size: 12px;
-  color: var(--color-brecha);
+  color: var(--color-abierto);
   margin: 0;
 }
 
@@ -178,7 +179,7 @@ a {
 .cabecera__aviso {
   font-size: 13px;
   font-weight: 600;
-  color: var(--color-brecha);
+  color: var(--color-abierto);
 }
 
 .cabecera__nota {
@@ -203,7 +204,7 @@ a {
 }
 
 .filtro-select {
-  height: 36px;
+  height: 44px;
   border: 1px solid var(--color-borde);
   border-radius: 7px;
   background: var(--color-panel);
@@ -244,6 +245,16 @@ a {
   border-color: var(--color-accion);
 }
 
+/* Decisión 4: "Sin clasificar" pendiente, destacado con borde más grueso (no con color). */
+.fila-ticket--destacada {
+  border: 2px solid var(--color-texto-tenue);
+}
+
+.fila-ticket__motivo--aviso {
+  color: var(--color-abierto);
+  font-weight: 600;
+}
+
 .fila-ticket__id {
   font-family: ui-monospace, "Cascadia Mono", Consolas, monospace;
 }
@@ -270,10 +281,11 @@ a {
   gap: 8px;
 }
 
+/* docs/diseno.md: verde azulado para cerrado. */
 .fila-ticket__cerrado {
-  font-size: 11px;
-  color: var(--color-texto-tenue);
-  border: 1px solid var(--color-borde);
+  font-size: 12px;
+  color: var(--color-accion);
+  border: 1px solid var(--color-accion);
   border-radius: 4px;
   padding: 1px 6px;
 }
@@ -391,6 +403,17 @@ a {
   border: 1px solid var(--color-borde);
   border-radius: 6px;
   padding: 4px 12px;
+}
+
+/* docs/diseno.md: ámbar para abierto, verde azulado para cerrado. */
+.ficha__estado-ticket--abierto {
+  color: var(--color-abierto);
+  border-color: var(--color-abierto);
+}
+
+.ficha__estado-ticket--cerrado {
+  color: var(--color-accion);
+  border-color: var(--color-accion);
 }
 
 .ficha__cuerpo {

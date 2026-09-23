@@ -41,7 +41,7 @@ Fuentes: `deep-research/deep-research-triaje-ia-seguridad-fisica.md`, `deep-rese
 |---|---|---|---|
 | 13 | ¿Cómo sabe la IA que un ticket afecta a «una sola persona»? | El texto describe una acción sobre una credencial, alta, baja, turno o fichaje de alguien identificable, sin decir que ningún equipo, puerta o zona quede sin cobertura por ello (R2). | punto 1 |
 | 14 | ¿Dónde se aplica «al final los confirmados» si el filtro por defecto no los muestra? | En cualquier vista que mezcle estados. Dentro de «Pendientes de confirmar» no hay confirmados, así que ahí el orden efectivo es Sin clasificar → prioridad (R4). | punto 3 |
-| 15 | ¿Corregir sin cambiar nada cuenta como Confirmado o Corregido? | Como `Confirmado`: no hay una tercera opción entre confirmar tal cual y corregir algo (R5). | punto 4 |
+| 15 | ¿Corregir sin cambiar nada cuenta como Confirmado o Corregido? | Como `Confirmado` si lo guardado coincide con la sugerencia de la IA; la comparación es contra la sugerencia, no contra el último valor guardado (R5, precisado en el QA de la Fase 3). | punto 4 |
 | 16 | ¿«Deshacer» deshace también un «Aceptar»? | Sí, igual que una corrección: siempre vuelve el ticket a `Pendiente de confirmar` con la sugerencia original (R5). | punto 5 |
 | 17 | ¿Cómo se distingue «vigilancia que no graba» (urgencia Alta) de «Pérdida de registro o evidencia» (urgencia libre)? | Por el tiempo verbal del ticket: si no graba **ahora**, Alta; si describe una pérdida ya ocurrida sobre el archivo, Media (R2). | punto 6 |
 | 18 | ¿Qué lleva un ticket pendiente al exportar? | `"triaje": null` explícito; la clave existe siempre, igual que las de `sugerencia` (R6). | punto 7 |
@@ -185,11 +185,16 @@ Crítica (zona crítica) o Alta (resto), nunca Media. *(punto 16 de la 2ª revis
 
 - «Aceptar» guarda la sugerencia tal cual, con estado `Confirmado`.
 - «Corregir» deja cambiar la categoría, la urgencia y el impacto con desplegables. La prioridad se recalcula al momento con la matriz.
-- **Cuenta como `Corregido` si el operador cambia al menos uno de los tres campos.** Clasificar a
-  mano un «Sin clasificar» cuenta como corregido. *(A4)*
-- **Si guarda sin cambiar ningún campo, cuenta como `Confirmado`**, igual que si hubiera pulsado
-  «Aceptar»: no hay una tercera opción entre confirmar tal cual y corregir algo. *(punto 4 de la 2ª
-  revisión)*
+- **Cuenta como `Corregido` si el valor guardado difiere de la sugerencia de la IA en al menos uno
+  de los tres campos.** Clasificar a mano un «Sin clasificar» cuenta como corregido. *(A4)*
+- **Si lo guardado coincide con la sugerencia de la IA, cuenta como `Confirmado`**, igual que si
+  hubiera pulsado «Aceptar»: no hay una tercera opción entre confirmar tal cual y corregir algo.
+  *(punto 4 de la 2ª revisión)*
+- La comparación es siempre **contra la sugerencia, no contra el último valor guardado.** Si no,
+  reabrir un ticket ya corregido y guardarlo sin tocar lo pasaría a `Confirmado`, y la tasa de
+  corrección (R7) diría que la IA acertó cuando no fue así. *(QA de la Fase 3)*
+- Si la IA sugirió «Sin clasificar» y el operador lo deja igual, no se puede guardar: sería
+  «Sin clasificar» + `Confirmado`, la única combinación imposible (R4).
 - **El operador puede corregir eligiendo «Sin clasificar»** en el desplegable de categoría, por
   ejemplo si decide que tampoco él puede clasificarlo con el texto disponible. En ese caso urgencia
   e impacto quedan en `null`, igual que en R1, y cuenta como `Corregido`. *(punto 13 de la 2ª
@@ -237,6 +242,9 @@ El panel de métricas (solo lectura) muestra:
 - **Tasa de corrección** = `Corregido` / (`Confirmado` + `Corregido`). Es la medida de si la IA
   acierta, y solo cuenta tickets ya revisados. Se muestra también desglosada por categoría: una
   tasa global baja puede esconder una categoría que falla casi siempre. *(A4)*
+- El desglose se agrupa por la **categoría que sugirió la IA**, no por la final: si la IA dice
+  «Equipo de campo averiado» y el operador lo pasa a «Brecha de seguridad activa», el fallo es de
+  «Equipo de campo averiado». *(QA de la Fase 3)*
 
 ### R8. Validación de coherencia de la sugerencia
 

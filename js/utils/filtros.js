@@ -24,12 +24,13 @@ export function ordenarBandeja(tickets) {
   });
 }
 
-// filtros: { estadoTriaje: "pendientes"|"todos", prioridad, sistema, zona, estado }
+// filtros: { estadoTriaje: "pendientes" | "todos" | "Confirmado" | "Corregido",
+//            prioridad, sistema, zona, estado }
 export function filtrarTickets(tickets, filtros = {}) {
+  const estadoTriaje = filtros.estadoTriaje ?? "pendientes";
   return tickets.filter((t) => {
-    if ((filtros.estadoTriaje ?? "pendientes") === "pendientes" && t.estadoTriaje !== ESTADOS_TRIAJE.PENDIENTE) {
-      return false;
-    }
+    if (estadoTriaje === "pendientes" && t.estadoTriaje !== ESTADOS_TRIAJE.PENDIENTE) return false;
+    if (estadoTriaje !== "pendientes" && estadoTriaje !== "todos" && t.estadoTriaje !== estadoTriaje) return false;
     if (filtros.prioridad && t.prioridad !== filtros.prioridad) return false;
     if (filtros.sistema && t.sistema_afectado !== filtros.sistema) return false;
     if (filtros.zona && t.zona !== filtros.zona) return false;
@@ -48,7 +49,10 @@ export function calcularMetricas(tickets) {
   let pendientes = 0;
   let confirmados = 0;
   let corregidos = 0;
-  const revisadosPorCategoria = {}; // categoria -> {confirmados, corregidos}
+  // R7: la tasa por categoría se agrupa por lo que SUGIRIÓ la IA, no por la categoría
+  // final. Si la IA dice "Equipo averiado" y el operador lo pasa a "Brecha", el fallo
+  // es de "Equipo averiado": es lo que el desglose tiene que dejar ver.
+  const revisadosPorCategoria = {}; // categoría sugerida -> {confirmados, corregidos}
 
   for (const t of tickets) {
     if (t.prioridad) porPrioridad[t.prioridad] = (porPrioridad[t.prioridad] ?? 0) + 1;
@@ -59,7 +63,8 @@ export function calcularMetricas(tickets) {
     if (t.estadoTriaje === ESTADOS_TRIAJE.CORREGIDO) corregidos += 1;
 
     if (t.estadoTriaje === ESTADOS_TRIAJE.CONFIRMADO || t.estadoTriaje === ESTADOS_TRIAJE.CORREGIDO) {
-      const bucket = (revisadosPorCategoria[t.categoria] ??= { confirmados: 0, corregidos: 0 });
+      const sugerida = t.sugerenciaEfectiva.categoria;
+      const bucket = (revisadosPorCategoria[sugerida] ??= { confirmados: 0, corregidos: 0 });
       bucket[t.estadoTriaje === ESTADOS_TRIAJE.CONFIRMADO ? "confirmados" : "corregidos"] += 1;
     }
   }

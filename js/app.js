@@ -2,7 +2,7 @@
 // triaje en localStorage y monta la pantalla. Único archivo que hace fetch.
 
 import { CLAVE_TRIAJE, CLAVE_TEMA, ZONAS_CRITICAS, ESTADOS_TRIAJE } from "./utils/constantes.js";
-import { derivarTicket, snapshotDeSugerencia } from "./utils/estado-ticket.js";
+import { derivarTicket, snapshotDeSugerencia, estadoAlGuardar } from "./utils/estado-ticket.js";
 import { ordenarBandeja, filtrarTickets, valoresUnicos, calcularMetricas } from "./utils/filtros.js";
 import { crearFilaTicket } from "./components/fila-ticket.js";
 import { crearBarraFiltros } from "./components/barra-filtros.js";
@@ -129,8 +129,12 @@ function exportar() {
   const enlace = document.createElement("a");
   enlace.href = url;
   enlace.download = `tickets-triaje-${hoy}.json`;
+  // En el documento y revocado después: Firefox cancela la descarga si el enlace
+  // está suelto o si la URL se revoca en el mismo tick del clic.
+  document.body.append(enlace);
   enlace.click();
-  URL.revokeObjectURL(url);
+  enlace.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 0);
 
   estado.triaje._meta = { ...estado.triaje._meta, ultimoExport: new Date().toISOString() };
   guardarTriaje();
@@ -302,8 +306,7 @@ function crearVistaFicha(id, modo) {
       navegar("#/bandeja");
     },
     onGuardar: (valores) => {
-      const cambio = valores.categoria !== ticket.categoria || valores.urgencia !== ticket.urgencia || valores.impacto !== ticket.impacto;
-      guardarConfirmacion(id, { estadoTriaje: cambio ? ESTADOS_TRIAJE.CORREGIDO : ESTADOS_TRIAJE.CONFIRMADO, ...valores });
+      guardarConfirmacion(id, { estadoTriaje: estadoAlGuardar(ticket.sugerenciaEfectiva, valores), ...valores });
       navegar("#/bandeja");
     },
     onCancelar: () => navegar(`#/ticket/${id}`),
@@ -321,16 +324,33 @@ function crearVistaMetricas() {
   return main;
 }
 
-// R6 (punto 11 de la 2ª revisión QA): si data/tickets.json ya trae un `triaje` (el
-// export volvió al repo), es el estado de partida y manda sobre localStorage si el
-// mismo id choca. Los tickets sin `triaje` en el JSON no se tocan.
+// R6 (punto 11 de la 2ª revisión QA): si data/tickets.json trae un `triaje` (el export
+// volvió al repo), es el estado de partida y manda sobre localStorage. Pero solo la
+// primera vez que se ve esa versión: `_meta.sembrados` recuerda la huella de cada
+// triaje ya aplicado, para que lo que el operador haga después (corregir, deshacer)
+// sobreviva a recargar en vez de volver a pisarse con el JSON.
 function sembrarTriajeDesdeJSON() {
-  const desdeJSON = {};
+  const sembrados = { ...estado.triaje._meta?.sembrados };
+  let cambios = false;
   for (const t of estado.tickets) {
-    if (t.triaje) desdeJSON[t.id] = t.triaje;
+    if (!t.triaje) continue;
+    const huella = JSON.stringify(t.triaje);
+    if (sembrados[t.id] === huella) continue;
+    estado.triaje[t.id] = t.triaje;
+    sembrados[t.id] = huella;
+    cambios = true;
   }
-  if (Object.keys(desdeJSON).length === 0) return;
-  estado.triaje = { ...estado.triaje, ...desdeJSON };
+  if (!cambios) return;
+  estado.triaje._meta = { ...estado.triaje._meta, sembrados };
+  guardarTriaje();
+}
+
+// Casos límite: "las confirmaciones de ids que ya no existen se descartan".
+function descartarHuerfanos() {
+  const ids = new Set(estado.tickets.map((t) => t.id));
+  const huerfanos = Object.keys(estado.triaje).filter((id) => id !== "_meta" && !ids.has(id));
+  if (huerfanos.length === 0) return;
+  for (const id of huerfanos) delete estado.triaje[id];
   guardarTriaje();
 }
 
@@ -360,6 +380,7 @@ async function iniciar() {
   }
 
   sembrarTriajeDesdeJSON();
+  descartarHuerfanos();
 
   window.addEventListener("hashchange", render);
   window.addEventListener("beforeunload", (evento) => {

@@ -85,9 +85,13 @@ export function crearPanelMetricas(metricas, totalTickets) {
   porCategoria.className = "panel panel--metrica";
   const tc = document.createElement("div");
   tc.className = "panel__titulo";
-  tc.textContent = "TICKETS POR CATEGORÍA · TASA DE CORRECCIÓN";
+  tc.textContent = "TICKETS POR CATEGORÍA · % CORREGIDO SOBRE LO QUE SUGIRIÓ LA IA";
   porCategoria.append(tc);
-  for (const [categoria, cantidad] of Object.entries(metricas.porCategoria).sort((a, b) => b[1] - a[1])) {
+  // Unión de claves: una categoría puede tener revisiones (por lo que sugirió la IA)
+  // aunque ya no le quede ningún ticket con esa categoría final.
+  const categorias = new Set([...Object.keys(metricas.porCategoria), ...Object.keys(metricas.tasaPorCategoria)]);
+  const filasCategoria = [...categorias].map((c) => [c, metricas.porCategoria[c] ?? 0]).sort((a, b) => b[1] - a[1]);
+  for (const [categoria, cantidad] of filasCategoria) {
     const fila = barra(categoria, cantidad, totalTickets);
     const tasa = document.createElement("div");
     tasa.className = "barra-metrica__tasa";
