@@ -36,23 +36,15 @@ export function snapshotDeSugerencia(sugerencia) {
   return { categoria: sugerencia.categoria, urgencia: sugerencia.urgencia, impacto: sugerencia.impacto };
 }
 
-function snapshotCambio(snapshot, sugerenciaEfectiva) {
-  if (!snapshot) return false;
-  return (
-    snapshot.categoria !== sugerenciaEfectiva.categoria ||
-    snapshot.urgencia !== sugerenciaEfectiva.urgencia ||
-    snapshot.impacto !== sugerenciaEfectiva.impacto
-  );
-}
+const misma = (a, b) => a.categoria === b.categoria && a.urgencia === b.urgencia && a.impacto === b.impacto;
 
 // R6 (puntos 10 y 11 de la 2ª revisión QA): si la sugerencia cambió desde que se
-// confirmó (Claude Code la regeneró), la confirmación guardada se invalida.
+// confirmó (Claude Code la regeneró), la confirmación guardada se invalida. Sin
+// snapshot (triaje sembrado desde el JSON) se da por válida.
 export function derivarTicket(ticketOriginal, triajeGuardado) {
   const sugerenciaEfectiva = sugerenciaEfectivaDe(ticketOriginal);
-  const triajeValido =
-    triajeGuardado && !snapshotCambio(triajeGuardado.sugerenciaSnapshot, sugerenciaEfectiva)
-      ? triajeGuardado
-      : null;
+  const snapshot = triajeGuardado?.sugerenciaSnapshot;
+  const triajeValido = triajeGuardado && (!snapshot || misma(snapshot, sugerenciaEfectiva)) ? triajeGuardado : null;
 
   const estadoTriaje = triajeValido ? triajeValido.estado : ESTADOS_TRIAJE.PENDIENTE;
   const categoria = triajeValido ? triajeValido.categoria : sugerenciaEfectiva.categoria;
@@ -69,8 +61,6 @@ export function derivarTicket(ticketOriginal, triajeGuardado) {
     impacto,
     prioridad: calcularPrioridad(urgencia, impacto),
     esSugerido: !triajeValido, // C2: sin confirmar se pinta atenuado y con "sugerido"
-    motivo: sugerenciaEfectiva.motivo, // R4: el motivo se ve siempre, confirmado o no
-    avisoSugerencia: sugerenciaEfectiva.aviso,
   };
 }
 
@@ -78,9 +68,5 @@ export function derivarTicket(ticketOriginal, triajeGuardado) {
 // valor guardado. Si no, reabrir un Corregido y guardarlo tal cual lo pasaría a
 // Confirmado, y la tasa de corrección diría que la IA acertó cuando no fue así.
 export function estadoAlGuardar(sugerenciaEfectiva, valores) {
-  const igual =
-    valores.categoria === sugerenciaEfectiva.categoria &&
-    valores.urgencia === sugerenciaEfectiva.urgencia &&
-    valores.impacto === sugerenciaEfectiva.impacto;
-  return igual ? ESTADOS_TRIAJE.CONFIRMADO : ESTADOS_TRIAJE.CORREGIDO;
+  return misma(valores, sugerenciaEfectiva) ? ESTADOS_TRIAJE.CONFIRMADO : ESTADOS_TRIAJE.CORREGIDO;
 }

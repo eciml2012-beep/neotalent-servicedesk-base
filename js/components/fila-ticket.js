@@ -1,14 +1,6 @@
 // Una fila de la bandeja. Recibe el ticket ya derivado (utils/estado-ticket.js) por
 // parámetro; no hace fetch ni lee localStorage.
 
-function slug(texto) {
-  return texto
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[̀-ͯ]/g, "")
-    .replace(/\s+/g, "-");
-}
-
 function crearBadge(texto, { sugerido = false, claseTono = "" } = {}) {
   const span = document.createElement("span");
   span.className = `badge ${claseTono} ${sugerido ? "badge--sugerido" : "badge--solido"}`.trim();
@@ -29,15 +21,15 @@ export function crearFilaTicket(ticket, { onAbrir } = {}) {
   id.textContent = ticket.id;
 
   const tituloCol = document.createElement("div");
-  tituloCol.className = "fila-ticket__titulo-col";
   const titulo = document.createElement("div");
   titulo.className = "fila-ticket__titulo";
   titulo.textContent = ticket.titulo;
   const motivo = document.createElement("div");
   // R8 / casos límite: si la sugerencia se descartó, la fila lo dice en vez de
   // enseñar un motivo como si fuera válido.
-  motivo.className = ticket.avisoSugerencia ? "fila-ticket__motivo fila-ticket__motivo--aviso" : "fila-ticket__motivo";
-  motivo.textContent = ticket.avisoSugerencia ? `⚠ ${ticket.avisoSugerencia}: ${ticket.motivo}` : `Motivo IA: ${ticket.motivo}`;
+  const { motivo: texto, aviso } = ticket.sugerenciaEfectiva;
+  motivo.className = aviso ? "fila-ticket__motivo fila-ticket__motivo--aviso" : "fila-ticket__motivo";
+  motivo.textContent = aviso ? `⚠ ${aviso}: ${texto}` : `Motivo IA: ${texto}`;
   tituloCol.append(titulo, motivo);
 
   const categoriaCol = document.createElement("div");
@@ -50,12 +42,7 @@ export function crearFilaTicket(ticket, { onAbrir } = {}) {
 
   const prioridadCol = document.createElement("div");
   if (ticket.prioridad) {
-    prioridadCol.append(
-      crearBadge(ticket.prioridad, {
-        sugerido: ticket.esSugerido,
-        claseTono: `badge--prioridad-${slug(ticket.prioridad)}`,
-      })
-    );
+    prioridadCol.append(crearBadge(ticket.prioridad, { sugerido: ticket.esSugerido }));
   } else {
     const span = document.createElement("span");
     span.className = "fila-ticket__sin-prioridad";
@@ -66,7 +53,7 @@ export function crearFilaTicket(ticket, { onAbrir } = {}) {
   const estadoCol = document.createElement("div");
   estadoCol.className = "fila-ticket__estado-col";
   const estadoBadge = document.createElement("span");
-  estadoBadge.className = `badge badge--estado badge--estado-${slug(ticket.estadoTriaje)}`;
+  estadoBadge.className = ticket.esSugerido ? "badge badge--estado" : "badge badge--estado badge--estado-revisado";
   estadoBadge.textContent = ticket.estadoTriaje;
   estadoCol.append(estadoBadge);
   if (ticket.estado === "cerrado") {

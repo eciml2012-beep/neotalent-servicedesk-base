@@ -321,8 +321,7 @@ a {
   font-size: 12px;
 }
 
-.badge--estado-confirmado,
-.badge--estado-corregido {
+.badge--estado-revisado {
   color: var(--color-accion);
   border-color: var(--color-accion);
 }

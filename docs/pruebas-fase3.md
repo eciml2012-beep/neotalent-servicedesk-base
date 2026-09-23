@@ -67,6 +67,20 @@ Verificado en el navegador (38 comprobaciones, todas bien), incluidos los casos 
 sugerencia inválida llamando a `derivarTicket()` con tickets inventados, porque el dataset real no
 tiene ninguno. `data/tickets.json` quedó intacto (el `triaje` de prueba se añadió y se quitó).
 
+## Recorte de complejidad (ponytail-review, 23/09/2026)
+
+Tras el QA se pasó `ponytail-review` sobre `js/`, `css/` e `index.html` y se aplicaron los recortes
+que no cambian el comportamiento: helpers `leer`/`escribir` para `localStorage`, una sola
+comparación `misma()` para snapshot y Corregido/Confirmado, `Intl.DateTimeFormat` en vez de
+`padStart` a mano, fuera `slug()` y 6 clases sin regla CSS. Neto: **-51 líneas**.
+
+Se dejaron a propósito los guards de `esSugerenciaCoherente` y el nombre `urgenciasPermitidas`:
+sobran para su único llamador de hoy, pero hacen que la validación de R8 se pueda probar sola en
+la Fase 4.
+
+Regresión después del recorte: 24 comprobaciones en el navegador, todas bien, más la purga de ids
+huérfanos. `data/tickets.json` intacto.
+
 ## Qué no se ha probado
 
 - **Vista en pantalla pequeña.** El CSS tiene una media query para ≤900px, pero no se ha mirado

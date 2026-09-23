@@ -52,7 +52,7 @@ function crearCabecera(ticket, { onVolver, extra } = {}) {
 
 function crearPanelDatos(ticket, zonasCriticas) {
   const panel = document.createElement("div");
-  panel.className = "panel panel--datos";
+  panel.className = "panel";
 
   const titulo = document.createElement("div");
   titulo.className = "panel__titulo";
@@ -88,10 +88,11 @@ function crearCajaSugerencia(ticket) {
 
   const cabecera = document.createElement("div");
   cabecera.className = "caja-ia__cabecera";
+  const { aviso } = ticket.sugerenciaEfectiva;
   cabecera.textContent = confirmado
     ? `CLASIFICACIÓN · ${ticket.estadoTriaje}`
-    : ticket.avisoSugerencia
-    ? `SUGERENCIA DE LA IA · ${ticket.avisoSugerencia.toLowerCase()}`
+    : aviso
+    ? `SUGERENCIA DE LA IA · ${aviso.toLowerCase()}`
     : "SUGERENCIA DE LA IA · sin confirmar";
   caja.append(cabecera);
 
@@ -107,7 +108,7 @@ function crearCajaSugerencia(ticket) {
 
   const motivo = document.createElement("div");
   motivo.className = "caja-ia__motivo";
-  motivo.append(fila(ticket.avisoSugerencia ? "Aviso" : "Motivo de la IA", ticket.sugerenciaEfectiva.motivo));
+  motivo.append(fila(aviso ? "Aviso" : "Motivo de la IA", ticket.sugerenciaEfectiva.motivo));
   // Principio 1: tras una corrección, lo que propuso la IA sigue a la vista.
   if (ticket.estadoTriaje === "Corregido") {
     const s = ticket.sugerenciaEfectiva;
@@ -183,7 +184,6 @@ export function crearFichaVer(ticket, zonasCriticas, callbacks) {
 
 function crearSelectCorregir({ etiqueta, valor, opciones, deshabilitado, notaBloqueo, onChange }) {
   const cont = document.createElement("div");
-  cont.className = "campo-corregir";
   const label = document.createElement("label");
   label.className = "dato__etiqueta";
   label.textContent = etiqueta;
@@ -221,16 +221,11 @@ export function crearFichaCorregir(ticket, zonasCriticas, callbacks) {
   chip.textContent = "Modo corregir";
   cont.append(crearCabecera(ticket, { ...callbacks, extra: chip }));
 
+  // Sobre un "Sin clasificar" se parte de la primera categoría real; pintarCampos()
+  // rellena la urgencia y el impacto que le correspondan.
   let categoria = ticket.categoria === SIN_CLASIFICAR ? CATEGORIAS[0] : ticket.categoria;
-  let urgencia = ticket.urgencia ?? null;
-  let impacto = ticket.impacto ?? null;
-  if (ticket.categoria === SIN_CLASIFICAR) {
-    // Al abrir Corregir sobre un Sin clasificar, se parte de la primera categoría
-    // real con una urgencia válida, para que el operador la ajuste desde ahí.
-    const permitidas = urgenciasPermitidas(categoria);
-    urgencia = permitidas ? permitidas[0] : URGENCIAS[1];
-    impacto = zonasCriticas.includes(ticket.zona) ? "Alto" : "Medio";
-  }
+  let urgencia = ticket.urgencia;
+  let impacto = ticket.impacto;
 
   const cuerpo = document.createElement("div");
   cuerpo.className = "ficha__cuerpo";

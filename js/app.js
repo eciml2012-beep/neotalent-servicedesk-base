@@ -31,42 +31,34 @@ function probarLocalStorage() {
   }
 }
 
+// R6: si localStorage no está (incógnito estricto, cuota llena), la app sigue en memoria.
+function leer(clave) {
+  try {
+    return localStorage.getItem(clave);
+  } catch {
+    return null;
+  }
+}
+
+function escribir(clave, valor) {
+  try {
+    localStorage.setItem(clave, valor);
+  } catch {
+    estado.localStorageDisponible = false;
+  }
+}
+
 function cargarTriaje() {
-  if (!estado.localStorageDisponible) return {};
   try {
-    const bruto = localStorage.getItem(CLAVE_TRIAJE);
-    return bruto ? JSON.parse(bruto) : {};
+    return JSON.parse(leer(CLAVE_TRIAJE)) ?? {};
   } catch {
-    return {};
+    return {}; // JSON corrupto: se empieza de cero antes que romper la bandeja
   }
 }
 
-function guardarTriaje() {
-  if (!estado.localStorageDisponible) return;
-  try {
-    localStorage.setItem(CLAVE_TRIAJE, JSON.stringify(estado.triaje));
-  } catch {
-    estado.localStorageDisponible = false;
-  }
-}
-
-function cargarTema() {
-  if (!estado.localStorageDisponible) return "claro";
-  try {
-    return localStorage.getItem(CLAVE_TEMA) === "oscuro" ? "oscuro" : "claro";
-  } catch {
-    return "claro";
-  }
-}
-
-function guardarTema() {
-  if (!estado.localStorageDisponible) return;
-  try {
-    localStorage.setItem(CLAVE_TEMA, estado.tema);
-  } catch {
-    estado.localStorageDisponible = false;
-  }
-}
+const guardarTriaje = () => escribir(CLAVE_TRIAJE, JSON.stringify(estado.triaje));
+const cargarTema = () => (leer(CLAVE_TEMA) === "oscuro" ? "oscuro" : "claro");
+const guardarTema = () => escribir(CLAVE_TEMA, estado.tema);
 
 function aplicarTema() {
   document.documentElement.setAttribute("data-tema", estado.tema);
@@ -174,7 +166,6 @@ function crearRail(vista) {
   marca.append(icono, nombre);
 
   const nav = document.createElement("nav");
-  nav.className = "rail__nav";
   const etiqueta = document.createElement("div");
   etiqueta.className = "rail__nav-etiqueta";
   etiqueta.textContent = "TRIAJE";

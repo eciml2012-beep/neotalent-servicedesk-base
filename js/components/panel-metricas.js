@@ -3,7 +3,7 @@
 
 function tarjetaKpi(titulo, valor, nota) {
   const div = document.createElement("div");
-  div.className = "panel panel--kpi";
+  div.className = "panel";
   const t = document.createElement("div");
   t.className = "panel__titulo";
   t.textContent = titulo;
@@ -24,7 +24,6 @@ function barra(etiqueta, valor, total) {
   const fila = document.createElement("div");
   fila.className = "barra-metrica";
   const label = document.createElement("div");
-  label.className = "barra-metrica__etiqueta";
   label.textContent = etiqueta;
   const pista = document.createElement("div");
   pista.className = "barra-metrica__pista";
