@@ -26,15 +26,15 @@ Los datos son inventados de cero — cero relación con clientes reales.
 
 ```
 /
-├── index.html       → placeholder, se construye en la Fase 3
+├── index.html       → punto de entrada: <div id="app"> + js/app.js como módulo
 ├── css/
-│   └── styles.css   → placeholder
+│   └── styles.css   → piel KirriDesk, variables de tema claro/oscuro
 ├── js/
-│   ├── app.js       → placeholder, orquesta la carga y el pintado
-│   ├── components/  → piezas de UI reutilizables (placeholder)
-│   └── utils/       → funciones auxiliares sin estado (placeholder)
+│   ├── app.js       → orquesta la carga, el estado y el pintado
+│   ├── components/  → fila-ticket, ficha-ticket, barra-filtros, panel-metricas
+│   └── utils/       → prioridad, estado-ticket, filtros, formato, constantes
 ├── data/
-│   └── tickets.json → 60 tickets, sin `sugerencia` todavía (Fase 3)
+│   └── tickets.json → 60 tickets con `sugerencia` (categoría, urgencia, impacto, motivo)
 ├── docs/
 │   ├── constitution.md       → Fase 1, seis principios no negociables
 │   ├── spec.md               → Fase 1, requisitos R1–R8
@@ -57,8 +57,8 @@ Los datos son inventados de cero — cero relación con clientes reales.
 | `js/` | Lógica de la interfaz | `app.js` — cargar tickets, filtrar, mostrar ficha, disparar la clasificación con Claude Code | Lee `data/tickets.json`; escribe en el DOM que define `index.html` |
 | `js/components/` | Piezas de interfaz reutilizables | Fila de ticket, ficha de detalle, filtro — cada una en su propio archivo | Las usa `app.js` para montar la pantalla; no acceden a `data/tickets.json` directamente |
 | `js/utils/` | Funciones auxiliares sin estado | Filtrar, formatear fecha, agrupar por zona/sistema, matriz de prioridad | Las usan `app.js` y `components/`; no tocan el DOM |
-| `data/` | El dataset del proyecto | `tickets.json` — las incidencias sintéticas; la Fase 3 añade `sugerencia` a cada una | Lo consume `js/app.js` en el navegador, y Claude Code directamente cuando clasifica los tickets |
-| `docs/` | Los entregables de las Fases 1 y 2 de la Sesión 3 | `constitution.md`, `spec.md`, `diseno.md`, `categorias-triaje.md`, las dos revisiones QA, el registro del proceso y los wireframes de flujo | `spec.md` es la entrada de la Fase 3 (Desarrollo, lo que construye `index.html`/`css`/`js`); `diseno.md` es la salida de la Fase 2 a partir de ese mismo spec; las revisiones QA y el registro de proceso son trazabilidad, no normativa nueva |
+| `data/` | El dataset del proyecto | `tickets.json` — las incidencias sintéticas, cada una con su `sugerencia` (categoría, urgencia, impacto, motivo) | Lo consume `js/app.js` en el navegador; lo escribió Claude Code directamente al clasificar los tickets |
+| `docs/` | Los entregables de las Fases 1 y 2 de la Sesión 3 | `constitution.md`, `spec.md`, `diseno.md`, `categorias-triaje.md`, las dos revisiones QA, el registro del proceso y los wireframes de flujo | `spec.md` fue la entrada de la Fase 3 (Desarrollo: `index.html`/`css`/`js`); `diseno.md` fue la salida de la Fase 2 a partir de ese mismo spec; las revisiones QA y el registro de proceso son trazabilidad, no normativa nueva |
 | `assets/referencias/` | Evidencia visual de la Fase 2 | Capturas comparadas con 6 criterios de diseño; la elegida es KirriDesk | La usa `docs/diseno.md` para justificar el estilo |
 | `deep-research/` | Evidencia previa a la constitución y al spec | Los informes de investigación con las afirmaciones verificadas | Consúltalo solo si necesitas la fuente de una decisión |
 | `README.md` | Qué es el proyecto y cómo empezar | Brief del proyecto, esta misma tabla | Es lo primero que lee cualquiera al abrir el repo — humano o Claude Code |

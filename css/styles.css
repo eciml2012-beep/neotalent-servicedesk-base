@@ -1,13 +1,645 @@
-/* Estilos de la interfaz — se construyen en la Sesión 3, Fase 3 (Desarrollo).
-   De momento solo el mínimo para que el placeholder de index.html se lea bien. */
+/* Mini Service Desk — piel KirriDesk sobre la paleta de la Fase 2 (docs/diseno.md).
+   Sin fuentes externas: pila del sistema (principio 6, constitución). */
 
-body {
-  font-family: system-ui, sans-serif;
-  max-width: 640px;
-  margin: 4rem auto;
-  color: #1a1a2e;
+:root {
+  --color-fondo: #f4f3ef;
+  --color-panel: #fdfcfa;
+  --color-borde: #d8d5ce;
+  --color-texto: #2e2c28;
+  --color-texto-tenue: #726f67;
+  --color-accion: #1f6f6b;
+  --color-accion-texto: #ffffff;
+  --color-abierto: #a5601a;
+  --color-brecha: #8a2f1e;
+  --radio: 10px;
 }
 
-.estado {
-  color: #6b6b80;
+:root[data-tema="oscuro"] {
+  --color-fondo: #16202b;
+  --color-panel: #1e2a38;
+  --color-borde: #34424f;
+  --color-texto: #e8e6e1;
+  --color-texto-tenue: #9aa7b0;
+  --color-accion: #59b7b0;
+  --color-accion-texto: #0f2422;
+  --color-abierto: #dc9a52;
+  --color-brecha: #e2745f;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  height: 100%;
+}
+
+body {
+  background: var(--color-fondo);
+  color: var(--color-texto);
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+button,
+select {
+  font-family: inherit;
+}
+
+a {
+  color: inherit;
+}
+
+.app {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* --- Rail de navegación ------------------------------------------------ */
+
+.rail {
+  width: 230px;
+  flex: none;
+  background: var(--color-panel);
+  border-right: 1px solid var(--color-borde);
+  padding: 24px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.rail__marca {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.rail__icono {
+  width: 34px;
+  height: 34px;
+  border: 1px solid var(--color-borde);
+  border-radius: 7px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  color: var(--color-texto-tenue);
+}
+
+.rail__nombre {
+  font-weight: 600;
+}
+
+.rail__nav-etiqueta {
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-texto-tenue);
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.rail__enlace {
+  display: flex;
+  align-items: center;
+  height: 40px;
+  padding: 0 12px;
+  border-radius: 7px;
+  color: var(--color-texto-tenue);
+  text-decoration: none;
+  font-size: 15px;
+}
+
+.rail__enlace[aria-current] {
+  background: var(--color-fondo);
+  color: var(--color-texto);
+  font-weight: 600;
+}
+
+.rail__tema {
+  margin-top: auto;
+  height: 40px;
+  border: 1px solid var(--color-borde);
+  border-radius: 7px;
+  background: none;
+  color: var(--color-texto-tenue);
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.rail__aviso {
+  font-size: 12px;
+  color: var(--color-brecha);
+  margin: 0;
+}
+
+/* --- Contenido principal ------------------------------------------------ */
+
+.main {
+  flex: 1;
+  min-width: 0;
+  padding: 28px 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  overflow-y: auto;
+}
+
+.main--ficha {
+  padding: 0;
+}
+
+.cabecera {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.cabecera__fila {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.cabecera__titulo {
+  font-size: 26px;
+  margin: 0;
+}
+
+.cabecera__conteo {
+  color: var(--color-texto-tenue);
+  font-size: 13px;
+}
+
+.cabecera__aviso {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-brecha);
+}
+
+.cabecera__nota {
+  font-size: 13px;
+  color: var(--color-texto-tenue);
+}
+
+.cabecera__exportar {
+  margin-left: auto;
+}
+
+.barra-filtros {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.barra-filtros__label {
+  font-size: 13px;
+  color: var(--color-texto-tenue);
+}
+
+.filtro-select {
+  height: 36px;
+  border: 1px solid var(--color-borde);
+  border-radius: 7px;
+  background: var(--color-panel);
+  color: var(--color-texto);
+  padding: 0 10px;
+  font-size: 13px;
+}
+
+/* --- Lista de tickets ---------------------------------------------------- */
+
+.lista-tickets {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.lista-tickets__vacio {
+  color: var(--color-texto-tenue);
+}
+
+.fila-ticket {
+  display: grid;
+  grid-template-columns: 120px 1fr 220px 160px 150px;
+  gap: 16px;
+  align-items: center;
+  text-align: left;
+  width: 100%;
+  background: var(--color-panel);
+  border: 1px solid var(--color-borde);
+  border-radius: 9px;
+  padding: 16px 18px;
+  color: inherit;
+  font-size: inherit;
+  cursor: pointer;
+}
+
+.fila-ticket:hover {
+  border-color: var(--color-accion);
+}
+
+.fila-ticket__id {
+  font-family: ui-monospace, "Cascadia Mono", Consolas, monospace;
+}
+
+.fila-ticket__titulo {
+  font-weight: 600;
+}
+
+.fila-ticket__motivo {
+  font-size: 13px;
+  color: var(--color-texto-tenue);
+  margin-top: 5px;
+}
+
+.fila-ticket__sin-prioridad {
+  font-size: 13px;
+  color: var(--color-texto-tenue);
+  font-style: italic;
+}
+
+.fila-ticket__estado-col {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.fila-ticket__cerrado {
+  font-size: 11px;
+  color: var(--color-texto-tenue);
+  border: 1px solid var(--color-borde);
+  border-radius: 4px;
+  padding: 1px 6px;
+}
+
+/* --- Insignias ------------------------------------------------------------ */
+
+.badge {
+  display: inline-block;
+  border: 1px solid var(--color-borde);
+  border-radius: 6px;
+  padding: 5px 10px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.badge--solido {
+  background: var(--color-fondo);
+}
+
+.badge--sugerido {
+  background: transparent;
+  border-style: dashed;
+  color: var(--color-texto-tenue);
+  font-weight: 500;
+}
+
+.badge--brecha {
+  border-color: var(--color-brecha);
+  color: var(--color-brecha);
+}
+
+.badge--estado {
+  font-size: 12px;
+}
+
+.badge--estado-confirmado,
+.badge--estado-corregido {
+  color: var(--color-accion);
+  border-color: var(--color-accion);
+}
+
+/* --- Paneles genéricos ----------------------------------------------------- */
+
+.panel {
+  background: var(--color-panel);
+  border: 1px solid var(--color-borde);
+  border-radius: var(--radio);
+  padding: 22px;
+}
+
+.panel__titulo {
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-texto-tenue);
+  font-weight: 700;
+}
+
+.panel__cuerpo {
+  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.panel__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-top: 12px;
+}
+
+.dato__etiqueta {
+  font-size: 12px;
+  color: var(--color-texto-tenue);
+}
+
+.dato__valor {
+  font-size: 15px;
+  margin-top: 4px;
+}
+
+/* --- Ficha del ticket -------------------------------------------------- */
+
+.ficha {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+}
+
+.ficha__cabecera {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 18px 32px;
+  border-bottom: 1px solid var(--color-borde);
+  background: var(--color-panel);
+}
+
+.ficha__id {
+  font-family: ui-monospace, "Cascadia Mono", Consolas, monospace;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.ficha__titulo {
+  font-size: 18px;
+}
+
+.ficha__estado-ticket,
+.ficha__chip-modo {
+  margin-left: auto;
+  font-size: 13px;
+  color: var(--color-texto-tenue);
+  border: 1px solid var(--color-borde);
+  border-radius: 6px;
+  padding: 4px 12px;
+}
+
+.ficha__cuerpo {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 26px;
+  padding: 28px 32px;
+}
+
+.ficha__columna {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.ficha__acciones {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.ficha__acciones-nota {
+  margin-left: auto;
+  font-size: 12px;
+  color: var(--color-texto-tenue);
+  max-width: 240px;
+  text-align: right;
+}
+
+.caja-ia {
+  flex: 1;
+  border-radius: var(--radio);
+  padding: 24px;
+}
+
+.caja-ia--pendiente {
+  border: 2px dashed var(--color-borde);
+  background: var(--color-fondo);
+}
+
+.caja-ia--confirmada {
+  border: 1px solid var(--color-accion);
+  background: var(--color-panel);
+}
+
+.caja-ia__cabecera {
+  font-size: 13px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-texto-tenue);
+  font-weight: 700;
+}
+
+.caja-ia__motivo {
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid var(--color-borde);
+}
+
+.caja-ia__nota {
+  margin-top: 16px;
+  font-size: 12px;
+  color: var(--color-texto-tenue);
+}
+
+.caja-corregir {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  border: 2px solid var(--color-borde);
+  border-radius: var(--radio);
+  background: var(--color-panel);
+  padding: 24px;
+}
+
+.caja-corregir__campos {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.caja-corregir__prioridad {
+  padding-top: 14px;
+  border-top: 1px solid var(--color-borde);
+  font-weight: 600;
+}
+
+.campo-corregir__nota {
+  font-size: 12px;
+  color: var(--color-texto-tenue);
+  margin-top: 6px;
+}
+
+.select-corregir {
+  display: block;
+  margin-top: 6px;
+  width: 100%;
+  height: 44px;
+  border: 1.5px solid var(--color-borde);
+  border-radius: 8px;
+  background: var(--color-fondo);
+  color: var(--color-texto);
+  padding: 0 12px;
+  font-size: 15px;
+}
+
+/* --- Botones ------------------------------------------------------------- */
+
+.boton {
+  height: 44px;
+  padding: 0 22px;
+  border-radius: 9px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1.5px solid transparent;
+}
+
+.boton--primario {
+  background: var(--color-accion);
+  border-color: var(--color-accion);
+  color: var(--color-accion-texto);
+}
+
+.boton--secundario {
+  background: transparent;
+  border-color: var(--color-texto-tenue);
+  color: var(--color-texto);
+}
+
+.boton--fantasma {
+  background: transparent;
+  border-color: var(--color-borde);
+  color: var(--color-texto-tenue);
+}
+
+.boton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* --- Métricas -------------------------------------------------------------- */
+
+.metricas {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.metricas__cabecera {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.metricas__titulo {
+  font-size: 26px;
+  font-weight: 700;
+}
+
+.metricas__solo-lectura {
+  font-size: 13px;
+  color: var(--color-texto-tenue);
+}
+
+.metricas__kpis {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 22px;
+}
+
+.kpi__valor {
+  font-size: 40px;
+  font-weight: 700;
+  margin-top: 6px;
+}
+
+.kpi__nota {
+  font-size: 13px;
+  color: var(--color-texto-tenue);
+}
+
+.metricas__filas {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 22px;
+}
+
+.panel--metrica {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.barra-metrica {
+  display: grid;
+  grid-template-columns: 170px 1fr 30px 50px;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+}
+
+.barra-metrica__pista {
+  height: 16px;
+  border: 1px solid var(--color-borde);
+  border-radius: 4px;
+  background: var(--color-fondo);
+  overflow: hidden;
+}
+
+.barra-metrica__relleno {
+  height: 100%;
+  background: var(--color-accion);
+}
+
+.barra-metrica__numero {
+  text-align: right;
+}
+
+.barra-metrica__tasa {
+  text-align: right;
+  color: var(--color-texto-tenue);
+}
+
+@media (max-width: 900px) {
+  .app {
+    flex-direction: column;
+  }
+
+  .rail {
+    width: auto;
+    flex-direction: row;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .rail__tema {
+    margin-left: auto;
+    margin-top: 0;
+  }
+
+  .fila-ticket,
+  .ficha__cuerpo,
+  .panel__grid,
+  .metricas__kpis,
+  .metricas__filas {
+    grid-template-columns: 1fr;
+  }
 }

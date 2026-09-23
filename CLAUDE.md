@@ -15,14 +15,18 @@ busca antes una referencia y compárala con los 6 criterios de `assets/referenci
 
 ## Estado actual
 
-**Sesión 3 — Fases 1 y 2 terminadas, Fase 3 (desarrollo) sin empezar.**
+**Sesión 3 — Fases 1, 2 y 3 terminadas.**
 
 - `docs/constitution.md`, `docs/spec.md` y `docs/diseno.md` están escritos.
-- `index.html`, `css/styles.css` y `js/app.js` siguen siendo **placeholders**: solo comprueban
-  que `data/tickets.json` carga.
-- `js/components/` y `js/utils/` solo tienen un README.
-- `data/tickets.json` **todavía no tiene** el objeto `sugerencia`. Escribirlo es la primera
-  tarea de la Fase 3.
+- `data/tickets.json` tiene los 60 tickets con `sugerencia` (categoria, urgencia, impacto,
+  motivo), clasificados por Claude Code sobre `docs/categorias-triaje.md` y R2/R8 del spec.
+- `index.html`, `css/styles.css` y `js/app.js` implementan la bandeja, la ficha (ver/corregir),
+  el panel de métricas, `localStorage` y la exportación, siguiendo `docs/wireframes-fase3/`.
+- `js/components/` y `js/utils/` tienen las piezas reales: `fila-ticket.js`, `ficha-ticket.js`,
+  `barra-filtros.js`, `panel-metricas.js`; `prioridad.js`, `estado-ticket.js`, `filtros.js`,
+  `formato.js`, `constantes.js`.
+- Probado a mano en `python -m http.server 8000`: aceptar, corregir (con el bloqueo de urgencia
+  de R8), deshacer, exportar, cambio de tema y los 9 criterios de finalización de `spec.md`.
 
 Cuando termine una fase, actualiza esta sección y, si cambió la estructura, la tabla del
 `README.md`.
@@ -201,5 +205,5 @@ Trampas al implementar, todas trazadas a una decisión:
 | Sesión | Fase | Estado |
 |---|---|---|
 | 2 | Fork del repo, Project en Claude y este `CLAUDE.md` | ✅ |
-| 3 | Fase 1 Spec, Fase 2 Diseño con Artifacts, Fase 3 Desarrollo | Fases 1-2 ✅, Fase 3 pendiente |
+| 3 | Fase 1 Spec, Fase 2 Diseño con Artifacts, Fase 3 Desarrollo | ✅ |
 | 4 | Fase 4 Tests y validación del dataset, Fase 5 Despliegue, Fase 6 Automatización del triaje en n8n | Pendiente |

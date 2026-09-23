@@ -7,7 +7,13 @@
     "reportado_por": "Jefe de turno",
     "zona": "Acceso peatonal Este",
     "fecha": "2026-09-02",
-    "estado": "cerrado"
+    "estado": "cerrado",
+    "sugerencia": {
+      "categoria": "Petición de acceso",
+      "urgencia": "Baja",
+      "impacto": "Bajo",
+      "motivo": "Es el alta de acceso de un guardia nuevo en Acceso peatonal Este: afecta a una persona y es trabajo planificable, sin nada averiado ni desprotegido."
+    }
   },
   {
     "id": "SVD-4101",
@@ -17,7 +23,13 @@
     "reportado_por": "Jefe de turno",
     "zona": "Almacén Norte",
     "fecha": "2026-09-11",
-    "estado": "abierto"
+    "estado": "abierto",
+    "sugerencia": {
+      "categoria": "Fallo de integración entre sistemas",
+      "urgencia": "Media",
+      "impacto": "Medio",
+      "motivo": "El cuadrante de Almacén Norte no se ha sincronizado con la centralita de guardia y quedan guardias sin asignar: es un fallo del enlace entre sistemas, no un equipo roto."
+    }
   },
   {
     "id": "SVD-4102",
@@ -27,7 +39,13 @@
     "reportado_por": "Guardia de seguridad",
     "zona": "Perímetro exterior",
     "fecha": "2026-09-04",
-    "estado": "abierto"
+    "estado": "abierto",
+    "sugerencia": {
+      "categoria": "Brecha de seguridad activa",
+      "urgencia": "Alta",
+      "impacto": "Alto",
+      "motivo": "La alarma perimetral de Perímetro exterior quedó desactivada tras un mantenimiento: la zona está sin vigilancia de alarma ahora mismo."
+    }
   },
   {
     "id": "SVD-4103",
@@ -37,7 +55,13 @@
     "reportado_por": "Recepción cliente",
     "zona": "Oficinas centrales",
     "fecha": "2026-09-03",
-    "estado": "abierto"
+    "estado": "abierto",
+    "sugerencia": {
+      "categoria": "Pérdida de registro o evidencia",
+      "urgencia": "Media",
+      "impacto": "Bajo",
+      "motivo": "El mismo guardia aparece fichado en dos puestos a la misma hora en Oficinas centrales: es un registro duplicado de una persona, no deja la zona sin vigilar."
+    }
   },
   {
     "id": "SVD-4104",
@@ -47,7 +71,13 @@
     "reportado_por": "Administración",
     "zona": "Perímetro exterior",
     "fecha": "2026-09-03",
-    "estado": "abierto"
+    "estado": "abierto",
+    "sugerencia": {
+      "categoria": "Equipo de campo averiado",
+      "urgencia": "Media",
+      "impacto": "Alto",
+      "motivo": "El lector biométrico de Perímetro exterior tarda más de 10 segundos en validar: el equipo responde mal y degrada el acceso, pero no lo deja sin control."
+    }
   },
   {
     "id": "SVD-4105",
@@ -57,7 +87,13 @@
     "reportado_por": "Técnico de mantenimiento",
     "zona": "Perímetro exterior",
     "fecha": "2026-09-02",
-    "estado": "abierto"
+    "estado": "abierto",
+    "sugerencia": {
+      "categoria": "Pérdida de registro o evidencia",
+      "urgencia": "Media",
+      "impacto": "Alto",
+      "motivo": "La app de rondas no registró un checkpoint de la ronda nocturna en Perímetro exterior: es un hueco en el registro de la ronda, no una zona que quede sin vigilar."
+    }
   },
   {
     "id": "SVD-4106",
@@ -67,7 +103,13 @@
     "reportado_por": "Jefe de turno",
     "zona": "Perímetro exterior",
     "fecha": "2026-09-08",
-    "estado": "cerrado"
+    "estado": "cerrado",
+    "sugerencia": {
+      "categoria": "Petición de información",
+      "urgencia": "Baja",
+      "impacto": "Alto",
+      "motivo": "Se piden datos de acceso ya existentes de Perímetro exterior para una auditoría: no hay incidencia que atender, es extraer y entregar un histórico."
+    }
   },
   {
     "id": "SVD-4107",
@@ -77,7 +119,13 @@
     "reportado_por": "Recepción cliente",
     "zona": "Sala de servidores",
     "fecha": "2026-09-06",
-    "estado": "abierto"
+    "estado": "abierto",
+    "sugerencia": {
+      "categoria": "Petición de acceso",
+      "urgencia": "Baja",
+      "impacto": "Bajo",
+      "motivo": "Es un alta temporal para un proveedor externo en Sala de servidores, que caduca en 19 días: afecta a una persona concreta y es trabajo planificable con fecha."
+    }
   },
   {
     "id": "SVD-4108",
@@ -87,7 +135,13 @@
     "reportado_por": "Guardia de seguridad",
     "zona": "Edificio B, planta 3",
     "fecha": "2026-09-10",
-    "estado": "abierto"
+    "estado": "abierto",
+    "sugerencia": {
+      "categoria": "Brecha de seguridad activa",
+      "urgencia": "Alta",
+      "impacto": "Medio",
+      "motivo": "La puerta de emergencia de Edificio B, planta 3 quedó abierta y el sensor no lanzó alarma: la zona está sin control de acceso ahora mismo."
+    }
   },
   {
     "id": "SVD-4109",
@@ -97,7 +151,13 @@
     "reportado_por": "Administración",
     "zona": "Oficinas centrales",
     "fecha": "2026-09-08",
-    "estado": "abierto"
+    "estado": "abierto",
+    "sugerencia": {
+      "categoria": "Falsa alarma recurrente",
+      "urgencia": "Media",
+      "impacto": "Medio",
+      "motivo": "La alarma de Oficinas centrales salta de noche sin movimiento registrado en cámaras: no hay riesgo real, es ruido que degrada el servicio de vigilancia."
+    }
   },
   {
     "id": "SVD-4110",
@@ -107,7 +167,13 @@
     "reportado_por": "Coordinador de zona",
     "zona": "Perímetro exterior",
     "fecha": "2026-09-07",
-    "estado": "abierto"
+    "estado": "abierto",
+    "sugerencia": {
+      "categoria": "Equipo de campo averiado",
+      "urgencia": "Media",
+      "impacto": "Alto",
+      "motivo": "El lector de tarjetas de Perímetro exterior no reconoce ninguna credencial desde esta mañana: el equipo falla, aunque el texto no dice que la puerta quede abierta o sin control."
+    }
   },
   {
     "id": "SVD-4111",
@@ -117,7 +183,13 @@
     "reportado_por": "Recepción cliente",
     "zona": "Sala de servidores",
     "fecha": "2026-09-01",
-    "estado": "abierto"
+    "estado": "abierto",
+    "sugerencia": {
+      "categoria": "Pérdida de registro o evidencia",
+      "urgencia": "Media",
+      "impacto": "Alto",
+      "motivo": "La grabación de la cámara se corta cada noche a la misma hora en Sala de servidores: es una pérdida de grabación ya ocurrida y repetida, no dice que ahora mismo la zona esté sin cobertura."
+    }
   },
   {
     "id": "SVD-4112",
@@ -127,7 +199,13 @@
     "reportado_por": "Técnico de mantenimiento",
     "zona": "Oficinas centrales",
     "fecha": "2026-09-12",
-    "estado": "abierto"
+    "estado": "abierto",
+    "sugerencia": {
+      "categoria": "Fallo de integración entre sistemas",
+      "urgencia": "Media",
+      "impacto": "Medio",
+      "motivo": "El interfono de Oficinas centrales no llega a la centralita de guardia desde el cambio de turno: falla el enlace entre dos sistemas, no hay un equipo roto en sitio."
+    }
   },
   {
     "id": "SVD-4113",
@@ -137,7 +215,13 @@
     "reportado_por": "Recepción cliente",
     "zona": "Perímetro exterior",
     "fecha": "2026-09-02",
-    "estado": "abierto"
+    "estado": "abierto",
+    "sugerencia": {
+      "categoria": "Sin clasificar",
+      "urgencia": null,
+      "impacto": null,
+      "motivo": "La cámara de Perímetro exterior lleva 19 días sin grabar y solo muestra pantalla en negro: el texto no permite decidir si el equipo está averiado o si solo ha dejado de guardar; requiere comprobación en sitio."
+    }
   },
   {
     "id": "SVD-4114",
@@ -147,7 +231,13 @@
     "reportado_por": "Guardia de seguridad",
     "zona": "Muelle de carga",
     "fecha": "2026-09-12",
-    "estado": "abierto"
+    "estado": "abierto",
+    "sugerencia": {
+      "categoria": "Brecha de seguridad activa",
+      "urgencia": "Alta",
+      "impacto": "Medio",
+      "motivo": "Se dio de baja a un empleado hace 3 días y su tarjeta de acceso a Muelle de carga sigue activa: el permiso sin revocar deja la zona expuesta a quien la use."
+    }
   },
   {
     "id": "SVD-4115",
@@ -157,7 +247,13 @@
     "reportado_por": "Técnico de mantenimiento",
     "zona": "Torre de control",
     "fecha": "2026-09-12",
-    "estado": "cerrado"
+    "estado": "cerrado",
+    "sugerencia": {
+      "categoria": "Petición de acceso",
+      "urgencia": "Baja",
+      "impacto": "Bajo",
+      "motivo": "Es el alta de acceso de un guardia nuevo en Torre de control: afecta a una persona y es trabajo planificable, sin nada averiado ni desprotegido."
+    }
   },
   {
     "id": "SVD-4116",
@@ -167,7 +263,13 @@
     "reportado_por": "Recepción cliente",
     "zona": "Torre de control",
     "fecha": "2026-09-06",
-    "estado": "abierto"
+    "estado": "abierto",
+    "sugerencia": {
+      "categoria": "Fallo de integración entre sistemas",
+      "urgencia": "Media",
+      "impacto": "Alto",
+      "motivo": "El cuadrante de Torre de control no se ha sincronizado con la centralita de guardia y quedan guardias sin asignar: es un fallo del enlace entre sistemas, no un equipo roto."
+    }
   },
   {
     "id": "SVD-4117",
@@ -177,7 +279,13 @@
     "reportado_por": "Guardia de seguridad",
     "zona": "Perímetro exterior",
     "fecha": "2026-09-04",
-    "estado": "abierto"
+    "estado": "abierto",
+    "sugerencia": {
+      "categoria": "Brecha de seguridad activa",
+      "urgencia": "Alta",
+      "impacto": "Alto",
+      "motivo": "La alarma perimetral de Perímetro exterior quedó desactivada tras un mantenimiento: la zona está sin vigilancia de alarma ahora mismo."
+    }
   },
   {
     "id": "SVD-4118",
@@ -187,7 +295,13 @@
     "reportado_por": "Recepción cliente",
     "zona": "Aparcamiento -1",
     "fecha": "2026-09-07",
-    "estado": "cerrado"
+    "estado": "cerrado",
+    "sugerencia": {
+      "categoria": "Pérdida de registro o evidencia",
+      "urgencia": "Media",
+      "impacto": "Bajo",
+      "motivo": "El mismo guardia aparece fichado en dos puestos a la misma hora en Aparcamiento -1: es un registro duplicado de una persona, no deja la zona sin vigilar."
+    }
   },
   {
     "id": "SVD-4119",
@@ -197,7 +311,13 @@
     "reportado_por": "Recepción cliente",
     "zona": "Recepción Principal",
     "fecha": "2026-09-09",
-    "estado": "abierto"
+    "estado": "abierto",
+    "sugerencia": {
+      "categoria": "Equipo de campo averiado",
+      "urgencia": "Media",
+      "impacto": "Medio",
+      "motivo": "El lector biométrico de Recepción Principal tarda más de 10 segundos en validar: el equipo responde mal y degrada el acceso, pero no lo deja sin control."
+    }
   },
   {
     "id": "SVD-4120",
@@ -207,7 +327,13 @@
     "reportado_por": "Técnico de mantenimiento",
     "zona": "Aparcamiento -1",
     "fecha": "2026-09-12",
-    "estado": "cerrado"
+    "estado": "cerrado",
+    "sugerencia": {
+      "categoria": "Pérdida de registro o evidencia",
+      "urgencia": "Media",
+      "impacto": "Medio",
+      "motivo": "La app de rondas no registró un checkpoint de la ronda nocturna en Aparcamiento -1: es un hueco en el registro de la ronda, no una zona que quede sin vigilar."
+    }
   },
   {
     "id": "SVD-4121",
@@ -217,7 +343,13 @@
     "reportado_por": "Jefe de turno",
     "zona": "Sala de servidores",
     "fecha": "2026-09-03",
-    "estado": "abierto"
+    "estado": "abierto",
+    "sugerencia": {
+      "categoria": "Petición de información",
+      "urgencia": "Baja",
+      "impacto": "Alto",
+      "motivo": "Se piden datos de acceso ya existentes de Sala de servidores para una auditoría: no hay incidencia que atender, es extraer y entregar un histórico."
+    }
   },
   {
     "id": "SVD-4122",
@@ -227,7 +359,13 @@
     "reportado_por": "Administración",
     "zona": "Aparcamiento -1",
     "fecha": "2026-09-04",
-    "estado": "abierto"
+    "estado": "abierto",
+    "sugerencia": {
+      "categoria": "Petición de acceso",
+      "urgencia": "Baja",
+      "impacto": "Bajo",
+      "motivo": "Es un alta temporal para un proveedor externo en Aparcamiento -1, que caduca en 8 días: afecta a una persona concreta y es trabajo planificable con fecha."
+    }
   },
   {
     "id": "SVD-4123",
@@ -237,7 +375,13 @@
     "reportado_por": "Técnico de mantenimiento",
     "zona": "Nave logística 2",
     "fecha": "2026-09-05",
-    "estado": "abierto"
+    "estado": "abierto",
+    "sugerencia": {
+      "categoria": "Brecha de seguridad activa",
+      "urgencia": "Alta",
+      "impacto": "Medio",
+      "motivo": "La puerta de emergencia de Nave logística 2 quedó abierta y el sensor no lanzó alarma: la zona está sin control de acceso ahora mismo."
+    }
   },
   {
     "id": "SVD-4124",
@@ -247,7 +391,13 @@
     "reportado_por": "Técnico de mantenimiento",
     "zona": "Aparcamiento -1",
     "fecha": "2026-09-10",
-    "estado": "abierto"
+    "estado": "abierto",
+    "sugerencia": {
+      "categoria": "Falsa alarma recurrente",
+      "urgencia": "Media",
+      "impacto": "Medio",
+      "motivo": "La alarma de Aparcamiento -1 salta de noche sin movimiento registrado en cámaras: no hay riesgo real, es ruido que degrada el servicio de vigilancia."
+    }
   },
   {
     "id": "SVD-4125",
@@ -257,7 +407,13 @@
     "reportado_por": "Coordinador de zona",
     "zona": "Aparcamiento -1",
     "fecha": "2026-09-11",
-    "estado": "abierto"
+    "estado": "abierto",
+    "sugerencia": {
+      "categoria": "Equipo de campo averiado",
+      "urgencia": "Media",
+      "impacto": "Medio",
+      "motivo": "El lector de tarjetas de Aparcamiento -1 no reconoce ninguna credencial desde esta mañana: el equipo falla, aunque el texto no dice que la puerta quede abierta o sin control."
+    }
   },
   {
     "id": "SVD-4126",
@@ -267,7 +423,13 @@
     "reportado_por": "Recepción cliente",
     "zona": "Nave logística 2",
     "fecha": "2026-09-07",
-    "estado": "cerrado"
+    "estado": "cerrado",
+    "sugerencia": {
+      "categoria": "Pérdida de registro o evidencia",
+      "urgencia": "Media",
+      "impacto": "Medio",
+      "motivo": "La grabación de la cámara se corta cada noche a la misma hora en Nave logística 2: es una pérdida de grabación ya ocurrida y repetida, no dice que ahora mismo la zona esté sin cobertura."
+    }
   },
   {
     "id": "SVD-4127",
@@ -277,7 +439,13 @@
     "reportado_por": "Administración",
     "zona": "Acceso peatonal Este",
     "fecha": "2026-09-07",
-    "estado": "abierto"
+    "estado": "abierto",
+    "sugerencia": {
+      "categoria": "Fallo de integración entre sistemas",
+      "urgencia": "Media",
+      "impacto": "Medio",
+      "motivo": "El interfono de Acceso peatonal Este no llega a la centralita de guardia desde el cambio de turno: falla el enlace entre dos sistemas, no hay un equipo roto en sitio."
+    }
   },
   {
     "id": "SVD-4128",
@@ -287,7 +455,13 @@
     "reportado_por": "Recepción cliente",
     "zona": "Edificio B, planta 3",
     "fecha": "2026-09-03",
-    "estado": "abierto"
+    "estado": "abierto",
+    "sugerencia": {
+      "categoria": "Sin clasificar",
+      "urgencia": null,
+      "impacto": null,
+      "motivo": "La cámara de Edificio B, planta 3 lleva 7 días sin grabar y solo muestra pantalla en negro: el texto no permite decidir si el equipo está averiado o si solo ha dejado de guardar; requiere comprobación en sitio."
+    }
   },
   {
     "id": "SVD-4129",
@@ -297,7 +471,13 @@
     "reportado_por": "Guardia de seguridad",
     "zona": "Sala de servidores",
     "fecha": "2026-09-01",
-    "estado": "abierto"
+    "estado": "abierto",
+    "sugerencia": {
+      "categoria": "Brecha de seguridad activa",
+      "urgencia": "Alta",
+      "impacto": "Alto",
+      "motivo": "Se dio de baja a un empleado hace 2 días y su tarjeta de acceso a Sala de servidores sigue activa: el permiso sin revocar deja la zona expuesta a quien la use."
+    }
   },
   {
     "id": "SVD-4130",
@@ -307,7 +487,13 @@
     "reportado_por": "Coordinador de zona",
     "zona": "Oficinas centrales",
     "fecha": "2026-09-01",
-    "estado": "abierto"
+    "estado": "abierto",
+    "sugerencia": {
+      "categoria": "Petición de acceso",
+      "urgencia": "Baja",
+      "impacto": "Bajo",
+      "motivo": "Es el alta de acceso de un guardia nuevo en Oficinas centrales: afecta a una persona y es trabajo planificable, sin nada averiado ni desprotegido."
+    }
   },
   {
     "id": "SVD-4131",
@@ -317,7 +503,13 @@
     "reportado_por": "Jefe de turno",
     "zona": "Edificio B, planta 3",
     "fecha": "2026-09-11",
-    "estado": "abierto"
+    "estado": "abierto",
+    "sugerencia": {
+      "categoria": "Fallo de integración entre sistemas",
+      "urgencia": "Media",
+      "impacto": "Medio",
+      "motivo": "El cuadrante de Edificio B, planta 3 no se ha sincronizado con la centralita de guardia y quedan guardias sin asignar: es un fallo del enlace entre sistemas, no un equipo roto."
+    }
   },
   {
     "id": "SVD-4132",
@@ -327,7 +519,13 @@
     "reportado_por": "Recepción cliente",
     "zona": "Sala de servidores",
     "fecha": "2026-09-02",
-    "estado": "abierto"
+    "estado": "abierto",
+    "sugerencia": {
+      "categoria": "Brecha de seguridad activa",
+      "urgencia": "Alta",
+      "impacto": "Alto",
+      "motivo": "La alarma perimetral de Sala de servidores quedó desactivada tras un mantenimiento: la zona está sin vigilancia de alarma ahora mismo."
+    }
   },
   {
     "id": "SVD-4133",
@@ -337,7 +535,13 @@
     "reportado_por": "Recepción cliente",
     "zona": "Nave logística 2",
     "fecha": "2026-09-05",
-    "estado": "abierto"
+    "estado": "abierto",
+    "sugerencia": {
+      "categoria": "Pérdida de registro o evidencia",
+      "urgencia": "Media",
+      "impacto": "Bajo",
+      "motivo": "El mismo guardia aparece fichado en dos puestos a la misma hora en Nave logística 2: es un registro duplicado de una persona, no deja la zona sin vigilar."
+    }
   },
   {
     "id": "SVD-4134",
@@ -347,7 +551,13 @@
     "reportado_por": "Administración",
     "zona": "Aparcamiento -1",
     "fecha": "2026-09-05",
-    "estado": "cerrado"
+    "estado": "cerrado",
+    "sugerencia": {
+      "categoria": "Equipo de campo averiado",
+      "urgencia": "Media",
+      "impacto": "Medio",
+      "motivo": "El lector biométrico de Aparcamiento -1 tarda más de 10 segundos en validar: el equipo responde mal y degrada el acceso, pero no lo deja sin control."
+    }
   },
   {
     "id": "SVD-4135",
@@ -357,7 +567,13 @@
     "reportado_por": "Guardia de seguridad",
     "zona": "Vestuarios de personal",
     "fecha": "2026-09-04",
-    "estado": "abierto"
+    "estado": "abierto",
+    "sugerencia": {
+      "categoria": "Pérdida de registro o evidencia",
+      "urgencia": "Media",
+      "impacto": "Medio",
+      "motivo": "La app de rondas no registró un checkpoint de la ronda nocturna en Vestuarios de personal: es un hueco en el registro de la ronda, no una zona que quede sin vigilar."
+    }
   },
   {
     "id": "SVD-4136",
@@ -367,7 +583,13 @@
     "reportado_por": "Guardia de seguridad",
     "zona": "Aparcamiento -1",
     "fecha": "2026-09-13",
-    "estado": "abierto"
+    "estado": "abierto",
+    "sugerencia": {
+      "categoria": "Petición de información",
+      "urgencia": "Baja",
+      "impacto": "Medio",
+      "motivo": "Se piden datos de acceso ya existentes de Aparcamiento -1 para una auditoría: no hay incidencia que atender, es extraer y entregar un histórico."
+    }
   },
   {
     "id": "SVD-4137",
@@ -377,7 +599,13 @@
     "reportado_por": "Coordinador de zona",
     "zona": "Torre de control",
     "fecha": "2026-09-06",
-    "estado": "abierto"
+    "estado": "abierto",
+    "sugerencia": {
+      "categoria": "Petición de acceso",
+      "urgencia": "Baja",
+      "impacto": "Bajo",
+      "motivo": "Es un alta temporal para un proveedor externo en Torre de control, que caduca en 9 días: afecta a una persona concreta y es trabajo planificable con fecha."
+    }
   },
   {
     "id": "SVD-4138",
@@ -387,7 +615,13 @@
     "reportado_por": "Coordinador de zona",
     "zona": "Sala de servidores",
     "fecha": "2026-09-13",
-    "estado": "abierto"
+    "estado": "abierto",
+    "sugerencia": {
+      "categoria": "Brecha de seguridad activa",
+      "urgencia": "Alta",
+      "impacto": "Alto",
+      "motivo": "La puerta de emergencia de Sala de servidores quedó abierta y el sensor no lanzó alarma: la zona está sin control de acceso ahora mismo."
+    }
   },
   {
     "id": "SVD-4139",
@@ -397,7 +631,13 @@
     "reportado_por": "Jefe de turno",
     "zona": "Torre de control",
     "fecha": "2026-09-13",
-    "estado": "abierto"
+    "estado": "abierto",
+    "sugerencia": {
+      "categoria": "Falsa alarma recurrente",
+      "urgencia": "Media",
+      "impacto": "Alto",
+      "motivo": "La alarma de Torre de control salta de noche sin movimiento registrado en cámaras: no hay riesgo real, es ruido que degrada el servicio de vigilancia."
+    }
   },
   {
     "id": "SVD-4140",
@@ -407,7 +647,13 @@
     "reportado_por": "Jefe de turno",
     "zona": "Acceso peatonal Este",
     "fecha": "2026-09-09",
-    "estado": "cerrado"
+    "estado": "cerrado",
+    "sugerencia": {
+      "categoria": "Equipo de campo averiado",
+      "urgencia": "Media",
+      "impacto": "Medio",
+      "motivo": "El lector de tarjetas de Acceso peatonal Este no reconoce ninguna credencial desde esta mañana: el equipo falla, aunque el texto no dice que la puerta quede abierta o sin control."
+    }
   },
   {
     "id": "SVD-4141",
@@ -417,7 +663,13 @@
     "reportado_por": "Guardia de seguridad",
     "zona": "Sala de servidores",
     "fecha": "2026-09-13",
-    "estado": "abierto"
+    "estado": "abierto",
+    "sugerencia": {
+      "categoria": "Pérdida de registro o evidencia",
+      "urgencia": "Media",
+      "impacto": "Alto",
+      "motivo": "La grabación de la cámara se corta cada noche a la misma hora en Sala de servidores: es una pérdida de grabación ya ocurrida y repetida, no dice que ahora mismo la zona esté sin cobertura."
+    }
   },
   {
     "id": "SVD-4142",
@@ -427,7 +679,13 @@
     "reportado_por": "Administración",
     "zona": "Nave logística 2",
     "fecha": "2026-09-10",
-    "estado": "abierto"
+    "estado": "abierto",
+    "sugerencia": {
+      "categoria": "Fallo de integración entre sistemas",
+      "urgencia": "Media",
+      "impacto": "Medio",
+      "motivo": "El interfono de Nave logística 2 no llega a la centralita de guardia desde el cambio de turno: falla el enlace entre dos sistemas, no hay un equipo roto en sitio."
+    }
   },
   {
     "id": "SVD-4143",
@@ -437,7 +695,13 @@
     "reportado_por": "Técnico de mantenimiento",
     "zona": "Nave logística 2",
     "fecha": "2026-09-02",
-    "estado": "abierto"
+    "estado": "abierto",
+    "sugerencia": {
+      "categoria": "Sin clasificar",
+      "urgencia": null,
+      "impacto": null,
+      "motivo": "La cámara de Nave logística 2 lleva 12 días sin grabar y solo muestra pantalla en negro: el texto no permite decidir si el equipo está averiado o si solo ha dejado de guardar; requiere comprobación en sitio."
+    }
   },
   {
     "id": "SVD-4144",
@@ -447,7 +711,13 @@
     "reportado_por": "Jefe de turno",
     "zona": "Recepción Principal",
     "fecha": "2026-09-06",
-    "estado": "abierto"
+    "estado": "abierto",
+    "sugerencia": {
+      "categoria": "Brecha de seguridad activa",
+      "urgencia": "Alta",
+      "impacto": "Medio",
+      "motivo": "Se dio de baja a un empleado hace 16 días y su tarjeta de acceso a Recepción Principal sigue activa: el permiso sin revocar deja la zona expuesta a quien la use."
+    }
   },
   {
     "id": "SVD-4145",
@@ -457,7 +727,13 @@
     "reportado_por": "Guardia de seguridad",
     "zona": "Nave logística 2",
     "fecha": "2026-09-08",
-    "estado": "abierto"
+    "estado": "abierto",
+    "sugerencia": {
+      "categoria": "Petición de acceso",
+      "urgencia": "Baja",
+      "impacto": "Bajo",
+      "motivo": "Es el alta de acceso de un guardia nuevo en Nave logística 2: afecta a una persona y es trabajo planificable, sin nada averiado ni desprotegido."
+    }
   },
   {
     "id": "SVD-4146",
@@ -467,7 +743,13 @@
     "reportado_por": "Recepción cliente",
     "zona": "Torre de control",
     "fecha": "2026-09-13",
-    "estado": "abierto"
+    "estado": "abierto",
+    "sugerencia": {
+      "categoria": "Fallo de integración entre sistemas",
+      "urgencia": "Media",
+      "impacto": "Alto",
+      "motivo": "El cuadrante de Torre de control no se ha sincronizado con la centralita de guardia y quedan guardias sin asignar: es un fallo del enlace entre sistemas, no un equipo roto."
+    }
   },
   {
     "id": "SVD-4147",
@@ -477,7 +759,13 @@
     "reportado_por": "Administración",
     "zona": "Nave logística 2",
     "fecha": "2026-09-06",
-    "estado": "abierto"
+    "estado": "abierto",
+    "sugerencia": {
+      "categoria": "Brecha de seguridad activa",
+      "urgencia": "Alta",
+      "impacto": "Medio",
+      "motivo": "La alarma perimetral de Nave logística 2 quedó desactivada tras un mantenimiento: la zona está sin vigilancia de alarma ahora mismo."
+    }
   },
   {
     "id": "SVD-4148",
@@ -487,7 +775,13 @@
     "reportado_por": "Recepción cliente",
     "zona": "Vestuarios de personal",
     "fecha": "2026-09-12",
-    "estado": "abierto"
+    "estado": "abierto",
+    "sugerencia": {
+      "categoria": "Pérdida de registro o evidencia",
+      "urgencia": "Media",
+      "impacto": "Bajo",
+      "motivo": "El mismo guardia aparece fichado en dos puestos a la misma hora en Vestuarios de personal: es un registro duplicado de una persona, no deja la zona sin vigilar."
+    }
   },
   {
     "id": "SVD-4149",
@@ -497,7 +791,13 @@
     "reportado_por": "Jefe de turno",
     "zona": "Vestuarios de personal",
     "fecha": "2026-09-01",
-    "estado": "abierto"
+    "estado": "abierto",
+    "sugerencia": {
+      "categoria": "Equipo de campo averiado",
+      "urgencia": "Media",
+      "impacto": "Medio",
+      "motivo": "El lector biométrico de Vestuarios de personal tarda más de 10 segundos en validar: el equipo responde mal y degrada el acceso, pero no lo deja sin control."
+    }
   },
   {
     "id": "SVD-4150",
@@ -507,7 +807,13 @@
     "reportado_por": "Coordinador de zona",
     "zona": "Perímetro exterior",
     "fecha": "2026-09-14",
-    "estado": "cerrado"
+    "estado": "cerrado",
+    "sugerencia": {
+      "categoria": "Pérdida de registro o evidencia",
+      "urgencia": "Media",
+      "impacto": "Alto",
+      "motivo": "La app de rondas no registró un checkpoint de la ronda nocturna en Perímetro exterior: es un hueco en el registro de la ronda, no una zona que quede sin vigilar."
+    }
   },
   {
     "id": "SVD-4151",
@@ -517,7 +823,13 @@
     "reportado_por": "Coordinador de zona",
     "zona": "Torre de control",
     "fecha": "2026-09-09",
-    "estado": "abierto"
+    "estado": "abierto",
+    "sugerencia": {
+      "categoria": "Petición de información",
+      "urgencia": "Baja",
+      "impacto": "Alto",
+      "motivo": "Se piden datos de acceso ya existentes de Torre de control para una auditoría: no hay incidencia que atender, es extraer y entregar un histórico."
+    }
   },
   {
     "id": "SVD-4152",
@@ -527,7 +839,13 @@
     "reportado_por": "Coordinador de zona",
     "zona": "Almacén Norte",
     "fecha": "2026-09-12",
-    "estado": "abierto"
+    "estado": "abierto",
+    "sugerencia": {
+      "categoria": "Petición de acceso",
+      "urgencia": "Baja",
+      "impacto": "Bajo",
+      "motivo": "Es un alta temporal para un proveedor externo en Almacén Norte, que caduca en 4 días: afecta a una persona concreta y es trabajo planificable con fecha."
+    }
   },
   {
     "id": "SVD-4153",
@@ -537,7 +855,13 @@
     "reportado_por": "Guardia de seguridad",
     "zona": "Acceso peatonal Este",
     "fecha": "2026-09-05",
-    "estado": "abierto"
+    "estado": "abierto",
+    "sugerencia": {
+      "categoria": "Brecha de seguridad activa",
+      "urgencia": "Alta",
+      "impacto": "Medio",
+      "motivo": "La puerta de emergencia de Acceso peatonal Este quedó abierta y el sensor no lanzó alarma: la zona está sin control de acceso ahora mismo."
+    }
   },
   {
     "id": "SVD-4154",
@@ -547,7 +871,13 @@
     "reportado_por": "Coordinador de zona",
     "zona": "Muelle de carga",
     "fecha": "2026-09-06",
-    "estado": "abierto"
+    "estado": "abierto",
+    "sugerencia": {
+      "categoria": "Falsa alarma recurrente",
+      "urgencia": "Media",
+      "impacto": "Medio",
+      "motivo": "La alarma de Muelle de carga salta de noche sin movimiento registrado en cámaras: no hay riesgo real, es ruido que degrada el servicio de vigilancia."
+    }
   },
   {
     "id": "SVD-4155",
@@ -557,7 +887,13 @@
     "reportado_por": "Guardia de seguridad",
     "zona": "Oficinas centrales",
     "fecha": "2026-09-12",
-    "estado": "abierto"
+    "estado": "abierto",
+    "sugerencia": {
+      "categoria": "Equipo de campo averiado",
+      "urgencia": "Media",
+      "impacto": "Medio",
+      "motivo": "El lector de tarjetas de Oficinas centrales no reconoce ninguna credencial desde esta mañana: el equipo falla, aunque el texto no dice que la puerta quede abierta o sin control."
+    }
   },
   {
     "id": "SVD-4156",
@@ -567,7 +903,13 @@
     "reportado_por": "Coordinador de zona",
     "zona": "Nave logística 2",
     "fecha": "2026-09-07",
-    "estado": "abierto"
+    "estado": "abierto",
+    "sugerencia": {
+      "categoria": "Pérdida de registro o evidencia",
+      "urgencia": "Media",
+      "impacto": "Medio",
+      "motivo": "La grabación de la cámara se corta cada noche a la misma hora en Nave logística 2: es una pérdida de grabación ya ocurrida y repetida, no dice que ahora mismo la zona esté sin cobertura."
+    }
   },
   {
     "id": "SVD-4157",
@@ -577,7 +919,13 @@
     "reportado_por": "Coordinador de zona",
     "zona": "Oficinas centrales",
     "fecha": "2026-09-01",
-    "estado": "cerrado"
+    "estado": "cerrado",
+    "sugerencia": {
+      "categoria": "Fallo de integración entre sistemas",
+      "urgencia": "Media",
+      "impacto": "Medio",
+      "motivo": "El interfono de Oficinas centrales no llega a la centralita de guardia desde el cambio de turno: falla el enlace entre dos sistemas, no hay un equipo roto en sitio."
+    }
   },
   {
     "id": "SVD-4158",
@@ -587,7 +935,13 @@
     "reportado_por": "Jefe de turno",
     "zona": "Aparcamiento -1",
     "fecha": "2026-09-03",
-    "estado": "abierto"
+    "estado": "abierto",
+    "sugerencia": {
+      "categoria": "Sin clasificar",
+      "urgencia": null,
+      "impacto": null,
+      "motivo": "La cámara de Aparcamiento -1 lleva 1 día sin grabar y solo muestra pantalla en negro: el texto no permite decidir si el equipo está averiado o si solo ha dejado de guardar; requiere comprobación en sitio."
+    }
   },
   {
     "id": "SVD-4159",
@@ -597,6 +951,12 @@
     "reportado_por": "Coordinador de zona",
     "zona": "Nave logística 2",
     "fecha": "2026-09-01",
-    "estado": "abierto"
+    "estado": "abierto",
+    "sugerencia": {
+      "categoria": "Brecha de seguridad activa",
+      "urgencia": "Alta",
+      "impacto": "Medio",
+      "motivo": "Se dio de baja a un empleado hace 4 días y su tarjeta de acceso a Nave logística 2 sigue activa: el permiso sin revocar deja la zona expuesta a quien la use."
+    }
   }
 ]

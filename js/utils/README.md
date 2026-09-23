@@ -1,6 +1,9 @@
 # utils/
 
-Funciones auxiliares sin estado propio: filtrar tickets, formatear fechas, agrupar por zona o
-sistema. Nada de interfaz aquí — eso vive en `components/`.
+Funciones puras, sin estado propio y sin tocar el DOM.
 
-*(vacío hasta la Sesión 3)*
+- `constantes.js` — valores fijos del dominio (categorías, claves de `localStorage`, zonas críticas).
+- `prioridad.js` — la matriz de prioridad (spec R3) y la validación de coherencia (R8).
+- `estado-ticket.js` — combina un ticket original con lo guardado en `localStorage`.
+- `filtros.js` — ordenar, filtrar, agrupar y calcular las métricas de la bandeja.
+- `formato.js` — formatear fechas.
