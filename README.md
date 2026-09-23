@@ -26,7 +26,7 @@ Los datos son inventados de cero — cero relación con clientes reales.
 
 ```
 /
-├── index.html       → placeholder, se construye en Sesión 3
+├── index.html       → placeholder, se construye en la Fase 3
 ├── css/
 │   └── styles.css   → placeholder
 ├── js/
@@ -34,10 +34,18 @@ Los datos son inventados de cero — cero relación con clientes reales.
 │   ├── components/  → piezas de UI reutilizables (placeholder)
 │   └── utils/       → funciones auxiliares sin estado (placeholder)
 ├── data/
-│   └── tickets.json → dataset ya listo
+│   └── tickets.json → 60 tickets, sin `sugerencia` todavía (Fase 3)
 ├── docs/
-│   ├── spec.md       → placeholder (Fase 1)
-│   └── diseno.md      → placeholder (Fase 2)
+│   ├── constitution.md       → Fase 1, seis principios no negociables
+│   ├── spec.md               → Fase 1, requisitos R1–R8
+│   ├── diseno.md             → Fase 2, flujo de pantallas y estilo (KirriDesk)
+│   ├── categorias-triaje.md  → las 7 categorías de triaje
+│   ├── revision-qa-spec.md   → primera revisión QA, resuelta
+│   ├── revision-qa-spec-2.md → segunda revisión QA, resuelta
+│   ├── proceso-sesion3.md    → cómo se llegó hasta aquí (contexto, no normativa)
+│   └── wireframes-fase3/     → wireframes de flujo previos a implementar
+├── assets/referencias/  → capturas y criterios de la Fase 2 (referencia visual)
+├── deep-research/       → evidencia de la que salen los principios
 ├── README.md
 └── CLAUDE.md
 ```
@@ -48,11 +56,13 @@ Los datos son inventados de cero — cero relación con clientes reales.
 | `css/` | Estilos de la interfaz | `styles.css` — reglas visuales, sin lógica | Lo referencia `index.html`; no depende de ninguna otra carpeta |
 | `js/` | Lógica de la interfaz | `app.js` — cargar tickets, filtrar, mostrar ficha, disparar la clasificación con Claude Code | Lee `data/tickets.json`; escribe en el DOM que define `index.html` |
 | `js/components/` | Piezas de interfaz reutilizables | Fila de ticket, ficha de detalle, filtro — cada una en su propio archivo | Las usa `app.js` para montar la pantalla; no acceden a `data/tickets.json` directamente |
-| `js/utils/` | Funciones auxiliares sin estado | Filtrar, formatear fecha, agrupar por zona/sistema | Las usan `app.js` y `components/`; no tocan el DOM |
-| `data/` | El dataset del proyecto | `tickets.json` — las incidencias sintéticas, sin categoría ni prioridad todavía | Lo consume `js/app.js` en el navegador, y Claude Code directamente cuando clasifica los tickets |
-| `docs/` | Los entregables de las Fases 1 y 2 de la Sesión 3 | `spec.md` (requisitos) y `diseno.md` (decisiones de Artifacts) | `spec.md` es la entrada de la Fase 3 (Desarrollo, lo que construye `index.html`/`css`/`js`); `diseno.md` es la salida de la Fase 2 a partir de ese mismo spec |
+| `js/utils/` | Funciones auxiliares sin estado | Filtrar, formatear fecha, agrupar por zona/sistema, matriz de prioridad | Las usan `app.js` y `components/`; no tocan el DOM |
+| `data/` | El dataset del proyecto | `tickets.json` — las incidencias sintéticas; la Fase 3 añade `sugerencia` a cada una | Lo consume `js/app.js` en el navegador, y Claude Code directamente cuando clasifica los tickets |
+| `docs/` | Los entregables de las Fases 1 y 2 de la Sesión 3 | `constitution.md`, `spec.md`, `diseno.md`, `categorias-triaje.md`, las dos revisiones QA, el registro del proceso y los wireframes de flujo | `spec.md` es la entrada de la Fase 3 (Desarrollo, lo que construye `index.html`/`css`/`js`); `diseno.md` es la salida de la Fase 2 a partir de ese mismo spec; las revisiones QA y el registro de proceso son trazabilidad, no normativa nueva |
+| `assets/referencias/` | Evidencia visual de la Fase 2 | Capturas comparadas con 6 criterios de diseño; la elegida es KirriDesk | La usa `docs/diseno.md` para justificar el estilo |
+| `deep-research/` | Evidencia previa a la constitución y al spec | Los informes de investigación con las afirmaciones verificadas | Consúltalo solo si necesitas la fuente de una decisión |
 | `README.md` | Qué es el proyecto y cómo empezar | Brief del proyecto, esta misma tabla | Es lo primero que lee cualquiera al abrir el repo — humano o Claude Code |
-| `CLAUDE.md` | Contexto del proyecto para Claude Code | Se genera en la Sesión 2 | Se genera en la Sesión 2 a partir de lo que Claude Code entienda del resto de archivos |
+| `CLAUDE.md` | Contexto del proyecto para Claude Code | Se genera en la Sesión 2 y se actualiza al terminar cada fase | Se genera en la Sesión 2 a partir de lo que Claude Code entienda del resto de archivos |
 
 No hay carpetas de dependencias ni de build — el proyecto es HTML/CSS/JS plano, sin instalar nada.
 

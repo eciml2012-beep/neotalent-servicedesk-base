@@ -34,9 +34,10 @@ El orden importa. Si dos documentos chocan, gana el de más arriba:
 | Orden | Archivo | Qué manda |
 |---|---|---|
 | 1 | `docs/constitution.md` | Seis principios no negociables, cada uno con su comprobación. Para cambiarlos hay que editar ese archivo **antes** de tocar nada más |
-| 2 | `docs/spec.md` | Qué construir: requisitos R1–R7, casos límite, fuera de alcance y criterios de finalización |
+| 2 | `docs/spec.md` | Qué construir: requisitos R1–R8, casos límite, fuera de alcance y criterios de finalización |
 | 3 | `docs/diseno.md` | Cómo se ve: flujo de pantallas, la decisión tabla clara + interruptor oscuro, tipografía y contraste |
-| — | `docs/revision-qa-spec.md` | Revisión QA del spec, **ya resuelta**. Registro de qué se detectó y qué se decidió, con el archivo donde quedó cada decisión |
+| — | `docs/revision-qa-spec.md` | Primera revisión QA del spec, **ya resuelta**. Registro de qué se detectó y qué se decidió, con el archivo donde quedó cada decisión |
+| — | `docs/revision-qa-spec-2.md` | Segunda revisión QA, cruzando spec con diseño, **ya resuelta** (20/20, la última tanda el 23/09/2026). Mismo formato que la primera |
 | — | `docs/categorias-triaje.md` | Las 7 categorías de triaje con su definición y su reparto sobre los 60 tickets |
 | — | `assets/referencias/` | Las capturas de la Fase 2, los 6 criterios con los que se filtraron y la comparación. La estructura elegida es **KirriDesk** (`dribbble/captura-2.png`) |
 | — | `docs/proceso-sesion3.md` | Cómo se llegó hasta aquí, paso a paso. Contexto, no normativa |
@@ -169,8 +170,9 @@ Reglas del dataset:
 
 ## Antes de implementar la Fase 3
 
-`docs/revision-qa-spec.md` está **resuelto**: sus 20 hallazgos tienen decisión y cada uno dice
-en qué archivo quedó. Léelo si te preguntas por qué una regla del spec es como es.
+`docs/revision-qa-spec.md` y `docs/revision-qa-spec-2.md` están **resueltos**: entre los dos, 40
+hallazgos con decisión, cada uno con el archivo donde quedó. Léelos si te preguntas por qué una
+regla del spec es como es.
 
 Lo único que sigue siendo criterio del equipo y no evidencia:
 

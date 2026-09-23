@@ -37,9 +37,10 @@ separadas**, una de prioridad y otra de estado, en vez de mezclarlas en una sola
 
 - `bentogrids/` — vacío. Era la referencia prevista para la cabecera de KPIs.
 - `securitas-verisure/` — vacío.
-- Ninguna de las tres capturas resuelve el hueco del **motivo junto a la etiqueta en la fila**
-  (R4 pide el motivo visible sin desplegar). Freight Command lo pone en el panel derecho,
-  KirriDesk en la ficha. Queda por decidir en la Fase 3.
+- Ninguna de las tres capturas resolvía el hueco del **motivo junto a la etiqueta en la fila**
+  (R4 pide el motivo visible sin desplegar): Freight Command lo pone en el panel derecho,
+  KirriDesk en la ficha. **Ya decidido**: va como segunda línea bajo el título, dentro de la
+  propia fila — ver R4 de `docs/spec.md` y la pantalla "Bandeja" de `docs/wireframes-fase3/`.
 
 ## Elección del grupo (22/09/2026)
 

@@ -27,6 +27,8 @@ Panel de métricas ──> vuelve a Bandeja
 Queda fuera: login, alta de incidencias y edición del texto del ticket. La clasificación la hace
 Claude Code sobre el repositorio, no el navegador: la pantalla la muestra, no la calcula.
 
+Wireframes de baja fidelidad de estas pantallas, revisados contra el spec: `docs/wireframes-fase3/`.
+
 ## Las dos propuestas para la bandeja
 
 | | **Opción A — tabla clara** | **Opción B — columnas por categoría, oscura** |

@@ -10,7 +10,7 @@ hizo. Cada paso dice qué se pidió, qué salió y dónde está.
 | 3 | Constitución | Claude nos hizo 6 preguntas de una en una. Salieron 6 principios, cada uno con su forma de comprobarse. | `docs/constitution.md` |
 | 4 | Spec | Otras 6 preguntas de una en una. Matriz urgencia × impacto (3×3 → 4 prioridades), historias, requisitos, casos límite, fuera de alcance y criterios de finalización. | `docs/spec.md` |
 | 5 | QA | Claude revisó el spec contra la constitución, solo detectando: 4 conflictos, 8 ambigüedades y 5 casos límite. | `docs/revision-qa-spec.md` |
-| 5b | Segunda revisión QA | Nueva pasada sobre el spec ya corregido, cruzándolo también con el diseño: 20 hallazgos. Se resolvieron los **6 bloqueantes** (2, 8, 16, 17, 18, 19) y quedan **14 menores** para la Fase 3. El 16 se decidió en grupo entre tres opciones. *(Se hizo después del paso 8; va aquí porque es la segunda pasada del paso 5.)* | `docs/revision-qa-spec-2.md` |
+| 5b | Segunda revisión QA | Nueva pasada sobre el spec ya corregido, cruzándolo también con el diseño: 20 hallazgos. Se resolvieron los **6 bloqueantes** (2, 8, 16, 17, 18, 19) más el 15 (errata de conteo) el 22/09/2026, y los **13 restantes** el 23/09/2026, antes de arrancar la Fase 3. El 16 se decidió en grupo entre tres opciones. *(Se hizo después del paso 8; va aquí porque es la segunda pasada del paso 5.)* | `docs/revision-qa-spec-2.md` |
 | 6 | `/init` | Claude Code actualizó el `CLAUDE.md` con todo lo acordado, como contexto permanente. | `CLAUDE.md` |
 | 7 | Subir | «Haz commit y push de estos cambios», en lenguaje natural. | historial de git |
 | 8 | Resolver el QA | Se cerraron los 17 hallazgos más 3 que salieron de cruzar spec ↔ diseño. | `docs/revision-qa-spec.md`, con la resolución de cada uno |
