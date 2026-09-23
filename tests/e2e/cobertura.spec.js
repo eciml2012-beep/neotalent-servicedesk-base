@@ -57,9 +57,15 @@ test("cobertura del JS de la app en un recorrido completo", { tag: ["@cobertura"
   }
   // Ficha: aceptar, corregir, corregir a Sin clasificar, Sin clasificar → real, cancelar, deshacer
   await ir("#/ticket/SVD-4102"); await boton("Aceptar");
-  await ir("#/ticket/SVD-4104/corregir"); await page.getByLabel("Urgencia").selectOption("Alta"); await boton("Guardar corrección");
-  await ir("#/ticket/SVD-4104"); // ficha de un Corregido (sugerencia original)
-  await ir("#/ticket/SVD-4119/corregir"); await page.getByLabel("Categoría").selectOption("Sin clasificar"); await boton("Guardar corrección");
+  await ir("#/ticket/SVD-4104/corregir"); await page.getByLabel("Urgencia").selectOption("Alta");
+  await page.getByLabel("Motivo de la corrección").fill("Motivo inventado para la cobertura, 12345678Z no vale");
+  await page.getByLabel("Motivo de la corrección").fill("Motivo inventado para la cobertura.");
+  await boton("Guardar corrección");
+  await ir("#/ticket/SVD-4104"); // ficha de un Corregido (sugerencia original y motivo)
+  await page.getByLabel("Nueva nota").fill("Nota inventada para la cobertura."); await boton("Añadir nota");
+  await ir("#/ticket/SVD-4119/corregir"); await page.getByLabel("Categoría").selectOption("Sin clasificar");
+  await page.getByLabel("Motivo de la corrección").fill("Motivo inventado para la cobertura.");
+  await boton("Guardar corrección");
   await ir("#/ticket/SVD-4143"); await ir("#/ticket/SVD-4143/corregir");
   await page.getByLabel("Categoría").selectOption("Sin clasificar");
   await page.getByLabel("Categoría").selectOption("Falsa alarma recurrente");
@@ -80,8 +86,9 @@ test("cobertura del JS de la app en un recorrido completo", { tag: ["@cobertura"
   roto[2].sugerencia = { ...roto[2].sugerencia, motivo: "" };
   const s = roto[3].sugerencia;
   roto[3].triaje = { estado: "Confirmado", categoria: s.categoria, urgencia: s.urgencia, impacto: s.impacto };
+  roto[3].notas = [{ texto: "Nota reimportada, inventada.", fecha: "2026-09-20T10:00:00.000Z" }];
   await servirDataset(page, roto);
-  await page.evaluate(() => localStorage.setItem("svd-triaje", '{"SVD-9999":{"estado":"Confirmado"}}'));
+  await page.evaluate(() => localStorage.setItem("svd-triaje", '{"SVD-9999":{"estado":"Confirmado"},"_notas":{"SVD-9999":[]}}'));
   await page.reload();
   await expect(page.locator(".fila-ticket").first()).toBeVisible();
   await ir(`#/ticket/${roto[1].id}`);
@@ -107,6 +114,6 @@ test("cobertura del JS de la app en un recorrido completo", { tag: ["@cobertura"
   await info.attach("cobertura.txt", { body: texto, contentType: "text/plain" });
   console.log(`\nCobertura JS (V8, aproximada)\n${texto}\n`);
 
-  expect(archivos).toHaveLength(10);
+  expect(archivos).toHaveLength(11);
   expect(total).toBeGreaterThanOrEqual(UMBRAL);
 });

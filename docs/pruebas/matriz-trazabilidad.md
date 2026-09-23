@@ -11,14 +11,13 @@ Estado: ✅ probado automáticamente · 👤 probado a mano (UAT) · ⚠️ parc
 |---|---|---|---|---|
 | P1 | La IA sugiere, la persona decide; nunca "aceptar todo" | `unit/estado-ticket` (P1), `e2e/ficha` (sin aceptar-todo, acciones fuera de la caja), `e2e/bandeja` (sugerido ≠ confirmado) | Transición de estados | ✅ |
 | P2 | Ninguna petición a un host externo | `unit/constitucion` (P2), `e2e/seguridad` (recorrido completo vigilando peticiones) | Estático + dinámico | ✅ |
-| P3 | Solo datos sintéticos, 60 tickets cerrados | `unit/dataset` (P3) | Valores límite, dominios cerrados | ⚠️ que no haya nombres reales se aproxima con listas cerradas; el texto libre se revisa a mano |
+| P3 | Solo datos sintéticos, 60 tickets cerrados; texto del operador sin DNI, NIE ni matrículas (enmienda) | `unit/dataset` (P3), `unit/texto-operador` (formas de dato personal), `e2e/notas` (bloqueo y aviso en nota y motivo) | Valores límite, dominios cerrados, tabla de casos | ⚠️ los nombres propios no se detectan (límite declarado en R9) |
 | P4 | Toda sugerencia se explica | `unit/dataset` (R1), `unit/estado-ticket` (motivo vacío), `e2e/bandeja` (motivo visible), `e2e/casos-limite` | Casos límite | ⚠️ "cita hechos del ticket" solo se comprueba en parte (el motivo menciona la zona) |
 | P5 | Prioridad por la matriz, nunca guardada | `unit/prioridad` (R3), `unit/dataset`, `e2e/persistencia` (ni en localStorage ni en el export) | Tabla de decisión | ✅ |
 | P6 | Stack plano; npm solo para tests | `unit/constitucion` (P6), `e2e/seguridad` (sin conexión) | Estático | ✅ |
 
 ## Spec — requisitos
 
-| Id | Regla | Pruebas | Técnica | Estado |
 |---|---|---|---|---|
 | R1 | Forma de `sugerencia`, nulos en Sin clasificar, motivo ≥ 40 | `unit/dataset` | Particiones, valores límite | ✅ |
 | R2 | Urgencia e impacto por hechos; brecha nunca Bajo; zonas críticas | `unit/dataset` (coherencia), `unit/prioridad` | Tabla de decisión | ⚠️ los juicios "una sola persona" y "no graba ahora" no son automatizables: revisión manual |
@@ -28,6 +27,7 @@ Estado: ✅ probado automáticamente · 👤 probado a mano (UAT) · ⚠️ parc
 | R6 | Dos claves, sin storage, beforeunload, export, cambios sin exportar, sincronización, reimportación | `e2e/persistencia`, `unit/estado-ticket` (snapshot), `e2e/aceptacion` (H5, H6) | Transición de estados, valores límite | ✅ |
 | R7 | Métricas y tasa de corrección por categoría sugerida | `unit/filtros`, `e2e/metricas`, `e2e/aceptacion` (H7) | Casos calculados a mano | ✅ |
 | R8 | Coherencia de la sugerencia y bloqueo de urgencia en la UI | `unit/prioridad`, `unit/dataset`, `e2e/ficha` (las 7 categorías), `e2e/casos-limite` | Tabla de decisión | ✅ |
+| R9 | Notas (se añaden, sobreviven a Deshacer, se exportan, se unen al reimportar) y motivo de corrección (obligatorio solo en un Corregido, 10-200) | `unit/texto-operador`, `e2e/notas`, `e2e/integracion` (ida y vuelta), `e2e/aceptacion` (H8, H9) | Valores límite, transición de estados, casos de uso | ✅ |
 
 ## Spec — casos límite
 
@@ -45,6 +45,12 @@ Estado: ✅ probado automáticamente · 👤 probado a mano (UAT) · ⚠️ parc
 | El JSON cambia y hay confirmaciones de ids que ya no existen | `e2e/persistencia` | ✅ |
 | Ticket cerrado en pendientes | `e2e/bandeja` (CF7) | ✅ |
 | HTML o caracteres raros en el texto | `unit/constitucion`, `e2e/casos-limite` (XSS) | ✅ |
+| HTML en una nota | `e2e/notas` (XSS) | ✅ |
+| Nota vacía o solo espacios | `unit/texto-operador`, `e2e/notas` | ✅ |
+| Nota o motivo con forma de DNI, NIE o matrícula | `unit/texto-operador`, `e2e/notas` | ✅ |
+| Corregir sin motivo | `e2e/notas` | ✅ |
+| Deshacer un ticket con notas | `e2e/notas` | ✅ |
+| Reimportar un export con notas que ya estaban | `unit/texto-operador`, `e2e/integracion` | ✅ |
 
 ## Spec — criterios de finalización
 
@@ -59,6 +65,7 @@ Estado: ✅ probado automáticamente · 👤 probado a mano (UAT) · ⚠️ parc
 | CF7 | Los 10 cerrados salen en pendientes | `e2e/bandeja` | ✅ |
 | CF8 | Sin URLs externas, funciona sin conexión | `unit/constitucion`, `e2e/seguridad` | ✅ |
 | CF9 | Se cumplen los 6 principios | Todas las filas P1–P6 de arriba | ✅ salvo las partes ⚠️ de P3 y P4 |
+| CF10 | Notas y motivo: se guardan, sobreviven a recargar y a Deshacer, se exportan; DNI/NIE/matrícula bloqueados | `e2e/notas`, `e2e/integracion` | ✅ |
 
 ## Integración
 

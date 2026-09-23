@@ -11,13 +11,13 @@ Trazabilidad: `docs/pruebas/matriz-trazabilidad.md`. Pruebas manuales anteriores
 
 | | |
 |---|---|
-| Pruebas automatizadas | **220** en 19 archivos (108 en Node: unitarias, datos, estáticas e integración; 112 en navegador) |
-| Resultado | **220 / 220 en verde**, ~22 s |
-| CI (GitHub Actions, Linux) | **209 / 209 en verde** (todo menos `@visual`, cuyas capturas son de Windows) |
+| Pruebas automatizadas | **265** en 21 archivos (128 en Node: unitarias, datos, estáticas e integración; 137 en navegador) |
+| Resultado | **265 / 265 en verde**, ~31 s |
+| CI (GitHub Actions, Linux) | Corren todas menos las 11 `@visual`, cuyas capturas son de Windows |
 | Estabilidad | Las e2e, ejecutadas 3 veces cada una: 0 intermitentes |
-| Requisitos sin prueba | **Ninguno** (P1–P6, R1–R8, CF1–CF9, casos límite) |
-| Cobertura JS (V8, aproximada) | **98,0 %** (umbral de la suite: 95 %) |
-| Mutación manual | **8 / 8** bugs sembrados detectados |
+| Requisitos sin prueba | **Ninguno** (P1–P6, R1–R9, CF1–CF10, casos límite) |
+| Cobertura JS (V8, aproximada) | **98,1 %** (umbral de la suite: 95 %) |
+| Mutación manual | **11 / 11** bugs sembrados detectados (8 de la Fase 3 y 3 de R9) |
 | Defectos encontrados en esta pasada | 1 en la app, 6 en las propias pruebas |
 | UAT con persona | **Pendiente** (`docs/pruebas/uat.md`) |
 
@@ -76,6 +76,39 @@ peor, un falso verde.
 - **Lector de pantalla real:** sin probar; los nombres accesibles sí.
 - **Calidad del motivo:** solo se comprueba que cite la zona; el resto, a mano (declarado en el spec).
 - **Juicios de R2** ("una sola persona", "no graba ahora"): no automatizables.
+
+## R9 · notas y motivo de corrección (23/09/2026)
+
+**Alcance:** nuevo requisito R9 (notas del operador y motivo de corrección obligatorio en un
+`Corregido`) tras enmendar el principio 3. Toca R5 (guardar), R6 (almacenamiento, export,
+reimportación), P3 (datos personales) y la UI de la ficha. Archivos: `js/utils/texto-operador.js`
+(nuevo), `js/utils/constantes.js`, `js/app.js`, `js/components/ficha-ticket.js`, `css/styles.css`.
+
+**Cómo:** `npm test` completo; unitarias en Node (`unit/texto-operador`: largos, formas de dato
+personal, unión de notas) y sistema en Chromium (`e2e/notas`, más H8/H9 en `e2e/aceptacion` y la
+ida y vuelta en `e2e/integracion`). Las pruebas de R9 se ejecutaron 3 veces cada una (132/132, 0
+intermitentes). Revisión a mano en el navegador de la nota y del bloqueo por DNI.
+
+**Resultado:** 265 / 265 en verde (45 pruebas nuevas). Cobertura 98,1 %. Mutación manual, 3 / 3
+detectados: `pareceDatoPersonal` que nunca detecta (11 pruebas en rojo), Guardar sin exigir motivo
+(2) y Deshacer que borra las notas (1).
+
+**Pruebas existentes que hubo que cambiar, y por qué:** 6 flujos de Corregir guardaban sin motivo y
+ahora el spec lo exige (se añadió el motivo, no se relajó la regla); el test de "campos originales
+intactos" del export ahora separa `notas`, que es campo nuevo; el de cobertura cuenta 11 archivos;
+y las 4 capturas de la ficha y de Corregir se regeneraron (`npm run test:capturas`) porque la
+pantalla cambió a propósito. **Hay que aprobarlas en la UAT.**
+
+**Defectos de la app:** ninguno.
+
+**Defectos de las propias pruebas:**
+
+| # | Error | Efecto | Arreglo |
+|---|---|---|---|
+| T7 | Un caso daba `"y 1234567 l"` como "ni DNI ni NIE", pero R9 dice «con o sin espacio»: Y + 7 cifras + letra **es** forma de NIE | Falso rojo: la app tenía razón | Se decidió contra el spec: el caso pasa a esperar NIE y se añade `"a 1234567 l"` como caso sin NIE |
+
+**Qué no se ha probado:** nombres propios en el texto del operador (no detectables, límite
+declarado); Firefox y WebKit, igual que el resto de la suite.
 
 ## Recomendación
 

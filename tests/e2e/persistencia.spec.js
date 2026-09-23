@@ -96,8 +96,9 @@ test.describe("R6 · exportar", { tag: ["@R6", "@CF5"] }, () => {
     const original = datasetReal();
     expect(datos).toHaveLength(60);
     datos.forEach((t, i) => {
-      const { triaje, ...resto } = t;
+      const { triaje, notas, ...resto } = t;
       expect(resto, t.id).toEqual(original[i]);
+      expect(notas, t.id).toEqual([]); // R9: la clave existe siempre
     });
   });
 

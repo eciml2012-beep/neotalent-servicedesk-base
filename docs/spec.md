@@ -10,6 +10,9 @@ Segunda revisión el 22/09/2026 (`docs/revision-qa-spec-2.md`): 20 hallazgos nue
 22/09/2026 (los 6 bloqueantes más una errata de conteo) y los 13 restantes el 23/09/2026, antes de
 arrancar la Fase 3. Los 20 están cerrados.
 
+Ampliado el 23/09/2026 con **R9, notas y motivo de corrección del operador**, tras la enmienda
+del principio 3 de la constitución (decisiones 25 a 31).
+
 Fuentes: `deep-research/deep-research-triaje-ia-seguridad-fisica.md`, `deep-research/deep-research-2a-pasada.md`,
 `docs/categorias-triaje.md`, `docs/diseno.md` y `data/tickets.json`.
 
@@ -52,6 +55,21 @@ Fuentes: `deep-research/deep-research-triaje-ia-seguridad-fisica.md`, `deep-rese
 | 23 | ¿Dónde vive el mínimo de 40 caracteres del motivo? | También en R1, no solo en el criterio de finalización 1. | punto 14 |
 | 24 | ¿El criterio 8 (sin URLs externas) cubre los `.js`? | Sí, se amplía explícitamente. El lienzo de `docs/diseno.md` es una herramienta externa: lo que carga en su vista previa no es parte del código entregado. | punto 20 |
 
+### Decisiones añadidas con R9 (23/09/2026)
+
+Salen de comparar la app con cómo trabajan los service desk reales (ServiceNow, Jira Service
+Management, Zendesk): la descripción original no se reescribe, pero el operador anota y justifica.
+
+| # | Pregunta | Respuesta |
+|---|---|---|
+| 25 | ¿Puede el operador editar el texto del ticket? | No. Lo reportado es la evidencia sobre la que la IA escribió su `motivo`: si cambiara, el motivo dejaría de cuadrar (principio 4). Lo que puede hacer es **añadir notas**. |
+| 26 | ¿Se pueden editar o borrar las notas? | No: se añaden y quedan. Un hilo que se puede reescribir no sirve como registro de lo que se supo y cuándo. |
+| 27 | ¿«Deshacer» borra las notas? | No. Deshacer revierte la **decisión** de clasificación; las notas son un registro aparte. Sí borra el motivo de corrección, que pertenece a la decisión deshecha. |
+| 28 | ¿Cuándo es obligatorio el motivo de corrección? | Solo cuando lo guardado difiere de la sugerencia de la IA (quedaría `Corregido`). Si coincide, queda `Confirmado` y no hay nada que justificar. |
+| 29 | ¿Qué largo tienen? | Nota: de 1 a 500 caracteres. Motivo de corrección: de 10 a 200. Sin contar espacios al principio y al final. |
+| 30 | ¿Cómo se evita que entren datos personales (principio 3)? | Aviso junto a cada campo y bloqueo de lo que tenga forma de DNI, NIE o matrícula española. Los nombres propios no se detectan: límite declarado. |
+| 31 | ¿Qué pasa con las notas al reimportar un export? | Se **unen** con las del navegador, sin duplicar (misma fecha y mismo texto es la misma nota). A diferencia de `triaje`, no hay choque: las notas solo se añaden. |
+
 ## Contexto
 
 La bandeja tiene 60 incidencias sintéticas de seguridad física (`SVD-4100` a `SVD-4159`): 50
@@ -74,6 +92,8 @@ la prioridad con la matriz y deja que el operador la acepte o la corrija.
 5. **Como operador**, quiero exportar lo que confirmé, para que quede guardado en el repo y lo vea el resto del equipo.
 6. **Como operador**, quiero que me avise si cierro la pestaña con trabajo sin exportar, para no perderlo.
 7. **Como responsable del servicio**, quiero saber cuántas sugerencias se aceptaron y cuántas se corrigieron, para saber si la IA ayuda.
+8. **Como operador**, quiero explicar por qué corrijo a la IA, para que quien revise el triaje (o mejore la clasificación) sepa en qué se equivocó.
+9. **Como operador**, quiero añadir notas a un ticket, para dejar constancia de lo que sé y que no está en la descripción.
 
 ## Requisitos
 
@@ -204,15 +224,19 @@ Crítica (zona crítica) o Alta (resto), nunca Media. *(punto 16 de la 2ª revis
   origen. *(punto 5 de la 2ª revisión)*
 - Nunca hay un «aceptar todo». Cada ticket se confirma de uno en uno (constitución, principio 1).
 - La confirmación guarda el valor final, si fue aceptada o corregida, y la fecha y hora.
+- **Un `Corregido` exige motivo de corrección** (R9): sin él, «Guardar corrección» no se puede
+  pulsar. Un `Confirmado` guarda el motivo como `null`.
 
 ### R6. Persistencia y exportación
 
 - Dos claves en `localStorage`, con responsabilidades separadas: *(hueco spec↔diseño)*
-  - `svd-triaje` — las confirmaciones del operador.
+  - `svd-triaje` — las confirmaciones y las notas del operador (R9).
   - `svd-tema` — la preferencia claro/oscuro del interruptor de `docs/diseno.md`.
 - Si `localStorage` no está disponible, la app funciona igual y avisa de que hay que exportar antes de cerrar.
 - **Si hay confirmaciones sin exportar, la app avisa antes de cerrar la pestaña.** *(L4)*
-- «Exportar» descarga `tickets-triaje-AAAA-MM-DD.json`: los 60 tickets con sus campos originales, su `sugerencia` y un objeto `triaje` con lo confirmado.
+- «Exportar» descarga `tickets-triaje-AAAA-MM-DD.json`: los 60 tickets con sus campos originales,
+  su `sugerencia`, un objeto `triaje` con lo confirmado (incluido `motivoCorreccion`) y la lista
+  `notas` (R9). **`notas` existe siempre**, vacía (`[]`) si no hay ninguna.
   **Un ticket pendiente de confirmar exporta `"triaje": null`** — la clave existe siempre, igual que
   las cuatro de `sugerencia`; nunca se omite ni se deja un objeto vacío. *(punto 7 de la 2ª
   revisión)*
@@ -281,6 +305,48 @@ Esto no choca con el principio 1: el operador sigue decidiendo qué categoría t
 es la decisión de fondo. Lo que la interfaz impide es describir un ticket de forma contradictoria
 consigo misma.
 
+### R9. Notas y motivo de corrección del operador
+
+El operador puede cuestionar a la IA y dejar constancia de lo que sabe, sin tocar lo que se
+reportó (decisiones 25 a 31). Es texto libre, así que se aplica la enmienda del principio 3.
+
+**Motivo de corrección**
+
+- Aparece en «Corregir», debajo de la prioridad recalculada.
+- Es **obligatorio si lo guardado quedaría `Corregido`** (R5) y se ignora si quedaría `Confirmado`.
+- De 10 a 200 caracteres, sin contar los espacios de los extremos.
+- Se guarda dentro de la confirmación como `motivoCorreccion`; un `Confirmado` lo guarda como
+  `null`. Se ve en la ficha de un `Corregido`, junto a la sugerencia original de la IA.
+- Al reabrir un `Corregido` en «Corregir», el campo trae el motivo que ya tenía.
+- «Deshacer» lo borra junto con el resto de la confirmación.
+
+**Notas**
+
+- Se añaden desde la ficha (modo ver), en un panel «Notas del operador» debajo de los datos del
+  ticket. De 1 a 500 caracteres.
+- Cada nota guarda `texto` y `fecha` (ISO). Se muestran en orden cronológico, con su fecha y hora.
+- **No se editan ni se borran**, y sobreviven a «Deshacer».
+- Un ticket puede tener notas en cualquier estado del triaje, también pendiente.
+- Añadir una nota cuenta como modificación: la cabecera pasa a «hay cambios sin exportar».
+
+**Protección de datos personales (principio 3)**
+
+- Junto a cada campo, a la vista: «No escribas nombres, DNI, matrículas ni otros datos personales».
+- La app no deja guardar (botón deshabilitado y aviso) un texto que contenga algo con forma de:
+  DNI (8 cifras y una letra), NIE (X, Y o Z, 7 cifras y una letra) o matrícula española
+  (4 cifras y 3 consonantes). Mayúsculas o minúsculas, con o sin espacio o guion.
+- Los nombres propios no se detectan: queda declarado como límite.
+
+**Persistencia**
+
+- Las notas viven en `svd-triaje`, en `_notas: { [id]: [{texto, fecha}] }`, aparte de las
+  confirmaciones por ticket: por eso «Deshacer», que borra la entrada del ticket, no las toca.
+  Siguen siendo dos claves de `localStorage` (R6).
+- Las notas de ids que ya no existen se descartan, igual que las confirmaciones.
+- Al exportar, cada ticket lleva `notas: [...]`. Si el JSON cargado trae `notas`, se unen con las
+  del navegador sin duplicar (decisión 31).
+- Todo el texto del operador se pinta con `textContent`, nunca con `innerHTML`.
+
 ## Casos límite
 
 | Caso | Qué pasa |
@@ -297,12 +363,20 @@ consigo misma.
 | El JSON cambia de versión y hay confirmaciones guardadas | Las confirmaciones se asocian por `id`. Las de ids que ya no existen se descartan. |
 | Ticket cerrado | Se muestra con su sugerencia y **sí** cuenta en «Pendientes de confirmar» hasta que alguien lo confirma. |
 | El texto del ticket trae HTML o caracteres raros | Se pinta con `textContent`, nunca con `innerHTML`. |
+| Una nota o un motivo de corrección traen HTML | Igual: se pinta como texto (R9). |
+| Nota vacía o solo espacios | «Añadir nota» no se puede pulsar. |
+| Nota o motivo con forma de DNI, NIE o matrícula | No se puede guardar y se explica por qué (R9, principio 3). |
+| Se corrige algo sin escribir el motivo | «Guardar corrección» no se puede pulsar hasta que tenga 10 caracteres. |
+| Se deshace un ticket con notas | Vuelve a pendiente y las notas se quedan. |
+| Se reimporta un export con notas que el navegador ya tenía | Se unen sin duplicar. |
 
 ## Fuera de alcance
 
 - Cualquier acción real: bloquear credenciales, avisar a guardias o escalar alarmas (constitución, principio 2).
 - Login, usuarios, roles y permisos.
-- Alta de tickets nuevos y edición del texto de un ticket.
+- Alta de tickets nuevos y edición del texto de un ticket (decisión 25: se anota, no se reescribe).
+- Editar o borrar notas (decisión 26).
+- Detectar nombres propios en el texto del operador (decisión 30).
 - Clasificación en el navegador o con una API de IA. La sugerencia la escribe Claude Code en el repo.
 - SLA y tiempos objetivo de respuesta.
 - Detección de duplicados y resumen automático: con 60 tickets se revisan a mano.
@@ -330,3 +404,6 @@ La Fase 3 está terminada cuando se cumplen todos:
    diseño externa a este criterio: lo que carga en su vista previa no forma parte del código que se
    entrega. *(punto 20 de la 2ª revisión)*
 9. Se cumplen los 6 principios de `docs/constitution.md`, cada uno con su comprobación.
+10. Se puede añadir una nota y corregir con motivo; las notas sobreviven a recargar y a
+    «Deshacer», las dos cosas salen en el export, y un DNI, un NIE o una matrícula no se pueden
+    guardar (R9).

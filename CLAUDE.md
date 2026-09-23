@@ -27,6 +27,8 @@ busca antes una referencia y compárala con los 6 criterios de `assets/referenci
   `formato.js`, `constantes.js`.
 - Probado a mano en `python -m http.server 8000`: aceptar, corregir (con el bloqueo de urgencia
   de R8), deshacer, exportar, cambio de tema y los 9 criterios de finalización de `spec.md`.
+- **R9 (23/09/2026):** notas del operador y motivo de corrección obligatorio, tras enmendar el
+  principio 3. Validación en `js/utils/texto-operador.js`; criterio de finalización 10.
 
 Cuando termine una fase, actualiza esta sección y, si cambió la estructura, la tabla del
 `README.md`.
@@ -38,7 +40,7 @@ El orden importa. Si dos documentos chocan, gana el de más arriba:
 | Orden | Archivo | Qué manda |
 |---|---|---|
 | 1 | `docs/constitution.md` | Seis principios no negociables, cada uno con su comprobación. Para cambiarlos hay que editar ese archivo **antes** de tocar nada más |
-| 2 | `docs/spec.md` | Qué construir: requisitos R1–R8, casos límite, fuera de alcance y criterios de finalización |
+| 2 | `docs/spec.md` | Qué construir: requisitos R1–R9, casos límite, fuera de alcance y criterios de finalización |
 | 3 | `docs/diseno.md` | Cómo se ve: flujo de pantallas, la decisión tabla clara + interruptor oscuro, tipografía y contraste |
 | — | `docs/revision-qa-spec.md` | Primera revisión QA del spec, **ya resuelta**. Registro de qué se detectó y qué se decidió, con el archivo donde quedó cada decisión |
 | — | `docs/revision-qa-spec-2.md` | Segunda revisión QA, cruzando spec con diseño, **ya resuelta** (20/20, la última tanda el 23/09/2026). Mismo formato que la primera |
@@ -59,7 +61,8 @@ choca, dilo en vez de elegir por tu cuenta.
 2. **Ninguna acción sobre personas ni sobre el mundo físico.** No se bloquean credenciales, no
    se avisa a guardias, no se escalan alarmas. El sistema clasifica y muestra.
 3. **Solo datos sintéticos.** Nunca nombres, DNI, matrículas ni patrones de acceso reales,
-   tampoco en pruebas.
+   tampoco en pruebas. *Enmienda del 23/09/2026:* el operador puede escribir notas y motivos de
+   corrección (R9); la app avisa y bloquea lo que tenga forma de DNI, NIE o matrícula.
 4. **Toda sugerencia se explica.** Una sugerencia sin `motivo` no se muestra.
 5. **Prioridad por matriz propia**, no por intuición ni copiada de TI. La IA no inventa la
    prioridad: la calcula la app.
@@ -133,7 +136,7 @@ Claude Code (aquí)          data/tickets.json          Navegador
 lee los 60 tickets    ───>  escribe "sugerencia"  ───> app.js lo carga (1 vez)
                             {categoria, urgencia,       utils/ calcula prioridad
                              impacto, motivo}           components/ pintan
-                                                        confirmaciones → localStorage
+                                                        confirmaciones y notas → localStorage
                                                         "Exportar" → JSON de vuelta
 ```
 
@@ -170,7 +173,9 @@ Rutas por `location.hash` (`#/bandeja`, `#/ticket/:id`, `#/ticket/:id/corregir`,
 router externo: `app.js#render()` limpia `#app` y repinta según el hash en cada `hashchange`.
 
 `localStorage` en `svd-triaje` guarda un objeto `{ [id]: {estado, categoria, urgencia, impacto,
-sugerenciaSnapshot, fecha}, _meta: {ultimaModificacion, ultimoExport, sembrados} }`. `_meta` es
+motivoCorreccion, sugerenciaSnapshot, fecha}, _notas: { [id]: [{texto, fecha}] }, _meta:
+{ultimaModificacion, ultimoExport, sembrados} }`. `_notas` va aparte por lo mismo que `_meta`:
+"Deshacer" borra la entrada del ticket y las notas tienen que sobrevivir (spec R9, decisión 27). `_meta` es
 aparte de las entradas por ticket a propósito: "Deshacer" borra la entrada de ese ticket, así que el
 aviso de "cambios sin exportar" no puede depender de que sobreviva un `fecha` por ticket.
 `sembrados` guarda la huella de cada `triaje` que ya se aplicó desde el JSON, para no volver a
@@ -252,7 +257,12 @@ una regresión, no un cambio de criterio:
   aunque el ticket hable de una sola persona. Un permiso sin revocar expone la zona.
 - **«Sin clasificar» no es un estado del triaje**, es un valor de `categoria`. Los dos ejes son
   independientes y un «Sin clasificar» cuenta como pendiente.
-- **Dos claves de `localStorage`**, no una: `svd-triaje` y `svd-tema`.
+- **Dos claves de `localStorage`**, no una: `svd-triaje` y `svd-tema`. Las notas van dentro de
+  `svd-triaje`, en `_notas`, no en una tercera clave.
+- **El texto del ticket no se edita; las notas no se editan ni se borran.** Se añaden (R9).
+- **El motivo de corrección solo existe en un `Corregido`**: un `Confirmado` lo guarda `null`,
+  aunque el operador haya escrito algo.
+- **Todo texto del operador se pinta con `textContent`**, igual que el del ticket.
 - Con `categoria: "Sin clasificar"`, **`urgencia` e `impacto` son `null`** y `motivo` sigue siendo
   obligatorio.
 
@@ -262,4 +272,4 @@ una regresión, no un cambio de criterio:
 |---|---|---|
 | 2 | Fork del repo, Project en Claude y este `CLAUDE.md` | ✅ |
 | 3 | Fase 1 Spec, Fase 2 Diseño con Artifacts, Fase 3 Desarrollo | ✅ |
-| 4 | Fase 4 Tests y validación del dataset, Fase 5 Despliegue, Fase 6 Automatización del triaje en n8n | Fase 4: suite de 220 tests hecha por adelantado; falta la UAT con una persona. Fases 5-6 pendientes |
+| 4 | Fase 4 Tests y validación del dataset, Fase 5 Despliegue, Fase 6 Automatización del triaje en n8n | Fase 4: suite de 265 tests hecha por adelantado; falta la UAT con una persona. Fases 5-6 pendientes |

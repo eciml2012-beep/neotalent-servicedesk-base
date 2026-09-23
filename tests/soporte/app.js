@@ -31,6 +31,12 @@ export async function abrir(page, hash = "#/bandeja") {
   await expect(page.locator("main")).toBeVisible();
 }
 
+/** Escribe una nota en la ficha abierta y la añade (R9). */
+export async function anadirNota(page, texto) {
+  await page.getByLabel("Nueva nota").fill(texto);
+  await page.getByRole("button", { name: "Añadir nota" }).click();
+}
+
 export const fila = (page, id) => page.locator(`.fila-ticket[data-id="${id}"]`);
 
 /** Lee svd-triaje tal como lo dejó la app. */
@@ -50,12 +56,18 @@ export async function aceptar(page, id) {
   await expect(page).toHaveURL(/#\/bandeja$/);
 }
 
-/** Abre Corregir, aplica `cambios` ({ Categoría, Urgencia, Impacto }) y guarda. */
-export async function corregir(page, id, cambios = {}) {
+export const MOTIVO_CORRECCION = "El texto del ticket no encaja con lo sugerido (motivo inventado para la prueba).";
+
+/**
+ * Abre Corregir, aplica `cambios` ({ Categoría, Urgencia, Impacto }), escribe el motivo de la
+ * corrección (R9: obligatorio si queda Corregido; `motivo: ""` lo deja vacío) y guarda.
+ */
+export async function corregir(page, id, cambios = {}, { motivo = MOTIVO_CORRECCION } = {}) {
   await abrir(page, `#/ticket/${id}/corregir`);
   for (const campo of ["Categoría", "Urgencia", "Impacto"]) {
     if (cambios[campo]) await page.getByLabel(campo).selectOption(cambios[campo]);
   }
+  await page.getByLabel("Motivo de la corrección").fill(motivo);
   await page.getByRole("button", { name: "Guardar corrección" }).click();
   await expect(page).toHaveURL(/#\/bandeja$/);
 }

@@ -3,7 +3,7 @@
 // vuelve a leer otra sesión sin perder nada. Y el contrato con Claude Code: el JSON que escribe
 // es el que la app sabe leer.
 import { test, expect } from "@playwright/test";
-import { abrir, aceptar, corregir, exportar, fila, datasetReal, servirDataset, leerTriaje } from "../soporte/app.js";
+import { abrir, aceptar, anadirNota, corregir, exportar, fila, datasetReal, servirDataset, leerTriaje } from "../soporte/app.js";
 
 test.describe("Integración · export → repo → otra sesión", { tag: ["@integracion", "@R6", "@CF5"] }, () => {
   test("lo exportado, reimportado en un navegador limpio, conserva cada confirmación", async ({ page, browser }) => {
@@ -52,6 +52,26 @@ test.describe("Integración · export → repo → otra sesión", { tag: ["@inte
 
     expect(triaje["SVD-4102"].estado).toBe("Confirmado"); // viene del archivo
     expect(triaje["SVD-4117"].estado).toBe("Confirmado"); // hecha en esta sesión
+  });
+
+  test("las notas y el motivo de corrección vuelven con el archivo, y las notas se unen sin duplicar (R9)", { tag: ["@R9"] }, async ({ page, browser }) => {
+    await corregir(page, "SVD-4104", { Urgencia: "Alta" }, { motivo: "Motivo inventado que viaja con el export." });
+    await abrir(page, "#/ticket/SVD-4104");
+    await anadirNota(page, "Nota inventada que viaja con el export.");
+    await abrir(page);
+    const { datos } = await exportar(page);
+
+    // Mismo navegador (ya tiene la nota) y otro limpio: en los dos, una sola copia.
+    await servirDataset(page, datos);
+    await abrir(page, "#/ticket/SVD-4104");
+    await expect(page.locator(".notas__texto")).toHaveText(["Nota inventada que viaja con el export."]);
+
+    const otro = await (await browser.newContext({ baseURL: test.info().project.use.baseURL })).newPage();
+    await servirDataset(otro, datos);
+    await abrir(otro, "#/ticket/SVD-4104");
+    await expect(otro.locator(".notas__texto")).toHaveText(["Nota inventada que viaja con el export."]);
+    await expect(otro.locator(".caja-ia")).toContainText("Motivo inventado que viaja con el export.");
+    await otro.context().close();
   });
 });
 

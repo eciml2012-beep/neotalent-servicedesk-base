@@ -37,7 +37,7 @@ Los datos son inventados de cero — cero relación con clientes reales.
 │   └── tickets.json → 60 tickets con `sugerencia` (categoría, urgencia, impacto, motivo)
 ├── docs/
 │   ├── constitution.md       → Fase 1, seis principios no negociables
-│   ├── spec.md               → Fase 1, requisitos R1–R8
+│   ├── spec.md               → Fase 1, requisitos R1–R9
 │   ├── diseno.md             → Fase 2, flujo de pantallas y estilo (KirriDesk)
 │   ├── categorias-triaje.md  → las 7 categorías de triaje
 │   ├── revision-qa-spec.md   → primera revisión QA, resuelta
@@ -71,7 +71,7 @@ Los datos son inventados de cero — cero relación con clientes reales.
 | `README.md` | Qué es el proyecto y cómo empezar | Brief del proyecto, esta misma tabla | Es lo primero que lee cualquiera al abrir el repo — humano o Claude Code |
 | `CLAUDE.md` | Contexto del proyecto para Claude Code | Se genera en la Sesión 2 y se actualiza al terminar cada fase | Se genera en la Sesión 2 a partir de lo que Claude Code entienda del resto de archivos |
 
-| `tests/` | Pruebas automatizadas (220) | Unitarias, de datos, estáticas, de integración, e2e, aceptación, accesibilidad, seguridad, visuales, rendimiento y cobertura | Las ejecuta Playwright Test contra la app real; nunca modifican `data/tickets.json` |
+| `tests/` | Pruebas automatizadas (265) | Unitarias, de datos, estáticas, de integración, e2e, aceptación, accesibilidad, seguridad, visuales, rendimiento y cobertura | Las ejecuta Playwright Test contra la app real; nunca modifican `data/tickets.json` |
 
 La app es HTML/CSS/JS plano y **no necesita instalar nada**. Solo las pruebas usan Node
 (`package.json` con devDependencies; constitución, principio 6 enmendado).

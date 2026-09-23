@@ -29,7 +29,8 @@ test.describe("R5 · corregir", { tag: ["@R5"] }, () => {
 |---|---|
 | `abrir(page, "#/ticket/SVD-4102")` | Navega y espera a que la pantalla esté pintada |
 | `fila(page, id)` | La fila de un ticket en la bandeja |
-| `aceptar(page, id)` / `corregir(page, id, { Categoría, Urgencia, Impacto })` | Flujos completos desde la ficha |
+| `aceptar(page, id)` / `corregir(page, id, { Categoría, Urgencia, Impacto }, { motivo })` | Flujos completos desde la ficha. `corregir` escribe siempre un motivo de corrección inventado (R9); `{ motivo: "" }` lo deja vacío |
+| `anadirNota(page, texto)` | Escribe y añade una nota en la ficha abierta (R9) |
 | `exportar(page)` → `{ nombre, datos }` | Pulsa Exportar y lee el JSON descargado |
 | `leerTriaje(page)` | Lo que la app dejó en `svd-triaje` |
 | `sembrarTriaje(page, objeto)` | Estado previo en `svd-triaje`, **solo en la primera carga** |
@@ -85,6 +86,9 @@ await page.clock.setFixedTime(new Date("2026-09-23T22:30:00Z")); // 00:30 en Mad
 
 **Peticiones al exterior:** `page.on("request", …)` y comprobar que todas empiezan por `baseURL`
 (`blob:` y `data:` no son red).
+
+**Texto del operador en pruebas (R9):** los DNI, NIE y matrículas de las pruebas son formas
+inventadas (`12345678Z`, `X1234567L`, `1234 BCD`), nunca datos de nadie (principio 3).
 
 **Contraste WCAG:** ver `textosSinContraste()` en `tests/e2e/accesibilidad.spec.js`.
 **Trampa:** `rgb(r, g, b)` no trae alfa y es opaco; tratarlo como transparente midió todo contra

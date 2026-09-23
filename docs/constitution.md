@@ -50,6 +50,25 @@ fuente externa.
 *No hay hook de git que lo ejecute solo: es un comando que se corre a mano o desde el script de
 validación de la Fase 4.*
 
+**Texto libre del operador (enmienda del 23/09/2026).** El operador puede escribir notas y el
+motivo de una corrección (spec R9), como en cualquier service desk real: sin eso no puede
+cuestionar a la IA ni dejar constancia de lo que sabe. Es el único texto que no escribe Claude
+Code, así que el principio se defiende de tres formas:
+
+- junto a cada campo de texto, la app avisa de que no se escriban nombres, documentos de
+  identidad, matrículas ni otros datos personales;
+- la app **no deja guardar** un texto que tenga la forma de un DNI, un NIE o una matrícula
+  española;
+- los nombres propios no se pueden detectar de forma fiable: esa parte depende del operador y
+  queda declarada como límite.
+
+El texto del ticket (título, descripción y el resto de campos originales) sigue sin poder
+editarse: las notas se **añaden**, nunca sustituyen lo que se reportó.
+
+**Cómo se comprueba (texto libre):** las pruebas automáticas intentan guardar un DNI, un NIE y
+una matrícula en una nota y en un motivo de corrección, y la app lo rechaza; y cada campo de
+texto tiene el aviso a la vista.
+
 ## 4. Toda sugerencia se explica
 
 Junto a cada sugerencia de la IA se ve siempre el motivo: los hechos o las palabras del ticket

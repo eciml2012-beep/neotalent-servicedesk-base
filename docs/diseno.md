@@ -24,7 +24,14 @@ Panel de métricas ──> vuelve a Bandeja
 - **Panel de métricas** es solo lectura.
 - Los 60 tickets se cargan una vez al abrir; filtrar o abrir una ficha no vuelve a pedir datos.
 
-Queda fuera: login, alta de incidencias y edición del texto del ticket. La clasificación la hace
+- **Ficha, modo ver**: a la izquierda los datos del ticket y debajo el panel **Notas del
+  operador** (spec R9): notas con fecha, en orden, y un campo para añadir otra. A la derecha la
+  caja de la IA y las acciones.
+- **Ficha, modo corregir**: los tres desplegables, la prioridad recalculada y el campo **Motivo de
+  la corrección**, obligatorio si lo guardado difiere de la IA (R9).
+
+Queda fuera: login, alta de incidencias y edición del texto del ticket: el operador **anota**,
+no reescribe lo reportado (spec, decisión 25). La clasificación la hace
 Claude Code sobre el repositorio, no el navegador: la pantalla la muestra, no la calcula.
 
 Wireframes de baja fidelidad de estas pantallas, revisados contra el spec: `docs/wireframes-fase3/`.
@@ -108,6 +115,11 @@ decide la persona. Eso es el principio 1 de la constitución dibujado, y el R5 d
 
 Traducido a nuestra bandeja: el `motivo` y la categoría sugerida se pintan dentro de la caja.
 «Aceptar», «Corregir» y «Deshacer» se pintan fuera. Nunca al revés.
+
+Lo que escribe la persona tampoco va dentro de la caja de la IA: las notas tienen su propio panel
+junto a los datos del ticket. La única excepción es el **motivo de la corrección**, que se enseña
+en la caja de un `Corregido` junto a la «Sugerencia original de la IA», porque es la respuesta
+directa a esa sugerencia y se lee mejor al lado.
 
 ### Qué no se copia
 

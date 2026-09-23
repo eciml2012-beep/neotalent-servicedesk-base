@@ -1,7 +1,7 @@
 // Nivel: sistema (e2e). Técnica: transición de estados del triaje + tabla de decisión R8 en la UI.
 // Base de prueba: spec R5, R8 (interfaz), punto 13 de la 2ª revisión; constitución P1; diseno.md.
 import { test, expect } from "@playwright/test";
-import { abrir, aceptar, corregir, leerTriaje } from "../soporte/app.js";
+import { abrir, aceptar, corregir, leerTriaje, MOTIVO_CORRECCION } from "../soporte/app.js";
 
 test.describe("R5 · ficha en modo ver", { tag: ["@R5"] }, () => {
   test("la sugerencia va dentro de su caja y las acciones de la persona fuera (P1, diseno.md)", async ({ page }) => {
@@ -92,6 +92,7 @@ test.describe("R5 · corregir, guardar y deshacer", { tag: ["@R5"] }, () => {
     await page.getByLabel("Categoría").selectOption("Sin clasificar");
     await expect(page.getByLabel("Urgencia")).toBeDisabled();
     await expect(page.getByLabel("Impacto")).toBeDisabled();
+    await page.getByLabel("Motivo de la corrección").fill(MOTIVO_CORRECCION);
     await page.getByRole("button", { name: "Guardar corrección" }).click();
     expect((await leerTriaje(page))["SVD-4104"]).toMatchObject({ estado: "Corregido", categoria: "Sin clasificar", urgencia: null, impacto: null });
   });
@@ -107,6 +108,7 @@ test.describe("R5 · corregir, guardar y deshacer", { tag: ["@R5"] }, () => {
     await expect(page.getByLabel("Urgencia")).toHaveValue("Alta");
     await expect(page.getByLabel("Impacto")).toHaveValue("Medio");
     await page.getByLabel("Categoría").selectOption("Equipo de campo averiado");
+    await page.getByLabel("Motivo de la corrección").fill(MOTIVO_CORRECCION);
     await page.getByRole("button", { name: "Guardar corrección" }).click();
     expect((await leerTriaje(page))["SVD-4143"]).toMatchObject({ estado: "Corregido", categoria: "Equipo de campo averiado", impacto: "Medio" });
   });
@@ -115,6 +117,7 @@ test.describe("R5 · corregir, guardar y deshacer", { tag: ["@R5"] }, () => {
     await abrir(page, "#/ticket/SVD-4104/corregir");
     await page.getByLabel("Categoría").selectOption("Sin clasificar");
     await page.getByLabel("Categoría").selectOption("Equipo de campo averiado");
+    await page.getByLabel("Motivo de la corrección").fill(MOTIVO_CORRECCION);
     await page.getByRole("button", { name: "Guardar corrección" }).click();
     expect((await leerTriaje(page))["SVD-4104"].impacto).toBe("Alto");
   });

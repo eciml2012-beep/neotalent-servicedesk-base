@@ -50,7 +50,7 @@ npm run test:informe        # informe HTML del último run
 | Unitaria | `@R3`, `@R8`… en `tests/unit` | Funciones puras con todas sus combinaciones |
 | Datos | `@datos` | El dataset: 60 tickets, R1, R8, reparto documentado |
 | Integración | `@integracion` | Módulos juntos sobre el dataset real; ida y vuelta del export (R6); contrato con Claude Code |
-| Sistema (e2e) | `@R4`…`@R8` en `tests/e2e` | Flujos del operador con DOM, `localStorage`, navegación y descarga reales |
+| Sistema (e2e) | `@R4`…`@R9` en `tests/e2e` | Flujos del operador con DOM, `localStorage`, navegación y descarga reales |
 | Aceptación | `@aceptacion` | Una por historia de usuario, Dado/Cuando/Entonces. La UAT de verdad la hace una persona |
 | Accesibilidad | `@accesibilidad`, `@diseno` | WCAG 1.4.3, 1.4.10, 2.1.1, 2.4.2, 2.4.7, 3.1.1, 4.1.2 y reglas de `diseno.md` |
 | Seguridad | `@seguridad` | XSS, ninguna petición externa, funciona sin conexión |
@@ -67,15 +67,16 @@ nunca de ejecutar la app y copiar lo que devuelve. En la Fase 3 una prueba dio p
 (reabrir un Corregido lo pasaba a Confirmado) porque la expectativa salió de mirar la app. Si el
 spec es ambiguo, dilo y propón la precisión en `spec.md` antes de escribir el test.
 
-**Trazabilidad.** Cada test lleva la etiqueta de su requisito (`@P1`–`@P6`, `@R1`–`@R8`,
-`@CF1`–`@CF8`, `@CL`) y un título que describe comportamiento. Un requisito sin test es un hueco
+**Trazabilidad.** Cada test lleva la etiqueta de su requisito (`@P1`–`@P6`, `@R1`–`@R9`,
+`@CF1`–`@CF10`, `@CL`) y un título que describe comportamiento. Un requisito sin test es un hueco
 visible en la matriz; un test que falla dice qué regla se ha roto.
 
 **Pirámide.** Lo que se pueda probar en Node se prueba en Node: la tabla de 9 celdas de R3 no
 necesita un navegador; que Aceptar no aparezca en un «Sin clasificar», sí.
 
 **Técnicas, no inspiración.** Tabla de decisión (R3, R8), transición de estados (triaje,
-exportado ↔ sin exportar), particiones y valores límite (motivo de 40, medianoche local, 320 px),
+exportado ↔ sin exportar), particiones y valores límite (motivo de 40, motivo de corrección de 10, nota de 500, medianoche
+local, 320 px),
 casos de uso (historias), y cada fila de "Casos límite" del spec como un caso.
 
 **FIRST.** Independiente (Playwright da `localStorage` vacío por test; si hace falta estado,

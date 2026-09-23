@@ -21,7 +21,7 @@ vez, SLA) y la calidad del texto de los motivos más allá de lo automatizable (
 | Documento | Qué aporta |
 |---|---|
 | `docs/constitution.md` | P1–P6 y su "cómo se comprueba" |
-| `docs/spec.md` | R1–R8, casos límite, criterios de finalización CF1–CF9, historias de usuario |
+| `docs/spec.md` | R1–R9, casos límite, criterios de finalización CF1–CF10, historias de usuario |
 | `docs/diseno.md` | Reglas visuales medibles (44 px, 12 px, rojo solo para brechas, contraste AA) |
 | WCAG 2.2 AA | Criterios de accesibilidad medibles sin herramientas extra |
 
@@ -62,7 +62,7 @@ tiene el proyecto: el JSON que escribe Claude Code y el JSON que exporta el nave
 
 | Característica | Tipo | Etiqueta |
 |---|---|---|
-| Adecuación funcional | Funcionales por requisito | `@R1`…`@R8`, `@P1`…`@P6`, `@CL` |
+| Adecuación funcional | Funcionales por requisito | `@R1`…`@R9`, `@P1`…`@P6`, `@CL` |
 | Fiabilidad | Casos límite, localStorage bloqueado, JSON que no carga | `@CL`, `@R6` |
 | Usabilidad → accesibilidad | WCAG 1.4.3, 1.4.10, 2.1.1, 2.4.2, 2.4.7, 3.1.1, 4.1.2 | `@accesibilidad` |
 | Seguridad | XSS, peticiones solo al propio origen | `@seguridad` |
@@ -79,7 +79,7 @@ tiene el proyecto: el JSON que escribe Claude Code y el JSON que exporta el nave
 | Transición de estados | Pendiente → Confirmado / Corregido → Deshacer; cambios sin exportar ↔ exportado |
 | Particiones de equivalencia | Estados del triaje, zonas críticas / no críticas, localStorage disponible / bloqueado |
 | Valores límite | Motivo de 40 caracteres, medianoche local vs. UTC, 60 tickets, 320 px de ancho |
-| Casos de uso | Las 7 historias de usuario del spec |
+| Casos de uso | Las 9 historias de usuario del spec |
 | Error guessing dirigido | Cada fila de "Casos límite" del spec |
 
 ## 5. Entorno
@@ -95,7 +95,7 @@ JSON válido.
 
 **Salida (puertas antes de commitear un cambio en `js/`, `css/`, `index.html` o `data/`):**
 
-1. `npm test` en verde (220 tests hoy).
+1. `npm test` en verde (265 tests hoy).
 2. Ningún requisito sin al menos un test (`docs/pruebas/matriz-trazabilidad.md`).
 3. Cobertura JS ≥ 95 % (`@cobertura`).
 4. Tests nuevos vistos fallar al menos una vez (mutación manual o expectativa invertida).

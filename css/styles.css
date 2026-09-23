@@ -522,6 +522,51 @@ a {
   font-size: 15px;
 }
 
+/* --- Texto libre del operador (R9) --------------------------------------- */
+
+.campo-texto__area {
+  display: block;
+  margin-top: 6px;
+  width: 100%;
+  border: 1.5px solid var(--color-borde);
+  border-radius: 8px;
+  background: var(--color-fondo);
+  color: var(--color-texto);
+  padding: 10px 12px;
+  font: inherit;
+  font-size: 15px;
+  resize: vertical;
+}
+
+.campo-texto__error:not(:empty) {
+  margin-top: 4px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-abierto);
+}
+
+.panel__cuerpo > .boton {
+  align-self: flex-start;
+}
+
+.notas {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.notas__item {
+  padding-left: 12px;
+  border-left: 3px solid var(--color-borde);
+}
+
+.notas__texto {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
 /* --- Botones ------------------------------------------------------------- */
 
 .boton {

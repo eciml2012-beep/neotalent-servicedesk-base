@@ -34,3 +34,8 @@ export const ESTADOS_TRIAJE = {
 
 export const CLAVE_TRIAJE = "svd-triaje";
 export const CLAVE_TEMA = "svd-tema";
+
+// R9: límites del texto libre del operador, sin contar los espacios de los extremos.
+export const LIMITES_NOTA = { min: 1, max: 500 };
+export const LIMITES_MOTIVO_CORRECCION = { min: 10, max: 200 };
+export const AVISO_DATOS_PERSONALES = "No escribas nombres, DNI, matrículas ni otros datos personales.";

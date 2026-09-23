@@ -2,9 +2,14 @@
 // caja) y modo "corregir" (desplegables + Guardar/Cancelar). Recibe datos por
 // parámetro, no hace fetch ni lee localStorage.
 
-import { CATEGORIAS, SIN_CLASIFICAR, URGENCIAS, IMPACTOS } from "../utils/constantes.js";
+import {
+  CATEGORIAS, SIN_CLASIFICAR, URGENCIAS, IMPACTOS, ESTADOS_TRIAJE,
+  LIMITES_NOTA, LIMITES_MOTIVO_CORRECCION, AVISO_DATOS_PERSONALES,
+} from "../utils/constantes.js";
 import { calcularPrioridad, urgenciasPermitidas } from "../utils/prioridad.js";
-import { formatearFecha } from "../utils/formato.js";
+import { estadoAlGuardar } from "../utils/estado-ticket.js";
+import { validarTextoOperador } from "../utils/texto-operador.js";
+import { formatearFecha, formatearFechaHora } from "../utils/formato.js";
 
 function fila(etiqueta, valor) {
   const div = document.createElement("div");
@@ -16,6 +21,47 @@ function fila(etiqueta, valor) {
   val.textContent = valor;
   div.append(et, val);
   return div;
+}
+
+let siguienteId = 0;
+
+// R9: campo de texto libre del operador. El aviso de datos personales va siempre a la
+// vista (principio 3) y el error explica por qué no se puede guardar.
+function crearCampoTexto({ etiqueta, valor = "", limites, filas, onInput }) {
+  const cont = document.createElement("div");
+  cont.className = "campo-texto";
+  const idAviso = `campo-texto-aviso-${++siguienteId}`;
+
+  const label = document.createElement("label");
+  label.className = "dato__etiqueta";
+  label.textContent = etiqueta;
+  const area = document.createElement("textarea");
+  area.className = "campo-texto__area";
+  area.rows = filas;
+  area.maxLength = limites.max;
+  area.value = valor;
+  area.setAttribute("aria-describedby", idAviso);
+  label.append(area);
+
+  const aviso = document.createElement("p");
+  aviso.id = idAviso;
+  aviso.className = "campo-corregir__nota";
+  const error = document.createElement("p");
+  error.className = "campo-texto__error";
+  error.setAttribute("aria-live", "polite");
+
+  function validar() {
+    const resultado = validarTextoOperador(area.value, limites);
+    aviso.textContent = `${AVISO_DATOS_PERSONALES} ${resultado.texto.length}/${limites.max}.`;
+    // Un campo vacío no es un error que haya que gritar: basta con el botón deshabilitado.
+    error.textContent = resultado.texto && resultado.error ? resultado.error : "";
+    return resultado;
+  }
+  area.addEventListener("input", () => onInput(validar()));
+  validar();
+
+  cont.append(label, aviso, error);
+  return { cont, validar };
 }
 
 function crearCabecera(ticket, { onVolver, extra } = {}) {
@@ -114,6 +160,7 @@ function crearCajaSugerencia(ticket) {
     const s = ticket.sugerenciaEfectiva;
     const original = [s.categoria, s.urgencia, s.impacto].filter(Boolean).join(" · ");
     motivo.append(fila("Sugerencia original de la IA", original));
+    if (ticket.triaje?.motivoCorreccion) motivo.append(fila("Motivo de la corrección", ticket.triaje.motivoCorreccion));
   }
   caja.append(motivo);
 
@@ -166,6 +213,64 @@ function crearAcciones(ticket, { onAceptar, onCorregir, onDeshacer }) {
   return barra;
 }
 
+// R9: las notas se añaden y se quedan; no hay editar ni borrar.
+function crearPanelNotas(notas, { onAnadirNota }) {
+  const panel = document.createElement("section");
+  panel.className = "panel";
+  panel.setAttribute("aria-label", "Notas del operador");
+
+  const titulo = document.createElement("div");
+  titulo.className = "panel__titulo";
+  titulo.textContent = "NOTAS DEL OPERADOR";
+  panel.append(titulo);
+
+  const cuerpo = document.createElement("div");
+  cuerpo.className = "panel__cuerpo";
+
+  if (notas.length === 0) {
+    const vacio = document.createElement("p");
+    vacio.className = "campo-corregir__nota";
+    vacio.textContent = "Todavía no hay notas. Se añaden y quedan: no se editan ni se borran.";
+    cuerpo.append(vacio);
+  } else {
+    const lista = document.createElement("ol");
+    lista.className = "notas";
+    for (const nota of notas) {
+      const item = document.createElement("li");
+      item.className = "notas__item";
+      const fecha = document.createElement("div");
+      fecha.className = "dato__etiqueta";
+      fecha.textContent = formatearFechaHora(nota.fecha);
+      const texto = document.createElement("div");
+      texto.className = "dato__valor notas__texto";
+      texto.textContent = nota.texto;
+      item.append(fecha, texto);
+      lista.append(item);
+    }
+    cuerpo.append(lista);
+  }
+
+  const anadir = document.createElement("button");
+  anadir.type = "button";
+  anadir.className = "boton boton--secundario";
+  anadir.textContent = "Añadir nota";
+  const campo = crearCampoTexto({
+    etiqueta: "Nueva nota",
+    limites: LIMITES_NOTA,
+    filas: 3,
+    onInput: ({ error }) => { anadir.disabled = Boolean(error); },
+  });
+  anadir.disabled = Boolean(campo.validar().error);
+  anadir.addEventListener("click", () => {
+    const { texto, error } = campo.validar();
+    if (!error) onAnadirNota?.(texto);
+  });
+
+  cuerpo.append(campo.cont, anadir);
+  panel.append(cuerpo);
+  return panel;
+}
+
 export function crearFichaVer(ticket, zonasCriticas, callbacks) {
   const cont = document.createElement("div");
   cont.className = "ficha";
@@ -173,11 +278,14 @@ export function crearFichaVer(ticket, zonasCriticas, callbacks) {
 
   const cuerpo = document.createElement("div");
   cuerpo.className = "ficha__cuerpo";
+  const columnaIzquierda = document.createElement("div");
+  columnaIzquierda.className = "ficha__columna";
+  columnaIzquierda.append(crearPanelDatos(ticket, zonasCriticas), crearPanelNotas(ticket.notas ?? [], callbacks));
   const columnaDerecha = document.createElement("div");
   columnaDerecha.className = "ficha__columna";
   columnaDerecha.append(crearCajaSugerencia(ticket), crearAcciones(ticket, callbacks));
 
-  cuerpo.append(crearPanelDatos(ticket, zonasCriticas), columnaDerecha);
+  cuerpo.append(columnaIzquierda, columnaDerecha);
   cont.append(cuerpo);
   return cont;
 }
@@ -258,14 +366,29 @@ export function crearFichaCorregir(ticket, zonasCriticas, callbacks) {
   const notaGuardar = document.createElement("p");
   notaGuardar.className = "ficha__acciones-nota";
 
+  // R9: el motivo es obligatorio solo si lo guardado quedaría Corregido.
+  const campoMotivo = crearCampoTexto({
+    etiqueta: "Motivo de la corrección",
+    valor: ticket.triaje?.motivoCorreccion ?? "",
+    limites: LIMITES_MOTIVO_CORRECCION,
+    filas: 2,
+    onInput: () => pintarGuardar(),
+  });
+
   // "Sin clasificar" + Confirmado es la única combinación imposible (R4). Si la IA ya
   // dijo "Sin clasificar" y el operador lo deja igual, no hay nada que guardar.
   function pintarGuardar() {
     const sigueSinClasificar = categoria === SIN_CLASIFICAR && ticket.sugerenciaEfectiva.categoria === SIN_CLASIFICAR;
-    guardar.disabled = sigueSinClasificar;
+    const quedaCorregido = estadoAlGuardar(ticket.sugerenciaEfectiva, { categoria, urgencia, impacto }) === ESTADOS_TRIAJE.CORREGIDO;
+    const faltaMotivo = quedaCorregido && Boolean(campoMotivo.validar().error);
+    guardar.disabled = sigueSinClasificar || faltaMotivo;
     notaGuardar.textContent = sigueSinClasificar
       ? "Sigue sin clasificar: elige una categoría para poder guardar."
-      : "Cuenta como Confirmado si coincide con la sugerencia de la IA; si no, como Corregido.";
+      : faltaMotivo
+      ? "Cambias la sugerencia de la IA: explica por qué en el motivo de la corrección."
+      : quedaCorregido
+      ? "Se guardará como Corregido, con tu motivo."
+      : "Coincide con la sugerencia de la IA: se guardará como Confirmado (el motivo no hace falta).";
   }
 
   function pintarCampos() {
@@ -305,14 +428,14 @@ export function crearFichaCorregir(ticket, zonasCriticas, callbacks) {
         opciones: esSinClasificar ? ["—"] : opcionesUrgencia,
         deshabilitado: esSinClasificar || opcionesUrgencia.length === 1,
         notaBloqueo: esSinClasificar ? "Sin categoría, no hay urgencia que fijar." : notaUrgencia,
-        onChange: (v) => { urgencia = v; pintarPrioridad(); },
+        onChange: (v) => { urgencia = v; pintarPrioridad(); pintarGuardar(); },
       }),
       crearSelectCorregir({
         etiqueta: "Impacto",
         valor: impacto ?? "—",
         opciones: esSinClasificar ? ["—"] : IMPACTOS,
         deshabilitado: esSinClasificar,
-        onChange: (v) => { impacto = v; pintarPrioridad(); },
+        onChange: (v) => { impacto = v; pintarPrioridad(); pintarGuardar(); },
       })
     );
   }
@@ -320,11 +443,13 @@ export function crearFichaCorregir(ticket, zonasCriticas, callbacks) {
   pintarCampos();
   pintarPrioridad();
   pintarGuardar();
-  caja.append(camposCont, resumenPrioridad);
+  caja.append(camposCont, resumenPrioridad, campoMotivo.cont);
 
   const acciones = document.createElement("div");
   acciones.className = "ficha__acciones";
-  guardar.addEventListener("click", () => callbacks.onGuardar?.({ categoria, urgencia, impacto }));
+  guardar.addEventListener("click", () =>
+    callbacks.onGuardar?.({ categoria, urgencia, impacto, motivoCorreccion: campoMotivo.validar().texto || null })
+  );
   const cancelar = document.createElement("button");
   cancelar.type = "button";
   cancelar.className = "boton boton--fantasma";

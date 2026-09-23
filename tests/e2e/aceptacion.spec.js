@@ -2,7 +2,7 @@
 // usuario de docs/spec.md, escritas como Dado / Cuando / Entonces. No sustituyen la UAT con una
 // persona real, que está en docs/pruebas/uat.md: comprueban que cada historia se puede cumplir.
 import { test, expect } from "@playwright/test";
-import { abrir, aceptar, corregir, exportar, fila, leerTriaje } from "../soporte/app.js";
+import { abrir, aceptar, anadirNota, corregir, exportar, fila, leerTriaje, MOTIVO_CORRECCION } from "../soporte/app.js";
 
 test.describe("Aceptación · historias de usuario", { tag: ["@aceptacion"] }, () => {
   test("H1 · veo categoría, prioridad sugeridas y el motivo sin abrir la ficha", { tag: ["@humo", "@R4", "@P4"] }, async ({ page }) => {
@@ -27,6 +27,7 @@ test.describe("Aceptación · historias de usuario", { tag: ["@aceptacion"] }, (
     await test.step("Dado un ticket sugerido como Media × Alto (prioridad Alta)", () => abrir(page, "#/ticket/SVD-4104/corregir"));
     await test.step("Cuando subo la urgencia a Alta y guardo", async () => {
       await page.getByLabel("Urgencia").selectOption("Alta");
+      await page.getByLabel("Motivo de la corrección").fill(MOTIVO_CORRECCION);
       await page.getByRole("button", { name: "Guardar corrección" }).click();
     });
     await test.step("Entonces queda Corregido y su prioridad es la de la matriz: Crítica", async () => {
@@ -74,6 +75,32 @@ test.describe("Aceptación · historias de usuario", { tag: ["@aceptacion"] }, (
       await expect(page.getByText("1 confirmados · 1 corregidos")).toBeVisible();
       const tasa = page.locator(".panel").filter({ has: page.locator(".panel__titulo").getByText("Tasa de corrección", { exact: true }) });
       await expect(tasa.locator(".kpi__valor")).toHaveText("50%");
+    });
+  });
+
+  test("H8 · explico por qué corrijo a la IA", { tag: ["@R9", "@R5"] }, async ({ page }) => {
+    await test.step("Dado un ticket que corrijo", async () => {
+      await abrir(page, "#/ticket/SVD-4104/corregir");
+      await page.getByLabel("Urgencia").selectOption("Alta");
+    });
+    await test.step("Cuando escribo el motivo y guardo", async () => {
+      await page.getByLabel("Motivo de la corrección").fill("El lector ya no valida a nadie en el turno de noche.");
+      await page.getByRole("button", { name: "Guardar corrección" }).click();
+    });
+    await test.step("Entonces la ficha enseña mi motivo junto a lo que sugirió la IA", async () => {
+      await abrir(page, "#/ticket/SVD-4104");
+      await expect(page.locator(".caja-ia")).toContainText("Sugerencia original de la IA");
+      await expect(page.locator(".caja-ia")).toContainText("El lector ya no valida a nadie en el turno de noche.");
+    });
+  });
+
+  test("H9 · añado notas a un ticket sin tocar lo que se reportó", { tag: ["@R9"] }, async ({ page }) => {
+    await test.step("Dado un ticket abierto en su ficha", () => abrir(page, "#/ticket/SVD-4104"));
+    const descripcion = await page.locator(".panel").first().textContent();
+    await test.step("Cuando añado una nota", () => anadirNota(page, "Mantenimiento pasará el jueves (nota inventada)."));
+    await test.step("Entonces la nota queda con su fecha y la descripción original no cambia", async () => {
+      await expect(page.locator(".notas__texto")).toHaveText(["Mantenimiento pasará el jueves (nota inventada)."]);
+      await expect(page.locator(".panel").first()).toHaveText(descripcion);
     });
   });
 });

@@ -27,7 +27,7 @@ probó, lo que falló y lo que no se ha probado.
                  │ CI (GitHub)      npm test en cada PR y push  │
                  └──────────────────────────────────────────────┘
                  ┌──────────────────────────────────────────────┐
-  prueban   ───► │ tests/           220 pruebas automatizadas   │
+  prueban   ───► │ tests/           265 pruebas automatizadas   │
                  │ docs/pruebas/uat.md  UAT con una persona     │
                  └──────────────────────────────────────────────┘
                  ┌──────────────────────────────────────────────┐
@@ -49,8 +49,8 @@ probó, lo que falló y lo que no se ha probado.
 | Documento | Qué contiene | Cuándo se actualiza |
 |---|---|---|
 | [`plan-de-pruebas.md`](plan-de-pruebas.md) | Alcance, base de prueba, riesgos, niveles, tipos, técnicas, entorno, criterios de salida, roles | Al cambiar el alcance o la estrategia |
-| [`matriz-trazabilidad.md`](matriz-trazabilidad.md) | Cada requisito (P1–P6, R1–R8, casos límite, CF1–CF9) → qué pruebas lo cubren | Al añadir un requisito o una prueba |
-| [`uat.md`](uat.md) | Guion de aceptación para una persona (7 historias + revisión visual) y acta | Antes de cada demo o cierre de fase |
+| [`matriz-trazabilidad.md`](matriz-trazabilidad.md) | Cada requisito (P1–P6, R1–R9, casos límite, CF1–CF10) → qué pruebas lo cubren | Al añadir un requisito o una prueba |
+| [`uat.md`](uat.md) | Guion de aceptación para una persona (9 historias + revisión visual) y acta | Antes de cada demo o cierre de fase |
 | [`informe-de-pruebas.md`](informe-de-pruebas.md) | Resultados, defectos de la app, defectos de las propias pruebas, riesgos residuales | Después de cada pasada importante |
 | `../pruebas-fase3.md` | Registro histórico de las pruebas manuales de la Fase 3, antes de la suite | No se toca |
 
@@ -63,12 +63,14 @@ tests/
 │   ├── estado-ticket.spec.js    estados del triaje, casos límite de la sugerencia
 │   ├── filtros.spec.js          orden, filtros y métricas
 │   ├── formato.spec.js          fechas (valores límite)
+│   ├── texto-operador.spec.js   R9: largos, DNI/NIE/matrícula, unir notas
 │   ├── dataset.spec.js          data/tickets.json: 60 tickets, R1, R8
 │   ├── constitucion.spec.js     estáticas: dependencias, URLs, innerHTML, arquitectura
 │   └── integracion.spec.js      los módulos juntos sobre el dataset real
 ├── e2e/                         Chromium contra la app real
 │   ├── bandeja · ficha · persistencia · metricas · casos-limite   sistema
-│   ├── integracion.spec.js      ida y vuelta del export (R6)
+│   ├── notas.spec.js            R9: notas y motivo de corrección
+│   ├── integracion.spec.js      ida y vuelta del export (R6, R9)
 │   ├── aceptacion.spec.js       una prueba por historia de usuario
 │   ├── accesibilidad.spec.js    WCAG 2.2 AA y reglas de diseno.md
 │   ├── seguridad.spec.js        sin peticiones externas, sin conexión
@@ -91,7 +93,7 @@ Configuración: `playwright.config.js` (proyectos `unit` y `e2e`) y `package.jso
 | Unitaria | `@R3`, `@R8`… | Funciones puras con todas sus combinaciones |
 | Datos | `@datos` | El dataset cumple R1 y R8 y el reparto documentado |
 | Integración | `@integracion` | Módulos juntos; el export vuelve al repo y se lee igual |
-| Sistema | `@R4`…`@R8` | Flujos del operador con navegador real |
+| Sistema | `@R4`…`@R9` | Flujos del operador con navegador real |
 | Aceptación | `@aceptacion` | Cada historia de usuario, Dado/Cuando/Entonces |
 | Accesibilidad | `@accesibilidad` | WCAG 1.4.3, 1.4.10, 2.1.1, 2.4.2, 2.4.7, 3.1.1, 4.1.2 |
 | Seguridad | `@seguridad` | XSS y ninguna petición al exterior |
@@ -151,8 +153,9 @@ Las recetas (arnés, selectores, trampas ya pisadas) están en
 
 ## Estado a 23/09/2026
 
-- **220 / 220** en local; **209 / 209** en el CI (Linux, sin `@visual`).
-- Cobertura JS **98 %**; **8 / 8** bugs sembrados a mano detectados (mutación manual).
+- **265 / 265** en local; en el CI (Linux) corren todas menos las 11 `@visual`.
+- Cobertura JS **98 %**; **11 / 11** bugs sembrados a mano detectados (mutación manual: 8 de la
+  Fase 3 y 3 de R9).
 - Pendiente: la **UAT con una persona** y aprobar las capturas visuales.
 - No cubierto: Firefox y WebKit, lector de pantalla real, y las partes del spec que no se
   pueden automatizar (que el motivo "cite hechos", los juicios de R2).

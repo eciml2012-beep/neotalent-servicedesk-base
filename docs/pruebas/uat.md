@@ -22,8 +22,9 @@ Marca cada paso: ✅ como se espera · ❌ no · ❓ confuso (aunque funcione). 
 - [ ] Queda claro qué estoy aceptando antes de pulsar.
 - [ ] Tras aceptar, sé dónde ha ido el ticket.
 
-**H3 · Corregir.** Abre `SVD-4104`, corrígelo a urgencia Alta y guarda.
+**H3 · Corregir.** Abre `SVD-4104`, corrígelo a urgencia Alta, escribe el motivo y guarda.
 - [ ] Veo cómo cambia la prioridad antes de guardar.
+- [ ] Entiendo por qué no puedo guardar hasta escribir el motivo.
 - [ ] Si elijo «Brecha de seguridad activa», entiendo por qué no puedo cambiar la urgencia.
 
 **H4 · Nada sin revisar.** Vuelve a la bandeja.
@@ -38,6 +39,14 @@ Marca cada paso: ✅ como se espera · ❌ no · ❓ confuso (aunque funcione). 
 
 **H7 · Métricas.** Abre Métricas.
 - [ ] Entiendo qué significa la tasa de corrección y qué dice de la IA.
+
+**H8 · Explicar una corrección.** Abre otra vez `SVD-4104`.
+- [ ] Veo mi motivo junto a lo que sugirió la IA y se entiende en qué se equivocó.
+
+**H9 · Anotar.** En la ficha de `SVD-4110`, añade una nota. Luego intenta añadir otra con un DNI inventado.
+- [ ] La nota queda con su fecha y la descripción del ticket no ha cambiado.
+- [ ] Entiendo por qué la segunda no se puede guardar.
+- [ ] Echo en falta (o no) poder editar o borrar una nota: anótalo en observaciones.
 
 ## Revisión visual y de comodidad
 

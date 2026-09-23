@@ -9,6 +9,7 @@ import { crearBarraFiltros } from "./components/barra-filtros.js";
 import { crearFichaVer, crearFichaCorregir } from "./components/ficha-ticket.js";
 import { crearPanelMetricas } from "./components/panel-metricas.js";
 import { formatearFechaHora, fechaLocal } from "./utils/formato.js";
+import { unirNotas } from "./utils/texto-operador.js";
 
 const raiz = document.getElementById("app");
 
@@ -86,16 +87,28 @@ function buscarDerivado(id) {
   return original ? derivarTicket(original, estado.triaje[id] ?? null) : null;
 }
 
-function guardarConfirmacion(id, { estadoTriaje, categoria, urgencia, impacto }) {
+function guardarConfirmacion(id, { estadoTriaje, categoria, urgencia, impacto, motivoCorreccion = null }) {
   const ticket = buscarDerivado(id);
   estado.triaje[id] = {
     estado: estadoTriaje,
     categoria,
     urgencia,
     impacto,
+    // R9: el motivo solo tiene sentido en un Corregido.
+    motivoCorreccion: estadoTriaje === ESTADOS_TRIAJE.CORREGIDO ? motivoCorreccion : null,
     sugerenciaSnapshot: snapshotDeSugerencia(ticket.sugerenciaEfectiva),
     fecha: new Date().toISOString(),
   };
+  marcarModificacion();
+  guardarTriaje();
+}
+
+// R9: las notas van en `_notas`, aparte de la entrada del ticket, para que Deshacer
+// (que borra esa entrada) no se las lleve.
+const notasDe = (id) => estado.triaje._notas?.[id] ?? [];
+
+function anadirNota(id, texto) {
+  estado.triaje._notas = { ...estado.triaje._notas, [id]: [...notasDe(id), { texto, fecha: new Date().toISOString() }] };
   marcarModificacion();
   guardarTriaje();
 }
@@ -111,9 +124,16 @@ function exportar() {
   const datos = estado.tickets.map((t) => {
     const derivado = derivarTicket(t, estado.triaje[t.id] ?? null);
     const triaje = derivado.triaje
-      ? { estado: derivado.triaje.estado, categoria: derivado.triaje.categoria, urgencia: derivado.triaje.urgencia, impacto: derivado.triaje.impacto, fecha: derivado.triaje.fecha }
+      ? {
+          estado: derivado.triaje.estado,
+          categoria: derivado.triaje.categoria,
+          urgencia: derivado.triaje.urgencia,
+          impacto: derivado.triaje.impacto,
+          motivoCorreccion: derivado.triaje.motivoCorreccion ?? null,
+          fecha: derivado.triaje.fecha,
+        }
       : null;
-    return { ...t, triaje };
+    return { ...t, triaje, notas: notasDe(t.id) };
   });
 
   const blob = new Blob([JSON.stringify(datos, null, 2)], { type: "application/json" });
@@ -300,10 +320,18 @@ function crearVistaFicha(id, modo) {
       guardarConfirmacion(id, { estadoTriaje: estadoAlGuardar(ticket.sugerenciaEfectiva, valores), ...valores });
       navegar("#/bandeja");
     },
+    onAnadirNota: (texto) => {
+      anadirNota(id, texto);
+      render();
+    },
     onCancelar: () => navegar(`#/ticket/${id}`),
   };
 
-  main.append(modo === "corregir" ? crearFichaCorregir(ticket, ZONAS_CRITICAS, callbacks) : crearFichaVer(ticket, ZONAS_CRITICAS, callbacks));
+  main.append(
+    modo === "corregir"
+      ? crearFichaCorregir(ticket, ZONAS_CRITICAS, callbacks)
+      : crearFichaVer({ ...ticket, notas: notasDe(id) }, ZONAS_CRITICAS, callbacks)
+  );
   return main;
 }
 
@@ -324,6 +352,14 @@ function sembrarTriajeDesdeJSON() {
   const sembrados = { ...estado.triaje._meta?.sembrados };
   let cambios = false;
   for (const t of estado.tickets) {
+    // R9 (decisión 31): las notas del JSON se unen con las del navegador, sin choque.
+    if (t.notas?.length) {
+      const unidas = unirNotas(notasDe(t.id), t.notas);
+      if (unidas.length !== notasDe(t.id).length) {
+        estado.triaje._notas = { ...estado.triaje._notas, [t.id]: unidas };
+        cambios = true;
+      }
+    }
     if (!t.triaje) continue;
     const huella = JSON.stringify(t.triaje);
     if (sembrados[t.id] === huella) continue;
@@ -339,9 +375,11 @@ function sembrarTriajeDesdeJSON() {
 // Casos límite: "las confirmaciones de ids que ya no existen se descartan".
 function descartarHuerfanos() {
   const ids = new Set(estado.tickets.map((t) => t.id));
-  const huerfanos = Object.keys(estado.triaje).filter((id) => id !== "_meta" && !ids.has(id));
-  if (huerfanos.length === 0) return;
+  const huerfanos = Object.keys(estado.triaje).filter((id) => !id.startsWith("_") && !ids.has(id));
+  const notasHuerfanas = Object.keys(estado.triaje._notas ?? {}).filter((id) => !ids.has(id));
+  if (huerfanos.length === 0 && notasHuerfanas.length === 0) return;
   for (const id of huerfanos) delete estado.triaje[id];
+  for (const id of notasHuerfanas) delete estado.triaje._notas[id];
   guardarTriaje();
 }
 
