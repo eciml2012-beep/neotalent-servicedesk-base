@@ -13,6 +13,7 @@ Trazabilidad: `docs/pruebas/matriz-trazabilidad.md`. Pruebas manuales anteriores
 |---|---|
 | Pruebas automatizadas | **220** en 19 archivos (108 en Node: unitarias, datos, estáticas e integración; 112 en navegador) |
 | Resultado | **220 / 220 en verde**, ~22 s |
+| CI (GitHub Actions, Linux) | **209 / 209 en verde** (todo menos `@visual`, cuyas capturas son de Windows) |
 | Estabilidad | Las e2e, ejecutadas 3 veces cada una: 0 intermitentes |
 | Requisitos sin prueba | **Ninguno** (P1–P6, R1–R8, CF1–CF9, casos límite) |
 | Cobertura JS (V8, aproximada) | **98,0 %** (umbral de la suite: 95 %) |

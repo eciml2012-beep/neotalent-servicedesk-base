@@ -102,7 +102,7 @@ Las referencias llevan sufijo del sistema (`-win32`); en otro sistema, `npm run 
 
 ## Servidor de pruebas
 
-`playwright.config.js` levanta el `http.server` de Python en `127.0.0.1:8000` con cola de 128
+`playwright.config.js` arranca `tests/soporte/servidor.py`: el `http.server` de Python en `127.0.0.1:8000` con cola de 128
 conexiones. **Trampa:** con la cola por defecto (5) y 8 navegadores en paralelo, Windows rechazaba
 conexiones (`ERR_CONNECTION_REFUSED`) de forma intermitente.
 
