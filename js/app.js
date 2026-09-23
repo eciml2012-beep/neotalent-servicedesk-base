@@ -8,7 +8,7 @@ import { crearFilaTicket } from "./components/fila-ticket.js";
 import { crearBarraFiltros } from "./components/barra-filtros.js";
 import { crearFichaVer, crearFichaCorregir } from "./components/ficha-ticket.js";
 import { crearPanelMetricas } from "./components/panel-metricas.js";
-import { formatearFechaHora } from "./utils/formato.js";
+import { formatearFechaHora, fechaLocal } from "./utils/formato.js";
 
 const raiz = document.getElementById("app");
 
@@ -107,7 +107,7 @@ function deshacerConfirmacion(id) {
 }
 
 function exportar() {
-  const hoy = new Date().toISOString().slice(0, 10);
+  const hoy = fechaLocal(new Date());
   const datos = estado.tickets.map((t) => {
     const derivado = derivarTicket(t, estado.triaje[t.id] ?? null);
     const triaje = derivado.triaje
