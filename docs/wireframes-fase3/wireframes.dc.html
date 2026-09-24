@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
 <head>
 <meta charset="utf-8">
@@ -14,591 +14,683 @@
 </helmet>
 <x-import component-from-global-scope="deck-stage" from="./deck-stage.js" width="1920" height="1080" hint-size="100%,100%">
 
-<!-- ══════════ 0 · DIAGRAMA DE FLUJO ══════════ -->
-<section data-label="Flujo" data-speaker-notes="Mapa de las tres pantallas del spec/diseño: Bandeja es la entrada; abre una Ficha al hacer clic en una fila y siempre vuelve a la Bandeja; desde la cabecera se llega a Métricas y a Exportar. No hay más pantallas." style="width:100%;height:100%;box-sizing:border-box;display:flex;flex-direction:column;font-family:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:#3a3a3a;background:#e4e4e4;padding:64px 72px;">
-  <div style="font-size:13px;letter-spacing:.16em;color:#9a9a9a;font-weight:700;">WIREFRAME · BAJA FIDELIDAD</div>
-  <div style="font-size:34px;font-weight:700;color:#444;margin-top:8px;">Flujo de pantallas — operador de triaje</div>
-  <div style="font-size:16px;color:#7d7d7d;margin-top:6px;max-width:1100px;">Solo las pantallas de <span style="font-family:ui-monospace,Consolas,monospace;">docs/diseno.md</span>: Bandeja → Ficha → Bandeja, y Bandeja → Métricas. Exportar es una acción de la cabecera de la Bandeja.</div>
-
-  <div style="flex:1;display:flex;align-items:center;justify-content:center;margin-top:24px;">
-    <div style="display:grid;grid-template-columns:auto 150px auto 150px auto;align-items:center;row-gap:56px;">
-
-      <!-- Row 1 -->
-      <div style="width:260px;height:150px;border:2px solid #7f7f7f;border-radius:10px;background:#fff;padding:18px 20px;">
-        <div style="font-size:20px;font-weight:700;color:#444;">Bandeja</div>
-        <div style="font-size:14px;color:#7d7d7d;margin-top:8px;line-height:1.4;">Entrada. Filtro por defecto “Pendientes de confirmar”. Los 60 tickets.</div>
+<!-- ══════════ 0 · FLUJO ══════════ -->
+<section data-label="Flujo" data-speaker-notes="Vista C: bandeja y ficha en un solo panel, sin navegar entre pantallas. Nuevo ticket (R10) es un formulario modal sobre la bandeja. Notas (R9) viven dentro de la ficha, no son pantalla aparte." style="width:100%;height:100%;box-sizing:border-box;display:flex;flex-direction:column;font-family:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:#3a3a3a;background:#e4e4e4;position:relative;">
+  <div style="padding:56px 64px;">
+    <div style="font-size:12px;letter-spacing:.16em;color:#9a9a9a;font-weight:700;">WIREFRAME · BAJA FIDELIDAD · TRAS EL REDISEÑO (24/09/2026)</div>
+    <div style="font-size:30px;font-weight:700;color:#444;margin-top:8px;">Flujo de pantallas — vista C</div>
+    <div style="font-size:15px;color:#7d7d7d;margin-top:6px;max-width:1000px;">Bandeja y Ficha ya no son dos pantallas: es un solo panel con la lista a la izquierda y el ticket elegido a la derecha, cada uno con su scroll. "Nuevo ticket" abre un formulario encima; las notas viven dentro de la ficha, no aparte.</div>
+  </div>
+  <div style="flex:1;display:flex;align-items:center;justify-content:center;">
+    <div style="display:grid;grid-template-columns:auto 130px auto;align-items:center;row-gap:40px;column-gap:0;">
+      <div style="width:320px;height:170px;border:2px solid #7f7f7f;border-radius:10px;background:#fff;padding:16px 20px;">
+        <div style="font-size:18px;font-weight:700;color:#444;">Bandeja + Ficha</div>
+        <div style="font-size:13px;color:#7d7d7d;margin-top:8px;line-height:1.4;">Un solo panel. Clic en una fila → se abre al lado, sin cambiar de pantalla. Aceptar/Guardar pasa al siguiente pendiente.</div>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:center;color:#8a8a8a;font-size:12px;"><div>Nuevo ticket →</div><div style="width:100%;height:2px;background:#9a9a9a;margin:4px 0;"></div><div>Métricas / Exportar ↓</div></div>
+      <div style="width:300px;height:170px;border:2px dashed #8f8f8f;border-radius:10px;background:#ececec;padding:16px 20px;">
+        <div style="font-size:17px;font-weight:700;color:#555;">Nuevo ticket (modal)</div>
+        <div style="font-size:13px;color:#8a8a8a;margin-top:8px;line-height:1.4;">Formulario sobre la bandeja. Clasificador de reglas fijas (no IA). Nace Pendiente de confirmar, id SVD-4160+.</div>
       </div>
 
-      <div style="display:flex;flex-direction:column;align-items:center;color:#8a8a8a;">
-        <div style="font-size:13px;margin-bottom:4px;">clic en una fila →</div>
-        <div style="width:100%;height:2px;background:#9a9a9a;"></div>
-        <div style="font-size:13px;margin-top:4px;">← volver / guardar</div>
-      </div>
-
-      <div style="width:300px;height:150px;border:2px solid #7f7f7f;border-radius:10px;background:#fff;padding:18px 20px;">
-        <div style="font-size:20px;font-weight:700;color:#444;">Ficha del ticket</div>
-        <div style="font-size:14px;color:#7d7d7d;margin-top:8px;line-height:1.4;">Datos + caja de sugerencia IA. Acciones fuera de la caja.</div>
-      </div>
-
-      <div style="display:flex;flex-direction:column;align-items:center;color:#8a8a8a;">
-        <div style="font-size:13px;margin-bottom:4px;">Aceptar / Corregir →</div>
-        <div style="width:100%;height:2px;background:#9a9a9a;"></div>
-      </div>
-
-      <div style="width:260px;height:150px;border:2px solid #7f7f7f;border-radius:10px;background:#f6f6f6;padding:18px 20px;">
-        <div style="font-size:20px;font-weight:700;color:#444;">Bandeja actualizada</div>
-        <div style="font-size:14px;color:#7d7d7d;margin-top:8px;line-height:1.4;">Ticket como Confirmado / Corregido. Aviso “cambios sin exportar”.</div>
-      </div>
-
-      <!-- Row 2 : from Bandeja down -->
-      <div style="display:flex;flex-direction:column;align-items:center;gap:6px;">
-        <div style="width:2px;height:40px;background:#9a9a9a;"></div>
-        <div style="font-size:12px;color:#8a8a8a;">Métricas ↓ · Exportar ↓</div>
-      </div>
       <div></div><div></div><div></div>
-      <div style="display:flex;flex-direction:column;align-items:center;gap:6px;">
-        <div style="width:2px;height:40px;background:#9a9a9a;"></div>
+
+      <div style="width:320px;height:120px;border:2px dashed #8f8f8f;border-radius:10px;background:#ececec;padding:16px 20px;">
+        <div style="font-size:16px;font-weight:700;color:#555;">Panel de métricas</div>
+        <div style="font-size:12px;color:#8a8a8a;margin-top:6px;">Solo lectura. Vuelve a la Bandeja.</div>
       </div>
-
-      <!-- Row 3 : leaf boxes -->
-      <div style="width:260px;height:110px;border:2px dashed #8f8f8f;border-radius:10px;background:#ececec;padding:16px 20px;">
-        <div style="font-size:18px;font-weight:700;color:#555;">Panel de métricas</div>
-        <div style="font-size:13px;color:#8a8a8a;margin-top:6px;line-height:1.4;">Solo lectura. Vuelve a la Bandeja.</div>
-      </div>
-      <div></div><div></div><div></div>
-      <div style="width:260px;height:110px;border:2px dashed #8f8f8f;border-radius:10px;background:#ececec;padding:16px 20px;">
-        <div style="font-size:18px;font-weight:700;color:#555;">JSON descargado</div>
-        <div style="font-size:13px;color:#8a8a8a;margin-top:6px;line-height:1.4;">tickets-triaje-AAAA-MM-DD.json · 60 tickets.</div>
-      </div>
-
-    </div>
-  </div>
-</section>
-
-<!-- ══════════ 1 · BANDEJA (POR DEFECTO) ══════════ -->
-<section data-label="Bandeja" data-speaker-notes="Bandeja con el filtro por defecto Pendientes de confirmar. Primero el Sin clasificar (destacado, solo Corregir), luego el resto por prioridad. Categoría y prioridad de las filas pendientes van atenuadas y con la marca sugerido. El motivo se ve sin desplegar. Cabecera con filtros y botón Exportar." style="width:100%;height:100%;box-sizing:border-box;display:flex;font-family:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:#3a3a3a;background:#e4e4e4;">
-  <!-- RAIL -->
-  <aside style="width:230px;flex:none;background:#f4f4f4;border-right:1px solid #cfcfcf;padding:24px 16px;display:flex;flex-direction:column;gap:22px;">
-    <div style="display:flex;align-items:center;gap:10px;">
-      <div style="width:34px;height:34px;border:1px solid #b6b6b6;border-radius:7px;background:#e2e2e2;display:flex;align-items:center;justify-content:center;font-size:11px;color:#777;">MSD</div>
-      <div style="font-size:14px;font-weight:600;color:#555;line-height:1.15;">Mini Service<br>Desk</div>
-    </div>
-    <div style="height:38px;border:1px solid #cbcbcb;border-radius:7px;background:#ededed;display:flex;align-items:center;padding:0 12px;font-size:13px;color:#9a9a9a;">Buscar…</div>
-    <div>
-      <div style="font-size:11px;letter-spacing:.14em;color:#9a9a9a;font-weight:700;margin-bottom:10px;">TRIAJE</div>
-      <div style="display:flex;flex-direction:column;gap:4px;">
-        <div style="height:40px;border:1px solid #bdbdbd;border-radius:7px;background:#e0e0e0;display:flex;align-items:center;padding:0 12px;font-size:15px;font-weight:600;color:#444;">Bandeja</div>
-        <div style="height:40px;border:1px solid transparent;border-radius:7px;display:flex;align-items:center;padding:0 12px;font-size:15px;color:#7d7d7d;">Métricas</div>
-      </div>
-    </div>
-    <div style="margin-top:auto;font-size:11px;color:#b0b0b0;">Tema&nbsp; ◌ Claro / ● Oscuro</div>
-  </aside>
-
-  <!-- MAIN -->
-  <div style="flex:1;display:flex;flex-direction:column;min-width:0;">
-    <!-- HEADER -->
-    <div style="flex:none;background:#fafafa;border-bottom:1px solid #cfcfcf;padding:18px 32px;display:flex;flex-direction:column;gap:14px;">
-      <div style="display:flex;align-items:center;gap:16px;">
-        <div style="font-size:22px;font-weight:700;color:#444;">Bandeja de triaje</div>
-        <div style="font-size:14px;color:#8a8a8a;">60 incidencias · SVD-4100 a SVD-4159</div>
-        <div style="margin-left:auto;height:44px;border:1.5px solid #555;border-radius:8px;background:#dcdcdc;display:flex;align-items:center;padding:0 20px;font-size:15px;font-weight:600;color:#3a3a3a;">Exportar ↓</div>
-      </div>
-      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
-        <div style="font-size:13px;color:#9a9a9a;">Filtros:</div>
-        <div style="height:36px;border:1.5px solid #6f6f6f;border-radius:7px;background:#e6e6e6;display:flex;align-items:center;padding:0 12px;font-size:13px;font-weight:600;color:#444;">Estado triaje: Pendientes de confirmar ▾</div>
-        <div style="height:36px;border:1px solid #c4c4c4;border-radius:7px;background:#fff;display:flex;align-items:center;padding:0 12px;font-size:13px;color:#8a8a8a;">Prioridad ▾</div>
-        <div style="height:36px;border:1px solid #c4c4c4;border-radius:7px;background:#fff;display:flex;align-items:center;padding:0 12px;font-size:13px;color:#8a8a8a;">Sistema ▾</div>
-        <div style="height:36px;border:1px solid #c4c4c4;border-radius:7px;background:#fff;display:flex;align-items:center;padding:0 12px;font-size:13px;color:#8a8a8a;">Zona ▾</div>
-        <div style="height:36px;border:1px solid #c4c4c4;border-radius:7px;background:#fff;display:flex;align-items:center;padding:0 12px;font-size:13px;color:#8a8a8a;">Estado ticket ▾</div>
-      </div>
-    </div>
-
-    <!-- LIST -->
-    <div style="flex:1;overflow:hidden;padding:22px 32px;display:flex;flex-direction:column;gap:10px;">
-      <!-- column heads -->
-      <div style="display:grid;grid-template-columns:120px 1fr 210px 150px 130px;gap:16px;padding:0 18px;font-size:11px;letter-spacing:.1em;color:#9a9a9a;font-weight:700;">
-        <div>ID</div><div>TÍTULO · MOTIVO IA</div><div>CATEGORÍA</div><div>PRIORIDAD</div><div>ESTADO</div>
-      </div>
-
-      <!-- Row: SIN CLASIFICAR (destacado) -->
-      <div style="border:2px solid #7f7f7f;border-radius:9px;background:#fff;padding:16px 18px;display:grid;grid-template-columns:120px 1fr 210px 150px 130px;gap:16px;align-items:center;">
-        <div style="font-family:ui-monospace,Consolas,monospace;font-size:15px;color:#444;">SVD-4143</div>
-        <div>
-          <div style="font-size:16px;font-weight:600;color:#3a3a3a;">Cámara 12 sin grabar en Nave logística 2</div>
-          <div style="font-size:13px;color:#7d7d7d;margin-top:5px;line-height:1.4;">⚑ Motivo IA: no se puede decidir si la cámara está averiada o solo no guarda; requiere comprobación en sitio.</div>
-        </div>
-        <div><span style="display:inline-block;border:2px solid #7f7f7f;border-radius:6px;background:#e6e6e6;padding:5px 10px;font-size:13px;font-weight:700;color:#444;">Sin clasificar</span></div>
-        <div style="font-size:13px;color:#b0b0b0;font-style:italic;">— (sin prioridad)</div>
-        <div><span style="display:inline-block;border:1px solid #bdbdbd;border-radius:6px;background:#f0f0f0;padding:5px 10px;font-size:12px;color:#7d7d7d;">Pendiente</span></div>
-      </div>
-
-      <!-- Row: SVD-4102 Brecha (sugerido) Crítica -->
-      <div style="border:1px solid #cfcfcf;border-radius:9px;background:#fff;padding:16px 18px;display:grid;grid-template-columns:120px 1fr 210px 150px 130px;gap:16px;align-items:center;">
-        <div style="font-family:ui-monospace,Consolas,monospace;font-size:15px;color:#444;">SVD-4102</div>
-        <div>
-          <div style="font-size:16px;font-weight:600;color:#3a3a3a;">Alarma perimetral desactivada tras mantenimiento</div>
-          <div style="font-size:13px;color:#7d7d7d;margin-top:5px;line-height:1.4;">Motivo IA: la alarma quedó desactivada tras un mantenimiento; el perímetro está sin vigilancia ahora.</div>
-        </div>
-        <div><span style="display:inline-block;border:1.5px dashed #9a9a9a;border-radius:6px;background:#efefef;padding:5px 10px;font-size:13px;color:#6b6b6b;">Brecha de seguridad · <span style="font-style:italic;">sugerido</span></span></div>
-        <div><span style="display:inline-block;border:1.5px dashed #9a9a9a;border-radius:6px;background:#efefef;padding:5px 10px;font-size:13px;color:#6b6b6b;">Crítica · <span style="font-style:italic;">sug.</span></span></div>
-        <div><span style="display:inline-block;border:1px solid #bdbdbd;border-radius:6px;background:#f0f0f0;padding:5px 10px;font-size:12px;color:#7d7d7d;">Pendiente</span></div>
-      </div>
-
-      <!-- Row: SVD-4108 Brecha Alta -->
-      <div style="border:1px solid #cfcfcf;border-radius:9px;background:#fff;padding:16px 18px;display:grid;grid-template-columns:120px 1fr 210px 150px 130px;gap:16px;align-items:center;">
-        <div style="font-family:ui-monospace,Consolas,monospace;font-size:15px;color:#444;">SVD-4108</div>
-        <div>
-          <div style="font-size:16px;font-weight:600;color:#3a3a3a;">Puerta de emergencia abierta sin alarma en Edificio B, planta 3</div>
-          <div style="font-size:13px;color:#7d7d7d;margin-top:5px;line-height:1.4;">Motivo IA: la puerta quedó abierta y el sensor no lanzó alarma; acceso sin control.</div>
-        </div>
-        <div><span style="display:inline-block;border:1.5px dashed #9a9a9a;border-radius:6px;background:#efefef;padding:5px 10px;font-size:13px;color:#6b6b6b;">Brecha de seguridad · <span style="font-style:italic;">sugerido</span></span></div>
-        <div><span style="display:inline-block;border:1.5px dashed #9a9a9a;border-radius:6px;background:#efefef;padding:5px 10px;font-size:13px;color:#6b6b6b;">Alta · <span style="font-style:italic;">sug.</span></span></div>
-        <div><span style="display:inline-block;border:1px solid #bdbdbd;border-radius:6px;background:#f0f0f0;padding:5px 10px;font-size:12px;color:#7d7d7d;">Pendiente</span></div>
-      </div>
-
-      <!-- Row: SVD-4110 Equipo averiado Alta -->
-      <div style="border:1px solid #cfcfcf;border-radius:9px;background:#fff;padding:16px 18px;display:grid;grid-template-columns:120px 1fr 210px 150px 130px;gap:16px;align-items:center;">
-        <div style="font-family:ui-monospace,Consolas,monospace;font-size:15px;color:#444;">SVD-4110</div>
-        <div>
-          <div style="font-size:16px;font-weight:600;color:#3a3a3a;">Lector de tarjetas sin respuesta en Perímetro exterior</div>
-          <div style="font-size:13px;color:#7d7d7d;margin-top:5px;line-height:1.4;">Motivo IA: el lector no reconoce credenciales; hardware que no responde en zona crítica.</div>
-        </div>
-        <div><span style="display:inline-block;border:1.5px dashed #9a9a9a;border-radius:6px;background:#efefef;padding:5px 10px;font-size:13px;color:#6b6b6b;">Equipo averiado · <span style="font-style:italic;">sugerido</span></span></div>
-        <div><span style="display:inline-block;border:1.5px dashed #9a9a9a;border-radius:6px;background:#efefef;padding:5px 10px;font-size:13px;color:#6b6b6b;">Alta · <span style="font-style:italic;">sug.</span></span></div>
-        <div><span style="display:inline-block;border:1px solid #bdbdbd;border-radius:6px;background:#f0f0f0;padding:5px 10px;font-size:12px;color:#7d7d7d;">Pendiente</span></div>
-      </div>
-
-      <!-- Row: SVD-4106 Petición info Media (cerrado) -->
-      <div style="border:1px solid #cfcfcf;border-radius:9px;background:#fff;padding:16px 18px;display:grid;grid-template-columns:120px 1fr 210px 150px 130px;gap:16px;align-items:center;">
-        <div style="font-family:ui-monospace,Consolas,monospace;font-size:15px;color:#444;">SVD-4106 <span style="font-family:system-ui;font-size:11px;color:#a5a5a5;border:1px solid #ccc;border-radius:4px;padding:1px 5px;">cerrado</span></div>
-        <div>
-          <div style="font-size:16px;font-weight:600;color:#3a3a3a;">Solicitud de histórico de accesos en Perímetro exterior</div>
-          <div style="font-size:13px;color:#7d7d7d;margin-top:5px;line-height:1.4;">Motivo IA: se piden datos ya existentes para auditoría; no hay incidencia que atender.</div>
-        </div>
-        <div><span style="display:inline-block;border:1.5px dashed #9a9a9a;border-radius:6px;background:#efefef;padding:5px 10px;font-size:13px;color:#6b6b6b;">Petición de información · <span style="font-style:italic;">sug.</span></span></div>
-        <div><span style="display:inline-block;border:1.5px dashed #9a9a9a;border-radius:6px;background:#efefef;padding:5px 10px;font-size:13px;color:#6b6b6b;">Media · <span style="font-style:italic;">sug.</span></span></div>
-        <div><span style="display:inline-block;border:1px solid #bdbdbd;border-radius:6px;background:#f0f0f0;padding:5px 10px;font-size:12px;color:#7d7d7d;">Pendiente</span></div>
-      </div>
-
-      <div style="font-size:13px;color:#9a9a9a;padding:4px 18px;">… 55 filas más · orden: Sin clasificar → prioridad (Crítica → Baja) → confirmados</div>
-    </div>
-  </div>
-</section>
-
-<!-- ══════════ 2 · FICHA DEL TICKET ══════════ -->
-<section data-label="Ficha" data-speaker-notes="Ficha de SVD-4102. Arriba los datos del ticket. En una caja delimitada, la sugerencia de la IA: categoría, urgencia, impacto, la prioridad calculada por la matriz y el motivo. Fuera de la caja, las acciones de la persona: Aceptar, Corregir, Deshacer." style="width:100%;height:100%;box-sizing:border-box;display:flex;font-family:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:#3a3a3a;background:#e4e4e4;">
-  <aside style="width:230px;flex:none;background:#f4f4f4;border-right:1px solid #cfcfcf;padding:24px 16px;display:flex;flex-direction:column;gap:22px;">
-    <div style="display:flex;align-items:center;gap:10px;">
-      <div style="width:34px;height:34px;border:1px solid #b6b6b6;border-radius:7px;background:#e2e2e2;display:flex;align-items:center;justify-content:center;font-size:11px;color:#777;">MSD</div>
-      <div style="font-size:14px;font-weight:600;color:#555;line-height:1.15;">Mini Service<br>Desk</div>
-    </div>
-    <div style="height:38px;border:1px solid #cbcbcb;border-radius:7px;background:#ededed;display:flex;align-items:center;padding:0 12px;font-size:13px;color:#9a9a9a;">Buscar…</div>
-    <div>
-      <div style="font-size:11px;letter-spacing:.14em;color:#9a9a9a;font-weight:700;margin-bottom:10px;">TRIAJE</div>
-      <div style="display:flex;flex-direction:column;gap:4px;">
-        <div style="height:40px;border:1px solid #bdbdbd;border-radius:7px;background:#e0e0e0;display:flex;align-items:center;padding:0 12px;font-size:15px;font-weight:600;color:#444;">Bandeja</div>
-        <div style="height:40px;border:1px solid transparent;border-radius:7px;display:flex;align-items:center;padding:0 12px;font-size:15px;color:#7d7d7d;">Métricas</div>
-      </div>
-    </div>
-  </aside>
-
-  <div style="flex:1;display:flex;flex-direction:column;min-width:0;">
-    <!-- HEADER one line: back · id · title -->
-    <div style="flex:none;background:#fafafa;border-bottom:1px solid #cfcfcf;padding:18px 32px;display:flex;align-items:center;gap:16px;">
-      <div style="height:40px;border:1px solid #c4c4c4;border-radius:8px;background:#fff;display:flex;align-items:center;padding:0 14px;font-size:14px;color:#7d7d7d;">← Bandeja</div>
-      <div style="font-family:ui-monospace,Consolas,monospace;font-size:20px;font-weight:700;color:#444;">SVD-4102</div>
-      <div style="font-size:18px;color:#3a3a3a;">Alarma perimetral desactivada tras mantenimiento en Perímetro exterior</div>
-      <div style="margin-left:auto;font-size:12px;color:#a5a5a5;border:1px solid #ccc;border-radius:5px;padding:3px 8px;">abierto</div>
-    </div>
-
-    <div style="flex:1;overflow:hidden;padding:28px 32px;display:grid;grid-template-columns:1fr 1fr;gap:26px;">
-      <!-- LEFT: datos del ticket -->
-      <div style="border:1px solid #cfcfcf;border-radius:10px;background:#fdfcfa;padding:24px;">
-        <div style="font-size:12px;letter-spacing:.12em;color:#9a9a9a;font-weight:700;">DATOS DEL TICKET</div>
-        <div style="margin-top:18px;display:flex;flex-direction:column;gap:16px;">
-          <div><div style="font-size:12px;color:#9a9a9a;">Descripción</div><div style="font-size:15px;color:#3a3a3a;margin-top:4px;line-height:1.5;">La alarma perimetral de Perímetro exterior se ha desactivado sola tras el último mantenimiento.</div></div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
-            <div><div style="font-size:12px;color:#9a9a9a;">Sistema afectado</div><div style="font-size:15px;color:#3a3a3a;margin-top:4px;">Central de alarmas</div></div>
-            <div><div style="font-size:12px;color:#9a9a9a;">Zona</div><div style="font-size:15px;color:#3a3a3a;margin-top:4px;">Perímetro exterior <span style="font-size:12px;color:#8a8a8a;">(zona crítica)</span></div></div>
-            <div><div style="font-size:12px;color:#9a9a9a;">Reportado por</div><div style="font-size:15px;color:#3a3a3a;margin-top:4px;">Guardia de seguridad</div></div>
-            <div><div style="font-size:12px;color:#9a9a9a;">Fecha</div><div style="font-size:15px;color:#3a3a3a;margin-top:4px;">2026-09-04</div></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- RIGHT: caja sugerencia IA + acciones fuera -->
-      <div style="display:flex;flex-direction:column;gap:18px;">
-        <div style="border:2px dashed #9a9a9a;border-radius:10px;background:#efefef;padding:24px;flex:1;">
-          <div style="display:flex;align-items:center;gap:10px;">
-            <div style="width:24px;height:24px;border:1px solid #b0b0b0;border-radius:6px;background:#e0e0e0;display:flex;align-items:center;justify-content:center;font-size:12px;color:#777;">◈</div>
-            <div style="font-size:13px;letter-spacing:.1em;color:#7d7d7d;font-weight:700;">SUGERENCIA DE LA IA · sin confirmar</div>
-          </div>
-          <div style="margin-top:20px;display:grid;grid-template-columns:1fr 1fr;gap:16px;">
-            <div><div style="font-size:12px;color:#9a9a9a;">Categoría</div><div style="font-size:16px;font-weight:600;color:#555;margin-top:4px;">Brecha de seguridad activa</div></div>
-            <div><div style="font-size:12px;color:#9a9a9a;">Prioridad <span style="font-size:11px;">(matriz)</span></div><div style="font-size:16px;font-weight:700;color:#555;margin-top:4px;">Crítica</div></div>
-            <div><div style="font-size:12px;color:#9a9a9a;">Urgencia</div><div style="font-size:16px;font-weight:600;color:#555;margin-top:4px;">Alta</div></div>
-            <div><div style="font-size:12px;color:#9a9a9a;">Impacto</div><div style="font-size:16px;font-weight:600;color:#555;margin-top:4px;">Alto</div></div>
-          </div>
-          <div style="margin-top:18px;padding-top:16px;border-top:1px solid #d3d3d3;">
-            <div style="font-size:12px;color:#9a9a9a;">Motivo</div>
-            <div style="font-size:14px;color:#6b6b6b;margin-top:5px;line-height:1.5;">La alarma perimetral quedó desactivada tras un mantenimiento: el perímetro está sin vigilancia ahora.</div>
-          </div>
-          <div style="margin-top:16px;font-size:12px;color:#9a9a9a;">Urgencia × Impacto = Alta × Alto → <b style="color:#7d7d7d;">Crítica</b>. La app calcula la prioridad; no se sugiere ni se edita a mano.</div>
-        </div>
-
-        <!-- ACCIONES fuera de la caja -->
-        <div style="display:flex;align-items:center;gap:12px;">
-          <div style="height:48px;border:1.5px solid #555;border-radius:9px;background:#dcdcdc;display:flex;align-items:center;padding:0 26px;font-size:16px;font-weight:700;color:#3a3a3a;">Aceptar</div>
-          <div style="height:48px;border:1px solid #7f7f7f;border-radius:9px;background:#fff;display:flex;align-items:center;padding:0 26px;font-size:16px;color:#444;">Corregir</div>
-          <div style="height:48px;border:1px solid #c4c4c4;border-radius:9px;background:#fff;display:flex;align-items:center;padding:0 22px;font-size:15px;color:#9a9a9a;">Deshacer</div>
-          <div style="margin-left:auto;font-size:12px;color:#a5a5a5;max-width:210px;text-align:right;">Las acciones de la persona van fuera de la caja de la IA.</div>
-        </div>
+      <div></div>
+      <div style="width:300px;height:120px;border:2px dashed #8f8f8f;border-radius:10px;background:#ececec;padding:16px 20px;">
+        <div style="font-size:16px;font-weight:700;color:#555;">JSON descargado</div>
+        <div style="font-size:12px;color:#8a8a8a;margin-top:6px;">tickets-triaje-AAAA-MM-DD.json · incluye los creados a mano.</div>
       </div>
     </div>
   </div>
 </section>
-
-<!-- ══════════ 3 · FICHA · MODO CORREGIR ══════════ -->
-<section data-label="Corregir" data-speaker-notes="Modo Corregir: desplegables de categoría, urgencia e impacto. La prioridad se recalcula al cambiarlos. Como la categoría es Brecha de seguridad activa, la urgencia queda fijada en Alta y el desplegable bloqueado, con una nota que explica por qué (R8). Guardar cuenta como Corregido si cambia al menos un campo." style="width:100%;height:100%;box-sizing:border-box;display:flex;font-family:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:#3a3a3a;background:#e4e4e4;">
-  <aside style="width:230px;flex:none;background:#f4f4f4;border-right:1px solid #cfcfcf;padding:24px 16px;display:flex;flex-direction:column;gap:22px;">
-    <div style="display:flex;align-items:center;gap:10px;">
-      <div style="width:34px;height:34px;border:1px solid #b6b6b6;border-radius:7px;background:#e2e2e2;display:flex;align-items:center;justify-content:center;font-size:11px;color:#777;">MSD</div>
-      <div style="font-size:14px;font-weight:600;color:#555;line-height:1.15;">Mini Service<br>Desk</div>
-    </div>
-    <div style="height:38px;border:1px solid #cbcbcb;border-radius:7px;background:#ededed;display:flex;align-items:center;padding:0 12px;font-size:13px;color:#9a9a9a;">Buscar…</div>
-    <div>
-      <div style="font-size:11px;letter-spacing:.14em;color:#9a9a9a;font-weight:700;margin-bottom:10px;">TRIAJE</div>
-      <div style="display:flex;flex-direction:column;gap:4px;">
-        <div style="height:40px;border:1px solid #bdbdbd;border-radius:7px;background:#e0e0e0;display:flex;align-items:center;padding:0 12px;font-size:15px;font-weight:600;color:#444;">Bandeja</div>
-        <div style="height:40px;border:1px solid transparent;border-radius:7px;display:flex;align-items:center;padding:0 12px;font-size:15px;color:#7d7d7d;">Métricas</div>
+<!-- ══════════ 1 · BANDEJA + FICHA ══════════ -->
+<section data-label="Bandeja + Ficha" data-speaker-notes="Vista C: la lista (izquierda, scroll propio) y la ficha del ticket elegido (derecha, scroll propio) a la vez. Categoría/prioridad de los pendientes en discontinuo y 'sug.'; el Sin clasificar destacado sigue arriba. Notas del operador dentro de la ficha, debajo de la caja de la IA." style="width:100%;height:100%;box-sizing:border-box;display:flex;flex-direction:column;font-family:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:#3a3a3a;background:#e4e4e4;position:relative;">
+  <div style="flex:none;background:#f4f4f4;border-bottom:1px solid #cfcfcf;padding:12px 28px;display:flex;align-items:center;gap:16px;">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <div style="width:30px;height:30px;border-radius:8px;background:#7f7f7f;color:#fff;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;">MSD</div>
+        <div style="font-size:15px;font-weight:700;color:#444;">Mini Service Desk</div>
       </div>
+      <div style="display:flex;gap:4px;background:#e6e6e6;padding:4px;border-radius:10px;"><div style="height:34px;border-radius:8px;padding:0 16px;display:flex;align-items:center;font-size:14px;font-weight:700;color:#444;background:#fff;box-shadow:0 0 0 1px #cfcfcf;">Bandeja</div><div style="height:34px;border-radius:8px;padding:0 16px;display:flex;align-items:center;font-size:14px;color:#8a8a8a;">Métricas</div></div>
+      
+      <div style="margin-left:auto;height:38px;border:1px solid #c4c4c4;border-radius:8px;background:#fff;display:flex;align-items:center;padding:0 14px;font-size:13px;color:#8a8a8a;">Tema: claro</div>
+      <div style="height:38px;border:1.5px solid #6f6f6f;border-radius:8px;background:#fff;display:flex;align-items:center;padding:0 16px;font-size:14px;font-weight:600;color:#444;">Nuevo ticket</div>
+      <div style="height:38px;border:1.5px solid #444;background:#3a3a3a;color:#fff;border-radius:8px;display:flex;align-items:center;padding:0 16px;font-size:14px;font-weight:700;">Exportar JSON</div>
     </div>
-  </aside>
-
-  <div style="flex:1;display:flex;flex-direction:column;min-width:0;">
-    <div style="flex:none;background:#fafafa;border-bottom:1px solid #cfcfcf;padding:18px 32px;display:flex;align-items:center;gap:16px;">
-      <div style="height:40px;border:1px solid #c4c4c4;border-radius:8px;background:#fff;display:flex;align-items:center;padding:0 14px;font-size:14px;color:#7d7d7d;">← Bandeja</div>
-      <div style="font-family:ui-monospace,Consolas,monospace;font-size:20px;font-weight:700;color:#444;">SVD-4102</div>
-      <div style="font-size:18px;color:#3a3a3a;">Alarma perimetral desactivada tras mantenimiento</div>
-      <div style="margin-left:auto;font-size:13px;color:#6f6f6f;border:1px solid #9a9a9a;border-radius:6px;padding:5px 12px;background:#e6e6e6;font-weight:600;">Modo corregir</div>
+  <div style="flex:none;padding:12px 28px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;border-bottom:1px solid #d8d8d8;">
+      <div style="font-size:12px;color:#9a9a9a;">Filtros:</div>
+      <div style="height:32px;border:1px solid #c4c4c4;border-radius:7px;background:#fff;display:flex;align-items:center;padding:0 10px;font-size:12px;color:#6b6b6b;">Estado triaje: Pendientes de confirmar ▾</div>
+      <div style="height:32px;border:1px solid #c4c4c4;border-radius:7px;background:#fff;display:flex;align-items:center;padding:0 10px;font-size:12px;color:#8a8a8a;">Prioridad ▾</div>
+      <div style="height:32px;border:1px solid #c4c4c4;border-radius:7px;background:#fff;display:flex;align-items:center;padding:0 10px;font-size:12px;color:#8a8a8a;">Sistema ▾</div>
+      <div style="height:32px;border:1px solid #c4c4c4;border-radius:7px;background:#fff;display:flex;align-items:center;padding:0 10px;font-size:12px;color:#8a8a8a;">Zona ▾</div>
+      <div style="height:32px;border:1px solid #c4c4c4;border-radius:7px;background:#fff;display:flex;align-items:center;padding:0 10px;font-size:12px;color:#8a8a8a;">Estado ticket ▾</div>
     </div>
-
-    <div style="flex:1;overflow:hidden;padding:28px 32px;display:grid;grid-template-columns:1fr 1fr;gap:26px;">
-      <!-- LEFT datos (idéntico, contexto) -->
-      <div style="border:1px solid #cfcfcf;border-radius:10px;background:#fdfcfa;padding:24px;">
-        <div style="font-size:12px;letter-spacing:.12em;color:#9a9a9a;font-weight:700;">DATOS DEL TICKET</div>
-        <div style="margin-top:18px;display:flex;flex-direction:column;gap:16px;">
-          <div><div style="font-size:12px;color:#9a9a9a;">Descripción</div><div style="font-size:15px;color:#3a3a3a;margin-top:4px;line-height:1.5;">La alarma perimetral de Perímetro exterior se ha desactivado sola tras el último mantenimiento.</div></div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
-            <div><div style="font-size:12px;color:#9a9a9a;">Sistema afectado</div><div style="font-size:15px;color:#3a3a3a;margin-top:4px;">Central de alarmas</div></div>
-            <div><div style="font-size:12px;color:#9a9a9a;">Zona</div><div style="font-size:15px;color:#3a3a3a;margin-top:4px;">Perímetro exterior <span style="font-size:12px;color:#8a8a8a;">(zona crítica)</span></div></div>
+  <div style="flex:1;overflow:hidden;padding:16px 28px;display:grid;grid-template-columns:360px 1fr;gap:16px;">
+    <div style="border:1px solid #cfcfcf;border-radius:10px;background:#fff;overflow:hidden;display:flex;flex-direction:column;">
+        <div style="border-top:1px solid #d8d8d8;padding:12px 16px;box-shadow:inset 4px 0 0 #7f7f7f;">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <span style="font-family:ui-monospace,Consolas,monospace;font-size:12px;color:#8a8a8a;">SVD-4143</span>
+          <span style="font-size:11px;color:#8a8a8a;border:1px solid #bdbdbd;border-radius:999px;padding:2px 8px;">Pendiente</span>
+        </div>
+        <div style="font-size:14px;font-weight:600;color:#3a3a3a;margin-top:4px;">Cámara 12 sin grabar en Nave logística 2</div>
+        <div style="font-size:12px;color:#a15a00;margin-top:3px;line-height:1.35;max-height:2.7em;overflow:hidden;">⚑ Sugerencia descartada: no se puede decidir si la cámara está averiada o solo no guarda.</div>
+        <div style="display:flex;gap:8px;margin-top:6px;flex-wrap:wrap;"><span style="display:inline-block;border:1.5px dashed #9a9a9a;border-radius:999px;background:#efefef;padding:3px 9px;font-size:11px;color:#6b6b6b;">Sin clasificar · sug.</span><span style="font-size:11px;color:#b0b0b0;font-style:italic;">— sin prioridad</span></div>
+      </div><div style="border-top:1px solid #d8d8d8;padding:12px 16px;box-shadow:inset 3px 0 0 #6f6f6f;background:#efefef;">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <span style="font-family:ui-monospace,Consolas,monospace;font-size:12px;color:#8a8a8a;">SVD-4102</span>
+          <span style="font-size:11px;color:#8a8a8a;border:1px solid #bdbdbd;border-radius:999px;padding:2px 8px;">Pendiente</span>
+        </div>
+        <div style="font-size:14px;font-weight:600;color:#3a3a3a;margin-top:4px;">Alarma perimetral desactivada tras mantenimiento</div>
+        <div style="font-size:12px;color:#7d7d7d;margin-top:3px;line-height:1.35;max-height:2.7em;overflow:hidden;">Motivo IA: la alarma quedó desactivada tras un mantenimiento; el perímetro está sin vigilancia ahora.</div>
+        <div style="display:flex;gap:8px;margin-top:6px;flex-wrap:wrap;"><span style="display:inline-block;border:1.5px dashed #9a9a9a;border-radius:999px;background:#efefef;padding:3px 9px;font-size:11px;color:#6b6b6b;">Brecha de seguridad · sug.</span><span style="display:inline-block;border:1.5px dashed #9a9a9a;border-radius:999px;background:#efefef;padding:3px 9px;font-size:11px;color:#6b6b6b;">Crítica</span></div>
+      </div><div style="border-top:1px solid #d8d8d8;padding:12px 16px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <span style="font-family:ui-monospace,Consolas,monospace;font-size:12px;color:#8a8a8a;">SVD-4108</span>
+          <span style="font-size:11px;color:#8a8a8a;border:1px solid #bdbdbd;border-radius:999px;padding:2px 8px;">Pendiente</span>
+        </div>
+        <div style="font-size:14px;font-weight:600;color:#3a3a3a;margin-top:4px;">Puerta de emergencia abierta sin alarma en Edificio B, planta 3</div>
+        <div style="font-size:12px;color:#7d7d7d;margin-top:3px;line-height:1.35;max-height:2.7em;overflow:hidden;">Motivo IA: la puerta quedó abierta y el sensor no lanzó alarma; acceso sin control.</div>
+        <div style="display:flex;gap:8px;margin-top:6px;flex-wrap:wrap;"><span style="display:inline-block;border:1.5px dashed #9a9a9a;border-radius:999px;background:#efefef;padding:3px 9px;font-size:11px;color:#6b6b6b;">Brecha de seguridad · sug.</span><span style="display:inline-block;border:1.5px dashed #9a9a9a;border-radius:999px;background:#efefef;padding:3px 9px;font-size:11px;color:#6b6b6b;">Crítica</span></div>
+      </div><div style="border-top:1px solid #d8d8d8;padding:12px 16px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <span style="font-family:ui-monospace,Consolas,monospace;font-size:12px;color:#8a8a8a;">SVD-4110</span>
+          <span style="font-size:11px;color:#8a8a8a;border:1px solid #bdbdbd;border-radius:999px;padding:2px 8px;">Pendiente</span>
+        </div>
+        <div style="font-size:14px;font-weight:600;color:#3a3a3a;margin-top:4px;">Lector de tarjetas sin respuesta en Perímetro exterior</div>
+        <div style="font-size:12px;color:#7d7d7d;margin-top:3px;line-height:1.35;max-height:2.7em;overflow:hidden;">Motivo IA: el lector no reconoce credenciales; hardware que no responde en zona crítica.</div>
+        <div style="display:flex;gap:8px;margin-top:6px;flex-wrap:wrap;"><span style="display:inline-block;border:1.5px dashed #9a9a9a;border-radius:999px;background:#efefef;padding:3px 9px;font-size:11px;color:#6b6b6b;">Equipo averiado · sug.</span><span style="display:inline-block;border:1.5px dashed #9a9a9a;border-radius:999px;background:#efefef;padding:3px 9px;font-size:11px;color:#6b6b6b;">Alta</span></div>
+      </div><div style="border-top:1px solid #d8d8d8;padding:12px 16px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <span style="font-family:ui-monospace,Consolas,monospace;font-size:12px;color:#8a8a8a;">SVD-4106</span>
+          <span style="font-size:11px;color:#8a8a8a;border:1px solid #bdbdbd;border-radius:999px;padding:2px 8px;">Pendiente</span>
+        </div>
+        <div style="font-size:14px;font-weight:600;color:#3a3a3a;margin-top:4px;">Solicitud de histórico de accesos en Perímetro exterior</div>
+        <div style="font-size:12px;color:#7d7d7d;margin-top:3px;line-height:1.35;max-height:2.7em;overflow:hidden;">Motivo IA: se piden datos ya existentes para auditoría; no hay incidencia que atender.</div>
+        <div style="display:flex;gap:8px;margin-top:6px;flex-wrap:wrap;"><span style="display:inline-block;border:1.5px dashed #9a9a9a;border-radius:999px;background:#efefef;padding:3px 9px;font-size:11px;color:#6b6b6b;">Petición de información · sug.</span><span style="display:inline-block;border:1.5px dashed #9a9a9a;border-radius:999px;background:#efefef;padding:3px 9px;font-size:11px;color:#6b6b6b;">Media</span></div>
+      </div>
+        <div style="padding:10px 16px;font-size:11px;color:#a5a5a5;">↕ scroll propio · … 55 más</div>
+      </div>
+    <div style="border:1px solid #cfcfcf;border-radius:10px;background:#fdfcfa;overflow:hidden;display:flex;flex-direction:column;">
+      <div style="flex:none;border-bottom:1px solid #d8d8d8;padding:12px 20px;display:flex;align-items:center;gap:12px;">
+        <div style="height:32px;border:1px solid #c4c4c4;border-radius:7px;background:#fff;display:flex;align-items:center;padding:0 12px;font-size:12px;color:#8a8a8a;">← Bandeja</div>
+        <span style="font-family:ui-monospace,Consolas,monospace;font-size:16px;font-weight:700;color:#444;">SVD-4102</span>
+        <span style="font-size:14px;color:#3a3a3a;">Alarma perimetral desactivada tras mantenimiento</span>
+        <span style="margin-left:auto;font-size:11px;color:#a5a5a5;border:1px solid #ccc;border-radius:5px;padding:2px 7px;">abierto</span>
+      </div>
+      <div style="flex:1;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:16px;"><div style="border:1px solid #cfcfcf;border-radius:10px;background:#fdfcfa;padding:20px;">
+        <div style="font-size:11px;letter-spacing:.1em;color:#9a9a9a;font-weight:700;">DATOS DEL TICKET</div>
+        <div style="margin-top:14px;display:flex;flex-direction:column;gap:14px;">
+          <div><div style="font-size:11px;color:#9a9a9a;">Descripción</div><div style="font-size:14px;color:#3a3a3a;margin-top:3px;line-height:1.5;">La alarma perimetral de Perímetro exterior se ha desactivado sola tras el último mantenimiento.</div></div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+            <div><div style="font-size:11px;color:#9a9a9a;">Sistema afectado</div><div style="font-size:14px;color:#3a3a3a;margin-top:3px;">Central de alarmas</div></div><div><div style="font-size:11px;color:#9a9a9a;">Zona</div><div style="font-size:14px;color:#3a3a3a;margin-top:3px;">Perímetro exterior (zona crítica)</div></div><div><div style="font-size:11px;color:#9a9a9a;">Reportado por</div><div style="font-size:14px;color:#3a3a3a;margin-top:3px;">Guardia de seguridad</div></div><div><div style="font-size:11px;color:#9a9a9a;">Fecha</div><div style="font-size:14px;color:#3a3a3a;margin-top:3px;">2026-09-04</div></div>
           </div>
         </div>
-      </div>
-
-      <!-- RIGHT edición -->
-      <div style="display:flex;flex-direction:column;gap:18px;">
-        <div style="border:2px solid #7f7f7f;border-radius:10px;background:#fff;padding:24px;flex:1;">
-          <div style="font-size:13px;letter-spacing:.1em;color:#7d7d7d;font-weight:700;">CORRIGE LA CLASIFICACIÓN</div>
-
-          <div style="margin-top:20px;display:flex;flex-direction:column;gap:16px;">
-            <div>
-              <div style="font-size:12px;color:#9a9a9a;margin-bottom:6px;">Categoría</div>
-              <div style="height:46px;border:1.5px solid #6f6f6f;border-radius:8px;background:#e6e6e6;display:flex;align-items:center;justify-content:space-between;padding:0 14px;font-size:15px;font-weight:600;color:#444;">Brecha de seguridad activa <span style="color:#8a8a8a;">▾</span></div>
-            </div>
-            <div>
-              <div style="font-size:12px;color:#9a9a9a;margin-bottom:6px;">Urgencia</div>
-              <div style="height:46px;border:1.5px dashed #b0b0b0;border-radius:8px;background:#f0f0f0;display:flex;align-items:center;justify-content:space-between;padding:0 14px;font-size:15px;color:#8f8f8f;">Alta <span style="font-size:12px;">🔒 bloqueado</span></div>
-              <div style="font-size:12px;color:#8a8a8a;margin-top:6px;line-height:1.45;">Una brecha de seguridad activa es urgencia Alta por definición: hay un punto desprotegido ahora. Para cambiar la urgencia, cambia la categoría.</div>
-            </div>
-            <div>
-              <div style="font-size:12px;color:#9a9a9a;margin-bottom:6px;">Impacto</div>
-              <div style="height:46px;border:1.5px solid #6f6f6f;border-radius:8px;background:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 14px;font-size:15px;color:#444;">Alto <span style="color:#8a8a8a;">▾</span></div>
-            </div>
-          </div>
-
-          <div style="margin-top:20px;padding-top:16px;border-top:1px solid #d3d3d3;display:flex;align-items:center;gap:12px;">
-            <div style="font-size:13px;color:#9a9a9a;">Prioridad recalculada</div>
-            <div style="font-size:20px;font-weight:700;color:#444;">Crítica</div>
-            <div style="font-size:12px;color:#a5a5a5;">Alta × Alto → matriz</div>
-          </div>
-        </div>
-
-        <div style="display:flex;align-items:center;gap:12px;">
-          <div style="height:48px;border:1.5px solid #555;border-radius:9px;background:#dcdcdc;display:flex;align-items:center;padding:0 26px;font-size:16px;font-weight:700;color:#3a3a3a;">Guardar corrección</div>
-          <div style="height:48px;border:1px solid #c4c4c4;border-radius:9px;background:#fff;display:flex;align-items:center;padding:0 22px;font-size:15px;color:#7d7d7d;">Cancelar</div>
-          <div style="margin-left:auto;font-size:12px;color:#a5a5a5;max-width:210px;text-align:right;">Cuenta como Corregido si cambias al menos un campo.</div>
-        </div>
-      </div>
+      </div><div style="border:2px dashed #9a9a9a;background:#efefef;border-radius:10px;padding:20px;">
+        <div style="font-size:12px;letter-spacing:.08em;color:#7d7d7d;font-weight:700;">SUGERENCIA DE LA IA · SIN CONFIRMAR</div>
+        <div style="margin-top:16px;display:grid;grid-template-columns:1fr 1fr;gap:14px;"><div><div style="font-size:11px;color:#9a9a9a;">Categoría</div><div style="font-size:14px;color:#3a3a3a;margin-top:3px;">Brecha de seguridad activa</div></div><div><div style="font-size:11px;color:#9a9a9a;">Prioridad (matriz)</div><div style="font-size:14px;color:#3a3a3a;margin-top:3px;">Crítica</div></div><div><div style="font-size:11px;color:#9a9a9a;">Urgencia</div><div style="font-size:14px;color:#3a3a3a;margin-top:3px;">Alta</div></div><div><div style="font-size:11px;color:#9a9a9a;">Impacto</div><div style="font-size:14px;color:#3a3a3a;margin-top:3px;">Alto</div></div></div>
+        <div style="margin-top:14px;padding-top:12px;border-top:1px solid #d3d3d3;"><div><div style="font-size:11px;color:#9a9a9a;">Motivo de la IA</div><div style="font-size:14px;color:#3a3a3a;margin-top:3px;">La alarma perimetral quedó desactivada tras un mantenimiento: el perímetro está sin vigilancia ahora.</div></div></div>
+        
+        <div style="margin-top:12px;font-size:11px;color:#9a9a9a;">La prioridad la calcula la app a partir de urgencia × impacto; no se sugiere ni se edita a mano.</div>
+      </div><div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;"><div style="height:44px;border-radius:9px;display:flex;align-items:center;padding:0 22px;font-size:14px;font-weight:700;border:1.5px solid #555;background:#3a3a3a;color:#fff;">Aceptar</div><div style="height:44px;border-radius:9px;display:flex;align-items:center;padding:0 22px;font-size:14px;font-weight:700;border:1px solid #7f7f7f;background:#fff;color:#444;">Corregir</div><div style="height:44px;border-radius:9px;display:flex;align-items:center;padding:0 22px;font-size:14px;font-weight:700;border:1px solid #c4c4c4;background:#fff;color:#9a9a9a;">Deshacer</div><div style="margin-left:auto;font-size:11px;color:#a5a5a5;max-width:220px;text-align:right;">Las acciones de la persona van fuera de la caja de la IA.</div></div><div style="border-top:1px solid #d3d3d3;padding-top:14px;">
+        <div style="font-size:13px;font-weight:700;color:#555;">Notas del operador</div>
+        <div style="margin-top:10px;display:flex;flex-direction:column;gap:10px;"><div style="font-size:13px;color:#a5a5a5;">Todavía no hay notas. Se añaden y quedan: no se editan ni se borran.</div></div>
+        <div style="height:64px;border:1.5px solid #cfcfcf;border-radius:8px;background:#f4f4f4;margin-top:4px;padding:8px 10px;font-size:12px;color:#b0b0b0;">Lo que sabes y no está en la descripción…</div>
+        <div style="margin-top:6px;font-size:11px;color:#a5a5a5;">No escribas nombres, DNI, matrículas ni otros datos personales. 0/500.</div>
+        <div style="margin-top:8px;height:38px;width:130px;border:1px solid #c4c4c4;border-radius:8px;background:#f0f0f0;color:#b5b5b5;display:flex;align-items:center;justify-content:center;font-size:13px;">Añadir nota</div>
+      </div></div>
     </div>
   </div>
 </section>
-
-<!-- ══════════ 4 · TICKET SIN CLASIFICAR ══════════ -->
-<section data-label="Sin clasificar" data-speaker-notes="Ficha de un Sin clasificar: la IA no pudo clasificar y lo explica en el motivo. No hay botón Aceptar (aceptar una sugerencia que no clasifica nada no significa nada); solo Corregir. Deshacer queda disponible pero deshabilitado hasta corregir." style="width:100%;height:100%;box-sizing:border-box;display:flex;font-family:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:#3a3a3a;background:#e4e4e4;">
-  <aside style="width:230px;flex:none;background:#f4f4f4;border-right:1px solid #cfcfcf;padding:24px 16px;display:flex;flex-direction:column;gap:22px;">
-    <div style="display:flex;align-items:center;gap:10px;">
-      <div style="width:34px;height:34px;border:1px solid #b6b6b6;border-radius:7px;background:#e2e2e2;display:flex;align-items:center;justify-content:center;font-size:11px;color:#777;">MSD</div>
-      <div style="font-size:14px;font-weight:600;color:#555;line-height:1.15;">Mini Service<br>Desk</div>
-    </div>
-    <div style="height:38px;border:1px solid #cbcbcb;border-radius:7px;background:#ededed;display:flex;align-items:center;padding:0 12px;font-size:13px;color:#9a9a9a;">Buscar…</div>
-    <div>
-      <div style="font-size:11px;letter-spacing:.14em;color:#9a9a9a;font-weight:700;margin-bottom:10px;">TRIAJE</div>
-      <div style="display:flex;flex-direction:column;gap:4px;">
-        <div style="height:40px;border:1px solid #bdbdbd;border-radius:7px;background:#e0e0e0;display:flex;align-items:center;padding:0 12px;font-size:15px;font-weight:600;color:#444;">Bandeja</div>
-        <div style="height:40px;border:1px solid transparent;border-radius:7px;display:flex;align-items:center;padding:0 12px;font-size:15px;color:#7d7d7d;">Métricas</div>
+<!-- ══════════ 2 · CORREGIR ══════════ -->
+<section data-label="Corregir" data-speaker-notes="Modo Corregir dentro de la ficha (no pantalla aparte). Urgencia bloqueada en Alta por ser Brecha de seguridad activa (R8), con la nota de por qué. Campo 'Motivo de la corrección' (R9): obligatorio porque el operador cambia la sugerencia de la IA." style="width:100%;height:100%;box-sizing:border-box;display:flex;flex-direction:column;font-family:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:#3a3a3a;background:#e4e4e4;position:relative;">
+  <div style="flex:none;background:#f4f4f4;border-bottom:1px solid #cfcfcf;padding:12px 28px;display:flex;align-items:center;gap:16px;">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <div style="width:30px;height:30px;border-radius:8px;background:#7f7f7f;color:#fff;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;">MSD</div>
+        <div style="font-size:15px;font-weight:700;color:#444;">Mini Service Desk</div>
       </div>
+      <div style="display:flex;gap:4px;background:#e6e6e6;padding:4px;border-radius:10px;"><div style="height:34px;border-radius:8px;padding:0 16px;display:flex;align-items:center;font-size:14px;font-weight:700;color:#444;background:#fff;box-shadow:0 0 0 1px #cfcfcf;">Bandeja</div><div style="height:34px;border-radius:8px;padding:0 16px;display:flex;align-items:center;font-size:14px;color:#8a8a8a;">Métricas</div></div>
+      
+      <div style="margin-left:auto;height:38px;border:1px solid #c4c4c4;border-radius:8px;background:#fff;display:flex;align-items:center;padding:0 14px;font-size:13px;color:#8a8a8a;">Tema: claro</div>
+      <div style="height:38px;border:1.5px solid #6f6f6f;border-radius:8px;background:#fff;display:flex;align-items:center;padding:0 16px;font-size:14px;font-weight:600;color:#444;">Nuevo ticket</div>
+      <div style="height:38px;border:1.5px solid #444;background:#3a3a3a;color:#fff;border-radius:8px;display:flex;align-items:center;padding:0 16px;font-size:14px;font-weight:700;">Exportar JSON</div>
     </div>
-  </aside>
-
-  <div style="flex:1;display:flex;flex-direction:column;min-width:0;">
-    <div style="flex:none;background:#fafafa;border-bottom:1px solid #cfcfcf;padding:18px 32px;display:flex;align-items:center;gap:16px;">
-      <div style="height:40px;border:1px solid #c4c4c4;border-radius:8px;background:#fff;display:flex;align-items:center;padding:0 14px;font-size:14px;color:#7d7d7d;">← Bandeja</div>
-      <div style="font-family:ui-monospace,Consolas,monospace;font-size:20px;font-weight:700;color:#444;">SVD-4143</div>
-      <div style="font-size:18px;color:#3a3a3a;">Cámara 12 sin grabar en Nave logística 2</div>
-      <div style="margin-left:auto;font-size:13px;color:#444;border:2px solid #7f7f7f;border-radius:6px;padding:4px 12px;background:#e6e6e6;font-weight:700;">Sin clasificar</div>
+  <div style="flex:none;padding:12px 28px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;border-bottom:1px solid #d8d8d8;">
+      <div style="font-size:12px;color:#9a9a9a;">Filtros:</div>
+      <div style="height:32px;border:1px solid #c4c4c4;border-radius:7px;background:#fff;display:flex;align-items:center;padding:0 10px;font-size:12px;color:#6b6b6b;">Estado triaje: Pendientes de confirmar ▾</div>
+      <div style="height:32px;border:1px solid #c4c4c4;border-radius:7px;background:#fff;display:flex;align-items:center;padding:0 10px;font-size:12px;color:#8a8a8a;">Prioridad ▾</div>
+      <div style="height:32px;border:1px solid #c4c4c4;border-radius:7px;background:#fff;display:flex;align-items:center;padding:0 10px;font-size:12px;color:#8a8a8a;">Sistema ▾</div>
+      <div style="height:32px;border:1px solid #c4c4c4;border-radius:7px;background:#fff;display:flex;align-items:center;padding:0 10px;font-size:12px;color:#8a8a8a;">Zona ▾</div>
+      <div style="height:32px;border:1px solid #c4c4c4;border-radius:7px;background:#fff;display:flex;align-items:center;padding:0 10px;font-size:12px;color:#8a8a8a;">Estado ticket ▾</div>
     </div>
-
-    <div style="flex:1;overflow:hidden;padding:28px 32px;display:grid;grid-template-columns:1fr 1fr;gap:26px;">
-      <div style="border:1px solid #cfcfcf;border-radius:10px;background:#fdfcfa;padding:24px;">
-        <div style="font-size:12px;letter-spacing:.12em;color:#9a9a9a;font-weight:700;">DATOS DEL TICKET</div>
-        <div style="margin-top:18px;display:flex;flex-direction:column;gap:16px;">
-          <div><div style="font-size:12px;color:#9a9a9a;">Descripción</div><div style="font-size:15px;color:#3a3a3a;margin-top:4px;line-height:1.5;">La cámara 12 de Nave logística 2 lleva 12 días sin grabar, solo muestra pantalla en negro.</div></div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
-            <div><div style="font-size:12px;color:#9a9a9a;">Sistema afectado</div><div style="font-size:15px;color:#3a3a3a;margin-top:4px;">CCTV / videovigilancia</div></div>
-            <div><div style="font-size:12px;color:#9a9a9a;">Zona</div><div style="font-size:15px;color:#3a3a3a;margin-top:4px;">Nave logística 2</div></div>
+  <div style="flex:1;overflow:hidden;padding:16px 28px;display:grid;grid-template-columns:360px 1fr;gap:16px;">
+    <div style="border:1px solid #cfcfcf;border-radius:10px;background:#fff;overflow:hidden;display:flex;flex-direction:column;">
+        <div style="border-top:1px solid #d8d8d8;padding:12px 16px;box-shadow:inset 4px 0 0 #7f7f7f;">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <span style="font-family:ui-monospace,Consolas,monospace;font-size:12px;color:#8a8a8a;">SVD-4143</span>
+          <span style="font-size:11px;color:#8a8a8a;border:1px solid #bdbdbd;border-radius:999px;padding:2px 8px;">Pendiente</span>
+        </div>
+        <div style="font-size:14px;font-weight:600;color:#3a3a3a;margin-top:4px;">Cámara 12 sin grabar en Nave logística 2</div>
+        <div style="font-size:12px;color:#a15a00;margin-top:3px;line-height:1.35;max-height:2.7em;overflow:hidden;">⚑ Sugerencia descartada: no se puede decidir si la cámara está averiada o solo no guarda.</div>
+        <div style="display:flex;gap:8px;margin-top:6px;flex-wrap:wrap;"><span style="display:inline-block;border:1.5px dashed #9a9a9a;border-radius:999px;background:#efefef;padding:3px 9px;font-size:11px;color:#6b6b6b;">Sin clasificar · sug.</span><span style="font-size:11px;color:#b0b0b0;font-style:italic;">— sin prioridad</span></div>
+      </div><div style="border-top:1px solid #d8d8d8;padding:12px 16px;box-shadow:inset 3px 0 0 #6f6f6f;background:#efefef;">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <span style="font-family:ui-monospace,Consolas,monospace;font-size:12px;color:#8a8a8a;">SVD-4102</span>
+          <span style="font-size:11px;color:#8a8a8a;border:1px solid #bdbdbd;border-radius:999px;padding:2px 8px;">Pendiente</span>
+        </div>
+        <div style="font-size:14px;font-weight:600;color:#3a3a3a;margin-top:4px;">Alarma perimetral desactivada tras mantenimiento</div>
+        <div style="font-size:12px;color:#7d7d7d;margin-top:3px;line-height:1.35;max-height:2.7em;overflow:hidden;">Motivo IA: la alarma quedó desactivada tras un mantenimiento; el perímetro está sin vigilancia ahora.</div>
+        <div style="display:flex;gap:8px;margin-top:6px;flex-wrap:wrap;"><span style="display:inline-block;border:1.5px dashed #9a9a9a;border-radius:999px;background:#efefef;padding:3px 9px;font-size:11px;color:#6b6b6b;">Brecha de seguridad · sug.</span><span style="display:inline-block;border:1.5px dashed #9a9a9a;border-radius:999px;background:#efefef;padding:3px 9px;font-size:11px;color:#6b6b6b;">Crítica</span></div>
+      </div><div style="border-top:1px solid #d8d8d8;padding:12px 16px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <span style="font-family:ui-monospace,Consolas,monospace;font-size:12px;color:#8a8a8a;">SVD-4108</span>
+          <span style="font-size:11px;color:#8a8a8a;border:1px solid #bdbdbd;border-radius:999px;padding:2px 8px;">Pendiente</span>
+        </div>
+        <div style="font-size:14px;font-weight:600;color:#3a3a3a;margin-top:4px;">Puerta de emergencia abierta sin alarma en Edificio B, planta 3</div>
+        <div style="font-size:12px;color:#7d7d7d;margin-top:3px;line-height:1.35;max-height:2.7em;overflow:hidden;">Motivo IA: la puerta quedó abierta y el sensor no lanzó alarma; acceso sin control.</div>
+        <div style="display:flex;gap:8px;margin-top:6px;flex-wrap:wrap;"><span style="display:inline-block;border:1.5px dashed #9a9a9a;border-radius:999px;background:#efefef;padding:3px 9px;font-size:11px;color:#6b6b6b;">Brecha de seguridad · sug.</span><span style="display:inline-block;border:1.5px dashed #9a9a9a;border-radius:999px;background:#efefef;padding:3px 9px;font-size:11px;color:#6b6b6b;">Crítica</span></div>
+      </div><div style="border-top:1px solid #d8d8d8;padding:12px 16px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <span style="font-family:ui-monospace,Consolas,monospace;font-size:12px;color:#8a8a8a;">SVD-4110</span>
+          <span style="font-size:11px;color:#8a8a8a;border:1px solid #bdbdbd;border-radius:999px;padding:2px 8px;">Pendiente</span>
+        </div>
+        <div style="font-size:14px;font-weight:600;color:#3a3a3a;margin-top:4px;">Lector de tarjetas sin respuesta en Perímetro exterior</div>
+        <div style="font-size:12px;color:#7d7d7d;margin-top:3px;line-height:1.35;max-height:2.7em;overflow:hidden;">Motivo IA: el lector no reconoce credenciales; hardware que no responde en zona crítica.</div>
+        <div style="display:flex;gap:8px;margin-top:6px;flex-wrap:wrap;"><span style="display:inline-block;border:1.5px dashed #9a9a9a;border-radius:999px;background:#efefef;padding:3px 9px;font-size:11px;color:#6b6b6b;">Equipo averiado · sug.</span><span style="display:inline-block;border:1.5px dashed #9a9a9a;border-radius:999px;background:#efefef;padding:3px 9px;font-size:11px;color:#6b6b6b;">Alta</span></div>
+      </div><div style="border-top:1px solid #d8d8d8;padding:12px 16px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <span style="font-family:ui-monospace,Consolas,monospace;font-size:12px;color:#8a8a8a;">SVD-4106</span>
+          <span style="font-size:11px;color:#8a8a8a;border:1px solid #bdbdbd;border-radius:999px;padding:2px 8px;">Pendiente</span>
+        </div>
+        <div style="font-size:14px;font-weight:600;color:#3a3a3a;margin-top:4px;">Solicitud de histórico de accesos en Perímetro exterior</div>
+        <div style="font-size:12px;color:#7d7d7d;margin-top:3px;line-height:1.35;max-height:2.7em;overflow:hidden;">Motivo IA: se piden datos ya existentes para auditoría; no hay incidencia que atender.</div>
+        <div style="display:flex;gap:8px;margin-top:6px;flex-wrap:wrap;"><span style="display:inline-block;border:1.5px dashed #9a9a9a;border-radius:999px;background:#efefef;padding:3px 9px;font-size:11px;color:#6b6b6b;">Petición de información · sug.</span><span style="display:inline-block;border:1.5px dashed #9a9a9a;border-radius:999px;background:#efefef;padding:3px 9px;font-size:11px;color:#6b6b6b;">Media</span></div>
+      </div>
+        <div style="padding:10px 16px;font-size:11px;color:#a5a5a5;">↕ scroll propio · … 55 más</div>
+      </div>
+    <div style="border:1px solid #cfcfcf;border-radius:10px;background:#fdfcfa;overflow:hidden;display:flex;flex-direction:column;">
+      <div style="flex:none;border-bottom:1px solid #d8d8d8;padding:12px 20px;display:flex;align-items:center;gap:12px;">
+        <div style="height:32px;border:1px solid #c4c4c4;border-radius:7px;background:#fff;display:flex;align-items:center;padding:0 12px;font-size:12px;color:#8a8a8a;">← Bandeja</div>
+        <span style="font-family:ui-monospace,Consolas,monospace;font-size:16px;font-weight:700;color:#444;">SVD-4102</span>
+        <span style="font-size:14px;color:#3a3a3a;">Alarma perimetral desactivada tras mantenimiento</span>
+        <span style="margin-left:auto;font-size:11px;color:#a5a5a5;border:1px solid #ccc;border-radius:5px;padding:2px 7px;">abierto</span>
+      </div>
+      <div style="flex:1;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:16px;"><div style="border:1px solid #cfcfcf;border-radius:10px;background:#fdfcfa;padding:20px;">
+        <div style="font-size:11px;letter-spacing:.1em;color:#9a9a9a;font-weight:700;">DATOS DEL TICKET</div>
+        <div style="margin-top:14px;display:flex;flex-direction:column;gap:14px;">
+          <div><div style="font-size:11px;color:#9a9a9a;">Descripción</div><div style="font-size:14px;color:#3a3a3a;margin-top:3px;line-height:1.5;">La alarma perimetral de Perímetro exterior se ha desactivado sola tras el último mantenimiento.</div></div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+            <div><div style="font-size:11px;color:#9a9a9a;">Sistema afectado</div><div style="font-size:14px;color:#3a3a3a;margin-top:3px;">Central de alarmas</div></div><div><div style="font-size:11px;color:#9a9a9a;">Zona</div><div style="font-size:14px;color:#3a3a3a;margin-top:3px;">Perímetro exterior (zona crítica)</div></div><div><div style="font-size:11px;color:#9a9a9a;">Reportado por</div><div style="font-size:14px;color:#3a3a3a;margin-top:3px;">Guardia de seguridad</div></div><div><div style="font-size:11px;color:#9a9a9a;">Fecha</div><div style="font-size:14px;color:#3a3a3a;margin-top:3px;">2026-09-04</div></div>
           </div>
         </div>
       </div>
-
-      <div style="display:flex;flex-direction:column;gap:18px;">
-        <div style="border:2px dashed #9a9a9a;border-radius:10px;background:#efefef;padding:24px;flex:1;">
-          <div style="display:flex;align-items:center;gap:10px;">
-            <div style="width:24px;height:24px;border:1px solid #b0b0b0;border-radius:6px;background:#e0e0e0;display:flex;align-items:center;justify-content:center;font-size:12px;color:#777;">◈</div>
-            <div style="font-size:13px;letter-spacing:.1em;color:#7d7d7d;font-weight:700;">SUGERENCIA DE LA IA · sin confirmar</div>
-          </div>
-          <div style="margin-top:20px;">
-            <div style="font-size:12px;color:#9a9a9a;">Categoría</div>
-            <div style="font-size:18px;font-weight:700;color:#555;margin-top:4px;">Sin clasificar</div>
-            <div style="font-size:13px;color:#9a9a9a;margin-top:16px;">Urgencia / Impacto / Prioridad</div>
-            <div style="font-size:15px;color:#b0b0b0;font-style:italic;margin-top:4px;">— sin valor hasta que se clasifique —</div>
-          </div>
-          <div style="margin-top:18px;padding-top:16px;border-top:1px solid #d3d3d3;">
-            <div style="font-size:12px;color:#9a9a9a;">Motivo</div>
-            <div style="font-size:14px;color:#6b6b6b;margin-top:5px;line-height:1.5;">No se puede decidir con el texto si la cámara está averiada (equipo) o solo no guarda (pérdida de registro); requiere comprobación en sitio.</div>
-          </div>
+      <div style="border:2px solid #7f7f7f;border-radius:10px;background:#fff;padding:20px;">
+        <div style="font-size:12px;letter-spacing:.08em;color:#7d7d7d;font-weight:700;">CORRIGE LA CLASIFICACIÓN</div>
+        <div style="margin-top:16px;display:flex;flex-direction:column;gap:14px;">
+          <div><div style="font-size:11px;color:#9a9a9a;margin-bottom:5px;">Categoría</div><div style="height:42px;border:1.5px solid #6f6f6f;border-radius:8px;background:#e6e6e6;display:flex;align-items:center;justify-content:space-between;padding:0 12px;font-size:14px;font-weight:600;color:#444;">Brecha de seguridad activa <span>▾</span></div></div>
+          <div><div style="font-size:11px;color:#9a9a9a;margin-bottom:5px;">Urgencia</div><div style="height:42px;border:1.5px dashed #b0b0b0;border-radius:8px;background:#f0f0f0;display:flex;align-items:center;justify-content:space-between;padding:0 12px;font-size:14px;color:#8f8f8f;">Alta <span style="font-size:11px;">🔒</span></div><div style="font-size:11px;color:#8a8a8a;margin-top:5px;">Una brecha es siempre Alta (R8). Para cambiarla, cambia la categoría.</div></div>
+          <div><div style="font-size:11px;color:#9a9a9a;margin-bottom:5px;">Impacto</div><div style="height:42px;border:1.5px solid #6f6f6f;border-radius:8px;background:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 12px;font-size:14px;color:#444;">Alto <span>▾</span></div></div>
         </div>
-
-        <div style="display:flex;align-items:center;gap:12px;">
-          <div style="height:48px;border:1px solid #7f7f7f;border-radius:9px;background:#dcdcdc;display:flex;align-items:center;padding:0 26px;font-size:16px;font-weight:700;color:#3a3a3a;">Corregir</div>
-          <div style="height:48px;border:1px dashed #cfcfcf;border-radius:9px;background:#f2f2f2;display:flex;align-items:center;padding:0 22px;font-size:15px;color:#bdbdbd;">Deshacer</div>
-          <div style="margin-left:auto;font-size:12px;color:#8a8a8a;max-width:230px;text-align:right;">Sin botón <b>Aceptar</b>: no hay sugerencia que aceptar. Solo se puede <b>Corregir</b>.</div>
+        <div style="margin-top:16px;padding-top:14px;border-top:1px solid #d3d3d3;display:flex;align-items:center;gap:10px;">
+          <div style="font-size:12px;color:#9a9a9a;">Prioridad recalculada</div><div style="font-size:18px;font-weight:700;color:#444;">Crítica</div>
+        </div>
+        <div style="margin-top:16px;">
+          <div style="font-size:11px;color:#9a9a9a;">Motivo de la corrección <span style="font-style:italic;">(obligatorio: cambia la sugerencia de la IA)</span></div>
+          <div style="height:56px;border:1.5px solid #cfcfcf;border-radius:8px;background:#f7f7f7;margin-top:5px;padding:8px 10px;font-size:12px;color:#8a8a8a;">"La alarma no está averiada: comprobado con mantenimiento, alguien la desactivó sin avisar."</div>
         </div>
       </div>
+      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;"><div style="height:44px;border-radius:9px;display:flex;align-items:center;padding:0 22px;font-size:14px;font-weight:700;border:1.5px solid #555;background:#3a3a3a;color:#fff;">Guardar corrección</div><div style="height:44px;border-radius:9px;display:flex;align-items:center;padding:0 22px;font-size:14px;font-weight:700;border:1px solid #c4c4c4;background:#fff;color:#9a9a9a;">Cancelar</div><div style="margin-left:auto;font-size:11px;color:#a5a5a5;max-width:220px;text-align:right;">Cuenta como Corregido si cambia al menos un campo (R9: motivo obligatorio).</div></div></div>
     </div>
   </div>
 </section>
-
-<!-- ══════════ 5 · BANDEJA TRAS CONFIRMAR ══════════ -->
-<section data-label="Tras confirmar" data-speaker-notes="La misma bandeja después de confirmar: SVD-4102 ahora aparece Confirmado y en sólido (ya no sugerido); SVD-4143 pasó a Corregido con categoría real. La cabecera muestra el aviso 'hay cambios sin exportar' junto al botón Exportar." style="width:100%;height:100%;box-sizing:border-box;display:flex;font-family:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:#3a3a3a;background:#e4e4e4;">
-  <aside style="width:230px;flex:none;background:#f4f4f4;border-right:1px solid #cfcfcf;padding:24px 16px;display:flex;flex-direction:column;gap:22px;">
-    <div style="display:flex;align-items:center;gap:10px;">
-      <div style="width:34px;height:34px;border:1px solid #b6b6b6;border-radius:7px;background:#e2e2e2;display:flex;align-items:center;justify-content:center;font-size:11px;color:#777;">MSD</div>
-      <div style="font-size:14px;font-weight:600;color:#555;line-height:1.15;">Mini Service<br>Desk</div>
+<!-- ══════════ 3 · SIN CLASIFICAR ══════════ -->
+<section data-label="Sin clasificar" data-speaker-notes="SVD-4143, Sin clasificar: la IA lo explica en el motivo. Sin botón Aceptar (R4); solo Corregir. Sigue destacado en la lista con el borde grueso." style="width:100%;height:100%;box-sizing:border-box;display:flex;flex-direction:column;font-family:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:#3a3a3a;background:#e4e4e4;position:relative;">
+  <div style="flex:none;background:#f4f4f4;border-bottom:1px solid #cfcfcf;padding:12px 28px;display:flex;align-items:center;gap:16px;">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <div style="width:30px;height:30px;border-radius:8px;background:#7f7f7f;color:#fff;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;">MSD</div>
+        <div style="font-size:15px;font-weight:700;color:#444;">Mini Service Desk</div>
+      </div>
+      <div style="display:flex;gap:4px;background:#e6e6e6;padding:4px;border-radius:10px;"><div style="height:34px;border-radius:8px;padding:0 16px;display:flex;align-items:center;font-size:14px;font-weight:700;color:#444;background:#fff;box-shadow:0 0 0 1px #cfcfcf;">Bandeja</div><div style="height:34px;border-radius:8px;padding:0 16px;display:flex;align-items:center;font-size:14px;color:#8a8a8a;">Métricas</div></div>
+      
+      <div style="margin-left:auto;height:38px;border:1px solid #c4c4c4;border-radius:8px;background:#fff;display:flex;align-items:center;padding:0 14px;font-size:13px;color:#8a8a8a;">Tema: claro</div>
+      <div style="height:38px;border:1.5px solid #6f6f6f;border-radius:8px;background:#fff;display:flex;align-items:center;padding:0 16px;font-size:14px;font-weight:600;color:#444;">Nuevo ticket</div>
+      <div style="height:38px;border:1.5px solid #444;background:#3a3a3a;color:#fff;border-radius:8px;display:flex;align-items:center;padding:0 16px;font-size:14px;font-weight:700;">Exportar JSON</div>
     </div>
-    <div style="height:38px;border:1px solid #cbcbcb;border-radius:7px;background:#ededed;display:flex;align-items:center;padding:0 12px;font-size:13px;color:#9a9a9a;">Buscar…</div>
-    <div>
-      <div style="font-size:11px;letter-spacing:.14em;color:#9a9a9a;font-weight:700;margin-bottom:10px;">TRIAJE</div>
-      <div style="display:flex;flex-direction:column;gap:4px;">
-        <div style="height:40px;border:1px solid #bdbdbd;border-radius:7px;background:#e0e0e0;display:flex;align-items:center;padding:0 12px;font-size:15px;font-weight:600;color:#444;">Bandeja</div>
-        <div style="height:40px;border:1px solid transparent;border-radius:7px;display:flex;align-items:center;padding:0 12px;font-size:15px;color:#7d7d7d;">Métricas</div>
-      </div>
+  <div style="flex:none;padding:12px 28px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;border-bottom:1px solid #d8d8d8;">
+      <div style="font-size:12px;color:#9a9a9a;">Filtros:</div>
+      <div style="height:32px;border:1px solid #c4c4c4;border-radius:7px;background:#fff;display:flex;align-items:center;padding:0 10px;font-size:12px;color:#6b6b6b;">Estado triaje: Pendientes de confirmar ▾</div>
+      <div style="height:32px;border:1px solid #c4c4c4;border-radius:7px;background:#fff;display:flex;align-items:center;padding:0 10px;font-size:12px;color:#8a8a8a;">Prioridad ▾</div>
+      <div style="height:32px;border:1px solid #c4c4c4;border-radius:7px;background:#fff;display:flex;align-items:center;padding:0 10px;font-size:12px;color:#8a8a8a;">Sistema ▾</div>
+      <div style="height:32px;border:1px solid #c4c4c4;border-radius:7px;background:#fff;display:flex;align-items:center;padding:0 10px;font-size:12px;color:#8a8a8a;">Zona ▾</div>
+      <div style="height:32px;border:1px solid #c4c4c4;border-radius:7px;background:#fff;display:flex;align-items:center;padding:0 10px;font-size:12px;color:#8a8a8a;">Estado ticket ▾</div>
     </div>
-  </aside>
-
-  <div style="flex:1;display:flex;flex-direction:column;min-width:0;">
-    <div style="flex:none;background:#fafafa;border-bottom:1px solid #cfcfcf;padding:18px 32px;display:flex;flex-direction:column;gap:14px;">
-      <div style="display:flex;align-items:center;gap:16px;">
-        <div style="font-size:22px;font-weight:700;color:#444;">Bandeja de triaje</div>
-        <!-- AVISO cambios sin exportar -->
-        <div style="border:1.5px solid #7f7f7f;border-radius:7px;background:#e6e6e6;padding:6px 12px;font-size:13px;color:#444;display:flex;align-items:center;gap:8px;">⚠ Hay cambios sin exportar</div>
-        <div style="margin-left:auto;height:44px;border:1.5px solid #555;border-radius:8px;background:#dcdcdc;display:flex;align-items:center;padding:0 20px;font-size:15px;font-weight:700;color:#3a3a3a;">Exportar ↓</div>
-      </div>
-      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
-        <div style="font-size:13px;color:#9a9a9a;">Filtros:</div>
-        <div style="height:36px;border:1.5px solid #6f6f6f;border-radius:7px;background:#e6e6e6;display:flex;align-items:center;padding:0 12px;font-size:13px;font-weight:600;color:#444;">Estado triaje: Pendientes de confirmar ▾</div>
-        <div style="height:36px;border:1px solid #c4c4c4;border-radius:7px;background:#fff;display:flex;align-items:center;padding:0 12px;font-size:13px;color:#8a8a8a;">Prioridad ▾</div>
-        <div style="height:36px;border:1px solid #c4c4c4;border-radius:7px;background:#fff;display:flex;align-items:center;padding:0 12px;font-size:13px;color:#8a8a8a;">Sistema ▾</div>
-        <div style="height:36px;border:1px solid #c4c4c4;border-radius:7px;background:#fff;display:flex;align-items:center;padding:0 12px;font-size:13px;color:#8a8a8a;">Zona ▾</div>
-      </div>
-    </div>
-
-    <div style="flex:1;overflow:hidden;padding:22px 32px;display:flex;flex-direction:column;gap:10px;">
-      <div style="display:grid;grid-template-columns:120px 1fr 210px 150px 150px;gap:16px;padding:0 18px;font-size:11px;letter-spacing:.1em;color:#9a9a9a;font-weight:700;">
-        <div>ID</div><div>TÍTULO · MOTIVO IA</div><div>CATEGORÍA</div><div>PRIORIDAD</div><div>ESTADO</div>
-      </div>
-
-      <!-- SVD-4143 ahora CORREGIDO (sólido) -->
-      <div style="border:1px solid #cfcfcf;border-radius:9px;background:#fff;padding:16px 18px;display:grid;grid-template-columns:120px 1fr 210px 150px 150px;gap:16px;align-items:center;">
-        <div style="font-family:ui-monospace,Consolas,monospace;font-size:15px;color:#444;">SVD-4143</div>
-        <div>
-          <div style="font-size:16px;font-weight:600;color:#3a3a3a;">Cámara 12 sin grabar en Nave logística 2</div>
-          <div style="font-size:13px;color:#7d7d7d;margin-top:5px;line-height:1.4;">Clasificado a mano por el operador tras comprobación.</div>
+  <div style="flex:1;overflow:hidden;padding:16px 28px;display:grid;grid-template-columns:360px 1fr;gap:16px;">
+    <div style="border:1px solid #cfcfcf;border-radius:10px;background:#fff;overflow:hidden;display:flex;flex-direction:column;">
+        <div style="border-top:1px solid #d8d8d8;padding:12px 16px;box-shadow:inset 3px 0 0 #6f6f6f;background:#efefef;box-shadow:inset 3px 0 0 #6f6f6f, inset 6px 0 0 #7f7f7f;">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <span style="font-family:ui-monospace,Consolas,monospace;font-size:12px;color:#8a8a8a;">SVD-4143</span>
+          <span style="font-size:11px;color:#8a8a8a;border:1px solid #bdbdbd;border-radius:999px;padding:2px 8px;">Pendiente</span>
         </div>
-        <div><span style="display:inline-block;border:1.5px solid #666;border-radius:6px;background:#e0e0e0;padding:5px 10px;font-size:13px;font-weight:600;color:#3a3a3a;">Equipo averiado</span></div>
-        <div><span style="display:inline-block;border:1.5px solid #666;border-radius:6px;background:#e0e0e0;padding:5px 10px;font-size:13px;font-weight:700;color:#3a3a3a;">Media</span></div>
-        <div><span style="display:inline-block;border:1.5px solid #666;border-radius:6px;background:#d6d6d6;padding:5px 10px;font-size:12px;font-weight:600;color:#3a3a3a;">✓ Corregido</span></div>
-      </div>
-
-      <!-- SVD-4102 ahora CONFIRMADO (sólido) -->
-      <div style="border:1px solid #cfcfcf;border-radius:9px;background:#fff;padding:16px 18px;display:grid;grid-template-columns:120px 1fr 210px 150px 150px;gap:16px;align-items:center;">
-        <div style="font-family:ui-monospace,Consolas,monospace;font-size:15px;color:#444;">SVD-4102</div>
-        <div>
-          <div style="font-size:16px;font-weight:600;color:#3a3a3a;">Alarma perimetral desactivada tras mantenimiento</div>
-          <div style="font-size:13px;color:#7d7d7d;margin-top:5px;line-height:1.4;">Motivo IA: el perímetro está sin vigilancia ahora. Sugerencia aceptada.</div>
+        <div style="font-size:14px;font-weight:600;color:#3a3a3a;margin-top:4px;">Cámara 12 sin grabar en Nave logística 2</div>
+        <div style="font-size:12px;color:#a15a00;margin-top:3px;line-height:1.35;max-height:2.7em;overflow:hidden;">⚑ Sugerencia descartada: no se puede decidir si la cámara está averiada o solo no guarda.</div>
+        <div style="display:flex;gap:8px;margin-top:6px;flex-wrap:wrap;"><span style="display:inline-block;border:1.5px dashed #9a9a9a;border-radius:999px;background:#efefef;padding:3px 9px;font-size:11px;color:#6b6b6b;">Sin clasificar · sug.</span><span style="font-size:11px;color:#b0b0b0;font-style:italic;">— sin prioridad</span></div>
+      </div><div style="border-top:1px solid #d8d8d8;padding:12px 16px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <span style="font-family:ui-monospace,Consolas,monospace;font-size:12px;color:#8a8a8a;">SVD-4102</span>
+          <span style="font-size:11px;color:#8a8a8a;border:1px solid #bdbdbd;border-radius:999px;padding:2px 8px;">Pendiente</span>
         </div>
-        <div><span style="display:inline-block;border:1.5px solid #666;border-radius:6px;background:#e0e0e0;padding:5px 10px;font-size:13px;font-weight:600;color:#3a3a3a;">Brecha de seguridad</span></div>
-        <div><span style="display:inline-block;border:1.5px solid #666;border-radius:6px;background:#e0e0e0;padding:5px 10px;font-size:13px;font-weight:700;color:#3a3a3a;">Crítica</span></div>
-        <div><span style="display:inline-block;border:1.5px solid #666;border-radius:6px;background:#d6d6d6;padding:5px 10px;font-size:12px;font-weight:600;color:#3a3a3a;">✓ Confirmado</span></div>
-      </div>
-
-      <!-- resto sigue pendiente/sugerido -->
-      <div style="border:1px solid #cfcfcf;border-radius:9px;background:#fff;padding:16px 18px;display:grid;grid-template-columns:120px 1fr 210px 150px 150px;gap:16px;align-items:center;opacity:.92;">
-        <div style="font-family:ui-monospace,Consolas,monospace;font-size:15px;color:#444;">SVD-4108</div>
-        <div>
-          <div style="font-size:16px;font-weight:600;color:#3a3a3a;">Puerta de emergencia abierta sin alarma en Edificio B, planta 3</div>
-          <div style="font-size:13px;color:#7d7d7d;margin-top:5px;line-height:1.4;">Motivo IA: la puerta quedó abierta y el sensor no lanzó alarma.</div>
+        <div style="font-size:14px;font-weight:600;color:#3a3a3a;margin-top:4px;">Alarma perimetral desactivada tras mantenimiento</div>
+        <div style="font-size:12px;color:#7d7d7d;margin-top:3px;line-height:1.35;max-height:2.7em;overflow:hidden;">Motivo IA: la alarma quedó desactivada tras un mantenimiento; el perímetro está sin vigilancia ahora.</div>
+        <div style="display:flex;gap:8px;margin-top:6px;flex-wrap:wrap;"><span style="display:inline-block;border:1.5px dashed #9a9a9a;border-radius:999px;background:#efefef;padding:3px 9px;font-size:11px;color:#6b6b6b;">Brecha de seguridad · sug.</span><span style="display:inline-block;border:1.5px dashed #9a9a9a;border-radius:999px;background:#efefef;padding:3px 9px;font-size:11px;color:#6b6b6b;">Crítica</span></div>
+      </div><div style="border-top:1px solid #d8d8d8;padding:12px 16px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <span style="font-family:ui-monospace,Consolas,monospace;font-size:12px;color:#8a8a8a;">SVD-4108</span>
+          <span style="font-size:11px;color:#8a8a8a;border:1px solid #bdbdbd;border-radius:999px;padding:2px 8px;">Pendiente</span>
         </div>
-        <div><span style="display:inline-block;border:1.5px dashed #9a9a9a;border-radius:6px;background:#efefef;padding:5px 10px;font-size:13px;color:#6b6b6b;">Brecha · <span style="font-style:italic;">sugerido</span></span></div>
-        <div><span style="display:inline-block;border:1.5px dashed #9a9a9a;border-radius:6px;background:#efefef;padding:5px 10px;font-size:13px;color:#6b6b6b;">Alta · <span style="font-style:italic;">sug.</span></span></div>
-        <div><span style="display:inline-block;border:1px solid #bdbdbd;border-radius:6px;background:#f0f0f0;padding:5px 10px;font-size:12px;color:#7d7d7d;">Pendiente</span></div>
+        <div style="font-size:14px;font-weight:600;color:#3a3a3a;margin-top:4px;">Puerta de emergencia abierta sin alarma en Edificio B, planta 3</div>
+        <div style="font-size:12px;color:#7d7d7d;margin-top:3px;line-height:1.35;max-height:2.7em;overflow:hidden;">Motivo IA: la puerta quedó abierta y el sensor no lanzó alarma; acceso sin control.</div>
+        <div style="display:flex;gap:8px;margin-top:6px;flex-wrap:wrap;"><span style="display:inline-block;border:1.5px dashed #9a9a9a;border-radius:999px;background:#efefef;padding:3px 9px;font-size:11px;color:#6b6b6b;">Brecha de seguridad · sug.</span><span style="display:inline-block;border:1.5px dashed #9a9a9a;border-radius:999px;background:#efefef;padding:3px 9px;font-size:11px;color:#6b6b6b;">Crítica</span></div>
+      </div><div style="border-top:1px solid #d8d8d8;padding:12px 16px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <span style="font-family:ui-monospace,Consolas,monospace;font-size:12px;color:#8a8a8a;">SVD-4110</span>
+          <span style="font-size:11px;color:#8a8a8a;border:1px solid #bdbdbd;border-radius:999px;padding:2px 8px;">Pendiente</span>
+        </div>
+        <div style="font-size:14px;font-weight:600;color:#3a3a3a;margin-top:4px;">Lector de tarjetas sin respuesta en Perímetro exterior</div>
+        <div style="font-size:12px;color:#7d7d7d;margin-top:3px;line-height:1.35;max-height:2.7em;overflow:hidden;">Motivo IA: el lector no reconoce credenciales; hardware que no responde en zona crítica.</div>
+        <div style="display:flex;gap:8px;margin-top:6px;flex-wrap:wrap;"><span style="display:inline-block;border:1.5px dashed #9a9a9a;border-radius:999px;background:#efefef;padding:3px 9px;font-size:11px;color:#6b6b6b;">Equipo averiado · sug.</span><span style="display:inline-block;border:1.5px dashed #9a9a9a;border-radius:999px;background:#efefef;padding:3px 9px;font-size:11px;color:#6b6b6b;">Alta</span></div>
+      </div><div style="border-top:1px solid #d8d8d8;padding:12px 16px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <span style="font-family:ui-monospace,Consolas,monospace;font-size:12px;color:#8a8a8a;">SVD-4106</span>
+          <span style="font-size:11px;color:#8a8a8a;border:1px solid #bdbdbd;border-radius:999px;padding:2px 8px;">Pendiente</span>
+        </div>
+        <div style="font-size:14px;font-weight:600;color:#3a3a3a;margin-top:4px;">Solicitud de histórico de accesos en Perímetro exterior</div>
+        <div style="font-size:12px;color:#7d7d7d;margin-top:3px;line-height:1.35;max-height:2.7em;overflow:hidden;">Motivo IA: se piden datos ya existentes para auditoría; no hay incidencia que atender.</div>
+        <div style="display:flex;gap:8px;margin-top:6px;flex-wrap:wrap;"><span style="display:inline-block;border:1.5px dashed #9a9a9a;border-radius:999px;background:#efefef;padding:3px 9px;font-size:11px;color:#6b6b6b;">Petición de información · sug.</span><span style="display:inline-block;border:1.5px dashed #9a9a9a;border-radius:999px;background:#efefef;padding:3px 9px;font-size:11px;color:#6b6b6b;">Media</span></div>
       </div>
-
-      <div style="font-size:13px;color:#9a9a9a;padding:4px 18px;">Confirmado y Corregido se pintan en sólido; los pendientes siguen atenuados y con “sugerido”.</div>
+        <div style="padding:10px 16px;font-size:11px;color:#a5a5a5;">↕ scroll propio · … 55 más</div>
+      </div>
+    <div style="border:1px solid #cfcfcf;border-radius:10px;background:#fdfcfa;overflow:hidden;display:flex;flex-direction:column;">
+      <div style="flex:none;border-bottom:1px solid #d8d8d8;padding:12px 20px;display:flex;align-items:center;gap:12px;">
+        <div style="height:32px;border:1px solid #c4c4c4;border-radius:7px;background:#fff;display:flex;align-items:center;padding:0 12px;font-size:12px;color:#8a8a8a;">← Bandeja</div>
+        <span style="font-family:ui-monospace,Consolas,monospace;font-size:16px;font-weight:700;color:#444;">SVD-4143</span>
+        <span style="font-size:14px;color:#3a3a3a;">Cámara 12 sin grabar en Nave logística 2</span>
+        <span style="margin-left:auto;font-size:11px;color:#a5a5a5;border:1px solid #ccc;border-radius:5px;padding:2px 7px;">abierto</span>
+      </div>
+      <div style="flex:1;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:16px;"><div style="border:1px solid #cfcfcf;border-radius:10px;background:#fdfcfa;padding:20px;">
+        <div style="font-size:11px;letter-spacing:.1em;color:#9a9a9a;font-weight:700;">DATOS DEL TICKET</div>
+        <div style="margin-top:14px;display:flex;flex-direction:column;gap:14px;">
+          <div><div style="font-size:11px;color:#9a9a9a;">Descripción</div><div style="font-size:14px;color:#3a3a3a;margin-top:3px;line-height:1.5;">La cámara 12 de Nave logística 2 lleva 12 días sin grabar, solo muestra pantalla en negro.</div></div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+            <div><div style="font-size:11px;color:#9a9a9a;">Sistema afectado</div><div style="font-size:14px;color:#3a3a3a;margin-top:3px;">CCTV / videovigilancia</div></div><div><div style="font-size:11px;color:#9a9a9a;">Zona</div><div style="font-size:14px;color:#3a3a3a;margin-top:3px;">Nave logística 2</div></div><div><div style="font-size:11px;color:#9a9a9a;">Reportado por</div><div style="font-size:14px;color:#3a3a3a;margin-top:3px;">Técnico de mantenimiento</div></div><div><div style="font-size:11px;color:#9a9a9a;">Fecha</div><div style="font-size:14px;color:#3a3a3a;margin-top:3px;">2026-09-01</div></div>
+          </div>
+        </div>
+      </div><div style="border:2px dashed #9a9a9a;background:#efefef;border-radius:10px;padding:20px;">
+        <div style="font-size:12px;letter-spacing:.08em;color:#7d7d7d;font-weight:700;">SUGERENCIA DE LA IA · SUGERENCIA DESCARTADA</div>
+        <div style="margin-top:16px;display:grid;grid-template-columns:1fr 1fr;gap:14px;"><div><div style="font-size:11px;color:#9a9a9a;">Categoría</div><div style="font-size:14px;color:#3a3a3a;margin-top:3px;">Sin clasificar</div></div><div><div style="font-size:11px;color:#9a9a9a;">Prioridad (matriz)</div><div style="font-size:14px;color:#3a3a3a;margin-top:3px;">—</div></div><div><div style="font-size:11px;color:#9a9a9a;">Urgencia</div><div style="font-size:14px;color:#3a3a3a;margin-top:3px;">—</div></div><div><div style="font-size:11px;color:#9a9a9a;">Impacto</div><div style="font-size:14px;color:#3a3a3a;margin-top:3px;">—</div></div></div>
+        <div style="margin-top:14px;padding-top:12px;border-top:1px solid #d3d3d3;"><div><div style="font-size:11px;color:#9a9a9a;">Motivo de la IA</div><div style="font-size:14px;color:#3a3a3a;margin-top:3px;">No se puede decidir con el texto si la cámara está averiada (equipo) o solo no guarda (pérdida de registro); requiere comprobación en sitio.</div></div></div>
+        
+        <div style="margin-top:12px;font-size:11px;color:#9a9a9a;">La prioridad la calcula la app a partir de urgencia × impacto; no se sugiere ni se edita a mano.</div>
+      </div><div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;"><div style="height:44px;border-radius:9px;display:flex;align-items:center;padding:0 22px;font-size:14px;font-weight:700;border:1px solid #7f7f7f;background:#fff;color:#444;">Corregir</div><div style="height:44px;border-radius:9px;display:flex;align-items:center;padding:0 22px;font-size:14px;font-weight:700;border:1px solid #c4c4c4;background:#fff;color:#9a9a9a;">Deshacer</div><div style="margin-left:auto;font-size:11px;color:#a5a5a5;max-width:220px;text-align:right;">Sin botón Aceptar: no hay sugerencia que aceptar (R4). Solo se puede Corregir.</div></div><div style="border-top:1px solid #d3d3d3;padding-top:14px;">
+        <div style="font-size:13px;font-weight:700;color:#555;">Notas del operador</div>
+        <div style="margin-top:10px;display:flex;flex-direction:column;gap:10px;"><div style="font-size:13px;color:#a5a5a5;">Todavía no hay notas. Se añaden y quedan: no se editan ni se borran.</div></div>
+        <div style="height:64px;border:1.5px solid #cfcfcf;border-radius:8px;background:#f4f4f4;margin-top:4px;padding:8px 10px;font-size:12px;color:#b0b0b0;">Lo que sabes y no está en la descripción…</div>
+        <div style="margin-top:6px;font-size:11px;color:#a5a5a5;">No escribas nombres, DNI, matrículas ni otros datos personales. 0/500.</div>
+        <div style="margin-top:8px;height:38px;width:130px;border:1px solid #c4c4c4;border-radius:8px;background:#f0f0f0;color:#b5b5b5;display:flex;align-items:center;justify-content:center;font-size:13px;">Añadir nota</div>
+      </div></div>
     </div>
   </div>
 </section>
-
-<!-- ══════════ 6 · EXPORTAR ══════════ -->
-<section data-label="Exportar" data-speaker-notes="Tras pulsar Exportar: se descarga tickets-triaje-2026-09-22.json con los 60 tickets, sus campos originales, la sugerencia y el objeto triaje. La cabecera ya NO muestra el aviso de cambios sin exportar; queda la marca de la hora del último export." style="width:100%;height:100%;box-sizing:border-box;display:flex;font-family:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:#3a3a3a;background:#e4e4e4;position:relative;">
-  <aside style="width:230px;flex:none;background:#f4f4f4;border-right:1px solid #cfcfcf;padding:24px 16px;display:flex;flex-direction:column;gap:22px;">
-    <div style="display:flex;align-items:center;gap:10px;">
-      <div style="width:34px;height:34px;border:1px solid #b6b6b6;border-radius:7px;background:#e2e2e2;display:flex;align-items:center;justify-content:center;font-size:11px;color:#777;">MSD</div>
-      <div style="font-size:14px;font-weight:600;color:#555;line-height:1.15;">Mini Service<br>Desk</div>
-    </div>
-    <div style="height:38px;border:1px solid #cbcbcb;border-radius:7px;background:#ededed;display:flex;align-items:center;padding:0 12px;font-size:13px;color:#9a9a9a;">Buscar…</div>
-    <div>
-      <div style="font-size:11px;letter-spacing:.14em;color:#9a9a9a;font-weight:700;margin-bottom:10px;">TRIAJE</div>
-      <div style="display:flex;flex-direction:column;gap:4px;">
-        <div style="height:40px;border:1px solid #bdbdbd;border-radius:7px;background:#e0e0e0;display:flex;align-items:center;padding:0 12px;font-size:15px;font-weight:600;color:#444;">Bandeja</div>
-        <div style="height:40px;border:1px solid transparent;border-radius:7px;display:flex;align-items:center;padding:0 12px;font-size:15px;color:#7d7d7d;">Métricas</div>
+<!-- ══════════ 4 · NOTAS ══════════ -->
+<section data-label="Notas" data-speaker-notes="R9: panel 'Notas del operador' dentro de la ficha, debajo de la caja de la IA. Se añaden y quedan (no se editan ni se borran), sobreviven a Deshacer. El motivo de la corrección se ve junto a la sugerencia original de la IA." style="width:100%;height:100%;box-sizing:border-box;display:flex;flex-direction:column;font-family:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:#3a3a3a;background:#e4e4e4;position:relative;">
+  <div style="flex:none;background:#f4f4f4;border-bottom:1px solid #cfcfcf;padding:12px 28px;display:flex;align-items:center;gap:16px;">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <div style="width:30px;height:30px;border-radius:8px;background:#7f7f7f;color:#fff;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;">MSD</div>
+        <div style="font-size:15px;font-weight:700;color:#444;">Mini Service Desk</div>
       </div>
+      <div style="display:flex;gap:4px;background:#e6e6e6;padding:4px;border-radius:10px;"><div style="height:34px;border-radius:8px;padding:0 16px;display:flex;align-items:center;font-size:14px;font-weight:700;color:#444;background:#fff;box-shadow:0 0 0 1px #cfcfcf;">Bandeja</div><div style="height:34px;border-radius:8px;padding:0 16px;display:flex;align-items:center;font-size:14px;color:#8a8a8a;">Métricas</div></div>
+      
+      <div style="margin-left:auto;height:38px;border:1px solid #c4c4c4;border-radius:8px;background:#fff;display:flex;align-items:center;padding:0 14px;font-size:13px;color:#8a8a8a;">Tema: claro</div>
+      <div style="height:38px;border:1.5px solid #6f6f6f;border-radius:8px;background:#fff;display:flex;align-items:center;padding:0 16px;font-size:14px;font-weight:600;color:#444;">Nuevo ticket</div>
+      <div style="height:38px;border:1.5px solid #444;background:#3a3a3a;color:#fff;border-radius:8px;display:flex;align-items:center;padding:0 16px;font-size:14px;font-weight:700;">Exportar JSON</div>
     </div>
-  </aside>
-
-  <div style="flex:1;display:flex;flex-direction:column;min-width:0;">
-    <div style="flex:none;background:#fafafa;border-bottom:1px solid #cfcfcf;padding:18px 32px;display:flex;align-items:center;gap:16px;">
-      <div style="font-size:22px;font-weight:700;color:#444;">Bandeja de triaje</div>
-      <div style="font-size:13px;color:#8a8a8a;">Sin cambios pendientes · exportado 2026-09-22 17:04</div>
-      <div style="margin-left:auto;height:44px;border:1px solid #9a9a9a;border-radius:8px;background:#eee;display:flex;align-items:center;padding:0 20px;font-size:15px;color:#7d7d7d;">Exportar ↓</div>
+  <div style="flex:none;padding:12px 28px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;border-bottom:1px solid #d8d8d8;">
+      <div style="font-size:12px;color:#9a9a9a;">Filtros:</div>
+      <div style="height:32px;border:1px solid #c4c4c4;border-radius:7px;background:#fff;display:flex;align-items:center;padding:0 10px;font-size:12px;color:#6b6b6b;">Estado triaje: Pendientes de confirmar ▾</div>
+      <div style="height:32px;border:1px solid #c4c4c4;border-radius:7px;background:#fff;display:flex;align-items:center;padding:0 10px;font-size:12px;color:#8a8a8a;">Prioridad ▾</div>
+      <div style="height:32px;border:1px solid #c4c4c4;border-radius:7px;background:#fff;display:flex;align-items:center;padding:0 10px;font-size:12px;color:#8a8a8a;">Sistema ▾</div>
+      <div style="height:32px;border:1px solid #c4c4c4;border-radius:7px;background:#fff;display:flex;align-items:center;padding:0 10px;font-size:12px;color:#8a8a8a;">Zona ▾</div>
+      <div style="height:32px;border:1px solid #c4c4c4;border-radius:7px;background:#fff;display:flex;align-items:center;padding:0 10px;font-size:12px;color:#8a8a8a;">Estado ticket ▾</div>
     </div>
-    <div style="flex:1;padding:22px 32px;display:flex;flex-direction:column;gap:10px;filter:grayscale(1);opacity:.5;">
-      <div style="border:1px solid #cfcfcf;border-radius:9px;background:#fff;height:78px;"></div>
-      <div style="border:1px solid #cfcfcf;border-radius:9px;background:#fff;height:78px;"></div>
-      <div style="border:1px solid #cfcfcf;border-radius:9px;background:#fff;height:78px;"></div>
+  <div style="flex:1;overflow:hidden;padding:16px 28px;display:grid;grid-template-columns:360px 1fr;gap:16px;">
+    <div style="border:1px solid #cfcfcf;border-radius:10px;background:#fff;overflow:hidden;display:flex;flex-direction:column;">
+        <div style="border-top:1px solid #d8d8d8;padding:12px 16px;box-shadow:inset 4px 0 0 #7f7f7f;">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <span style="font-family:ui-monospace,Consolas,monospace;font-size:12px;color:#8a8a8a;">SVD-4143</span>
+          <span style="font-size:11px;color:#8a8a8a;border:1px solid #bdbdbd;border-radius:999px;padding:2px 8px;">Pendiente</span>
+        </div>
+        <div style="font-size:14px;font-weight:600;color:#3a3a3a;margin-top:4px;">Cámara 12 sin grabar en Nave logística 2</div>
+        <div style="font-size:12px;color:#a15a00;margin-top:3px;line-height:1.35;max-height:2.7em;overflow:hidden;">⚑ Sugerencia descartada: no se puede decidir si la cámara está averiada o solo no guarda.</div>
+        <div style="display:flex;gap:8px;margin-top:6px;flex-wrap:wrap;"><span style="display:inline-block;border:1.5px dashed #9a9a9a;border-radius:999px;background:#efefef;padding:3px 9px;font-size:11px;color:#6b6b6b;">Sin clasificar · sug.</span><span style="font-size:11px;color:#b0b0b0;font-style:italic;">— sin prioridad</span></div>
+      </div><div style="border-top:1px solid #d8d8d8;padding:12px 16px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <span style="font-family:ui-monospace,Consolas,monospace;font-size:12px;color:#8a8a8a;">SVD-4102</span>
+          <span style="font-size:11px;color:#8a8a8a;border:1px solid #bdbdbd;border-radius:999px;padding:2px 8px;">Pendiente</span>
+        </div>
+        <div style="font-size:14px;font-weight:600;color:#3a3a3a;margin-top:4px;">Alarma perimetral desactivada tras mantenimiento</div>
+        <div style="font-size:12px;color:#7d7d7d;margin-top:3px;line-height:1.35;max-height:2.7em;overflow:hidden;">Motivo IA: la alarma quedó desactivada tras un mantenimiento; el perímetro está sin vigilancia ahora.</div>
+        <div style="display:flex;gap:8px;margin-top:6px;flex-wrap:wrap;"><span style="display:inline-block;border:1.5px dashed #9a9a9a;border-radius:999px;background:#efefef;padding:3px 9px;font-size:11px;color:#6b6b6b;">Brecha de seguridad · sug.</span><span style="display:inline-block;border:1.5px dashed #9a9a9a;border-radius:999px;background:#efefef;padding:3px 9px;font-size:11px;color:#6b6b6b;">Crítica</span></div>
+      </div><div style="border-top:1px solid #d8d8d8;padding:12px 16px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <span style="font-family:ui-monospace,Consolas,monospace;font-size:12px;color:#8a8a8a;">SVD-4108</span>
+          <span style="font-size:11px;color:#8a8a8a;border:1px solid #bdbdbd;border-radius:999px;padding:2px 8px;">Pendiente</span>
+        </div>
+        <div style="font-size:14px;font-weight:600;color:#3a3a3a;margin-top:4px;">Puerta de emergencia abierta sin alarma en Edificio B, planta 3</div>
+        <div style="font-size:12px;color:#7d7d7d;margin-top:3px;line-height:1.35;max-height:2.7em;overflow:hidden;">Motivo IA: la puerta quedó abierta y el sensor no lanzó alarma; acceso sin control.</div>
+        <div style="display:flex;gap:8px;margin-top:6px;flex-wrap:wrap;"><span style="display:inline-block;border:1.5px dashed #9a9a9a;border-radius:999px;background:#efefef;padding:3px 9px;font-size:11px;color:#6b6b6b;">Brecha de seguridad · sug.</span><span style="display:inline-block;border:1.5px dashed #9a9a9a;border-radius:999px;background:#efefef;padding:3px 9px;font-size:11px;color:#6b6b6b;">Crítica</span></div>
+      </div><div style="border-top:1px solid #d8d8d8;padding:12px 16px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <span style="font-family:ui-monospace,Consolas,monospace;font-size:12px;color:#8a8a8a;">SVD-4110</span>
+          <span style="font-size:11px;color:#8a8a8a;border:1px solid #bdbdbd;border-radius:999px;padding:2px 8px;">Pendiente</span>
+        </div>
+        <div style="font-size:14px;font-weight:600;color:#3a3a3a;margin-top:4px;">Lector de tarjetas sin respuesta en Perímetro exterior</div>
+        <div style="font-size:12px;color:#7d7d7d;margin-top:3px;line-height:1.35;max-height:2.7em;overflow:hidden;">Motivo IA: el lector no reconoce credenciales; hardware que no responde en zona crítica.</div>
+        <div style="display:flex;gap:8px;margin-top:6px;flex-wrap:wrap;"><span style="display:inline-block;border:1.5px dashed #9a9a9a;border-radius:999px;background:#efefef;padding:3px 9px;font-size:11px;color:#6b6b6b;">Equipo averiado · sug.</span><span style="display:inline-block;border:1.5px dashed #9a9a9a;border-radius:999px;background:#efefef;padding:3px 9px;font-size:11px;color:#6b6b6b;">Alta</span></div>
+      </div><div style="border-top:1px solid #d8d8d8;padding:12px 16px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <span style="font-family:ui-monospace,Consolas,monospace;font-size:12px;color:#8a8a8a;">SVD-4106</span>
+          <span style="font-size:11px;color:#8a8a8a;border:1px solid #bdbdbd;border-radius:999px;padding:2px 8px;">Pendiente</span>
+        </div>
+        <div style="font-size:14px;font-weight:600;color:#3a3a3a;margin-top:4px;">Solicitud de histórico de accesos en Perímetro exterior</div>
+        <div style="font-size:12px;color:#7d7d7d;margin-top:3px;line-height:1.35;max-height:2.7em;overflow:hidden;">Motivo IA: se piden datos ya existentes para auditoría; no hay incidencia que atender.</div>
+        <div style="display:flex;gap:8px;margin-top:6px;flex-wrap:wrap;"><span style="display:inline-block;border:1.5px dashed #9a9a9a;border-radius:999px;background:#efefef;padding:3px 9px;font-size:11px;color:#6b6b6b;">Petición de información · sug.</span><span style="display:inline-block;border:1.5px dashed #9a9a9a;border-radius:999px;background:#efefef;padding:3px 9px;font-size:11px;color:#6b6b6b;">Media</span></div>
+      </div>
+        <div style="padding:10px 16px;font-size:11px;color:#a5a5a5;">↕ scroll propio · … 55 más</div>
+      </div>
+    <div style="border:1px solid #cfcfcf;border-radius:10px;background:#fdfcfa;overflow:hidden;display:flex;flex-direction:column;">
+      <div style="flex:none;border-bottom:1px solid #d8d8d8;padding:12px 20px;display:flex;align-items:center;gap:12px;">
+        <div style="height:32px;border:1px solid #c4c4c4;border-radius:7px;background:#fff;display:flex;align-items:center;padding:0 12px;font-size:12px;color:#8a8a8a;">← Bandeja</div>
+        <span style="font-family:ui-monospace,Consolas,monospace;font-size:16px;font-weight:700;color:#444;">SVD-4104</span>
+        <span style="font-size:14px;color:#3a3a3a;">Lector biométrico lento en Perímetro exterior</span>
+        <span style="margin-left:auto;font-size:11px;color:#a5a5a5;border:1px solid #ccc;border-radius:5px;padding:2px 7px;">abierto</span>
+      </div>
+      <div style="flex:1;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:16px;"><div style="border:1px solid #cfcfcf;border-radius:10px;background:#fdfcfa;padding:20px;">
+        <div style="font-size:11px;letter-spacing:.1em;color:#9a9a9a;font-weight:700;">DATOS DEL TICKET</div>
+        <div style="margin-top:14px;display:flex;flex-direction:column;gap:14px;">
+          <div><div style="font-size:11px;color:#9a9a9a;">Descripción</div><div style="font-size:14px;color:#3a3a3a;margin-top:3px;line-height:1.5;">El lector biométrico de Perímetro exterior tarda más de 10 segundos en validar.</div></div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+            <div><div style="font-size:11px;color:#9a9a9a;">Sistema afectado</div><div style="font-size:14px;color:#3a3a3a;margin-top:3px;">Control de accesos</div></div><div><div style="font-size:11px;color:#9a9a9a;">Zona</div><div style="font-size:14px;color:#3a3a3a;margin-top:3px;">Perímetro exterior (zona crítica)</div></div><div><div style="font-size:11px;color:#9a9a9a;">Reportado por</div><div style="font-size:14px;color:#3a3a3a;margin-top:3px;">Guardia de seguridad</div></div><div><div style="font-size:11px;color:#9a9a9a;">Fecha</div><div style="font-size:14px;color:#3a3a3a;margin-top:3px;">2026-09-05</div></div>
+          </div>
+        </div>
+      </div><div style="border:2px solid #7f7f7f;background:#fff;border-radius:10px;padding:20px;">
+        <div style="font-size:12px;letter-spacing:.08em;color:#7d7d7d;font-weight:700;">CLASIFICACIÓN · CORREGIDO</div>
+        <div style="margin-top:16px;display:grid;grid-template-columns:1fr 1fr;gap:14px;"><div><div style="font-size:11px;color:#9a9a9a;">Categoría</div><div style="font-size:14px;color:#3a3a3a;margin-top:3px;">Equipo de campo averiado</div></div><div><div style="font-size:11px;color:#9a9a9a;">Prioridad (matriz)</div><div style="font-size:14px;color:#3a3a3a;margin-top:3px;">Alta</div></div><div><div style="font-size:11px;color:#9a9a9a;">Urgencia</div><div style="font-size:14px;color:#3a3a3a;margin-top:3px;">Media</div></div><div><div style="font-size:11px;color:#9a9a9a;">Impacto</div><div style="font-size:14px;color:#3a3a3a;margin-top:3px;">Alto</div></div></div>
+        <div style="margin-top:14px;padding-top:12px;border-top:1px solid #d3d3d3;"><div><div style="font-size:11px;color:#9a9a9a;">Motivo de la IA</div><div style="font-size:14px;color:#3a3a3a;margin-top:3px;">El equipo responde mal y degrada el acceso, pero no lo deja sin control.</div></div></div>
+        <div style="margin-top:12px;"><div><div style="font-size:11px;color:#9a9a9a;">Sugerencia original de la IA</div><div style="font-size:14px;color:#3a3a3a;margin-top:3px;">Equipo de campo averiado · Media · Alto</div></div></div><div style="margin-top:12px;"><div><div style="font-size:11px;color:#9a9a9a;">Motivo de la corrección</div><div style="font-size:14px;color:#3a3a3a;margin-top:3px;">El lector ya no valida a nadie desde esta mañana, no es solo lentitud.</div></div></div>
+        <div style="margin-top:12px;font-size:11px;color:#9a9a9a;">La prioridad la calcula la app a partir de urgencia × impacto; no se sugiere ni se edita a mano.</div>
+      </div><div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;"><div style="height:44px;border-radius:9px;display:flex;align-items:center;padding:0 22px;font-size:14px;font-weight:700;border:1px solid #c4c4c4;background:#fff;color:#9a9a9a;">Deshacer</div><div style="margin-left:auto;font-size:11px;color:#a5a5a5;max-width:220px;text-align:right;">Deshacer no borra las notas: son un registro aparte de la decisión (R9).</div></div><div style="border-top:1px solid #d3d3d3;padding-top:14px;">
+        <div style="font-size:13px;font-weight:700;color:#555;">Notas del operador</div>
+        <div style="margin-top:10px;display:flex;flex-direction:column;gap:10px;"><div style="border-left:2px solid #cfcfcf;padding-left:10px;"><div style="font-size:11px;color:#9a9a9a;">24/09/2026, 09:12</div><div style="font-size:13px;color:#3a3a3a;margin-top:2px;">Revisado con mantenimiento: parece un problema del sensor, no del software.</div></div><div style="border-left:2px solid #cfcfcf;padding-left:10px;"><div style="font-size:11px;color:#9a9a9a;">24/09/2026, 09:40</div><div style="font-size:13px;color:#3a3a3a;margin-top:2px;">Mantenimiento pasará mañana a primera hora.</div></div></div>
+        <div style="height:64px;border:1.5px solid #cfcfcf;border-radius:8px;background:#f4f4f4;margin-top:4px;padding:8px 10px;font-size:12px;color:#b0b0b0;">Lo que sabes y no está en la descripción…</div>
+        <div style="margin-top:6px;font-size:11px;color:#a5a5a5;">No escribas nombres, DNI, matrículas ni otros datos personales. 0/500.</div>
+        <div style="margin-top:8px;height:38px;width:130px;border:1px solid #c4c4c4;border-radius:8px;background:#f0f0f0;color:#b5b5b5;display:flex;align-items:center;justify-content:center;font-size:13px;">Añadir nota</div>
+      </div></div>
     </div>
   </div>
-
-  <!-- overlay + modal -->
+</section>
+<!-- ══════════ 5 · NUEVO TICKET ══════════ -->
+<section data-label="Nuevo ticket" data-speaker-notes="R10: formulario modal sobre la bandeja, con el mismo aviso de datos personales que las notas (principio 3). Al crear, se abre directo en su ficha y se limpian los filtros (bug D4 encontrado a mano y arreglado: un filtro puesto antes dejaba el ticket nuevo oculto)." style="width:100%;height:100%;box-sizing:border-box;display:flex;flex-direction:column;font-family:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:#3a3a3a;background:#e4e4e4;position:relative;">
+  <div style="flex:none;background:#f4f4f4;border-bottom:1px solid #cfcfcf;padding:12px 28px;display:flex;align-items:center;gap:16px;">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <div style="width:30px;height:30px;border-radius:8px;background:#7f7f7f;color:#fff;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;">MSD</div>
+        <div style="font-size:15px;font-weight:700;color:#444;">Mini Service Desk</div>
+      </div>
+      <div style="display:flex;gap:4px;background:#e6e6e6;padding:4px;border-radius:10px;"><div style="height:34px;border-radius:8px;padding:0 16px;display:flex;align-items:center;font-size:14px;font-weight:700;color:#444;background:#fff;box-shadow:0 0 0 1px #cfcfcf;">Bandeja</div><div style="height:34px;border-radius:8px;padding:0 16px;display:flex;align-items:center;font-size:14px;color:#8a8a8a;">Métricas</div></div>
+      
+      <div style="margin-left:auto;height:38px;border:1px solid #c4c4c4;border-radius:8px;background:#fff;display:flex;align-items:center;padding:0 14px;font-size:13px;color:#8a8a8a;">Tema: claro</div>
+      
+      <div style="height:38px;border:1.5px solid #444;background:#3a3a3a;color:#fff;border-radius:8px;display:flex;align-items:center;padding:0 16px;font-size:14px;font-weight:700;">Exportar JSON</div>
+    </div>
+  <div style="flex:none;padding:12px 28px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;border-bottom:1px solid #d8d8d8;">
+      <div style="font-size:12px;color:#9a9a9a;">Filtros:</div>
+      <div style="height:32px;border:1px solid #c4c4c4;border-radius:7px;background:#fff;display:flex;align-items:center;padding:0 10px;font-size:12px;color:#6b6b6b;">Estado triaje: Pendientes de confirmar ▾</div>
+      <div style="height:32px;border:1px solid #c4c4c4;border-radius:7px;background:#fff;display:flex;align-items:center;padding:0 10px;font-size:12px;color:#8a8a8a;">Prioridad ▾</div>
+      <div style="height:32px;border:1px solid #c4c4c4;border-radius:7px;background:#fff;display:flex;align-items:center;padding:0 10px;font-size:12px;color:#8a8a8a;">Sistema ▾</div>
+      <div style="height:32px;border:1px solid #c4c4c4;border-radius:7px;background:#fff;display:flex;align-items:center;padding:0 10px;font-size:12px;color:#8a8a8a;">Zona ▾</div>
+      <div style="height:32px;border:1px solid #c4c4c4;border-radius:7px;background:#fff;display:flex;align-items:center;padding:0 10px;font-size:12px;color:#8a8a8a;">Estado ticket ▾</div>
+    </div>
+  <div style="flex:1;overflow:hidden;padding:16px 28px;display:grid;grid-template-columns:360px 1fr;gap:16px;">
+    <div style="border:1px solid #cfcfcf;border-radius:10px;background:#fff;overflow:hidden;display:flex;flex-direction:column;">
+        <div style="border-top:1px solid #d8d8d8;padding:12px 16px;box-shadow:inset 4px 0 0 #7f7f7f;">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <span style="font-family:ui-monospace,Consolas,monospace;font-size:12px;color:#8a8a8a;">SVD-4143</span>
+          <span style="font-size:11px;color:#8a8a8a;border:1px solid #bdbdbd;border-radius:999px;padding:2px 8px;">Pendiente</span>
+        </div>
+        <div style="font-size:14px;font-weight:600;color:#3a3a3a;margin-top:4px;">Cámara 12 sin grabar en Nave logística 2</div>
+        <div style="font-size:12px;color:#a15a00;margin-top:3px;line-height:1.35;max-height:2.7em;overflow:hidden;">⚑ Sugerencia descartada: no se puede decidir si la cámara está averiada o solo no guarda.</div>
+        <div style="display:flex;gap:8px;margin-top:6px;flex-wrap:wrap;"><span style="display:inline-block;border:1.5px dashed #9a9a9a;border-radius:999px;background:#efefef;padding:3px 9px;font-size:11px;color:#6b6b6b;">Sin clasificar · sug.</span><span style="font-size:11px;color:#b0b0b0;font-style:italic;">— sin prioridad</span></div>
+      </div><div style="border-top:1px solid #d8d8d8;padding:12px 16px;box-shadow:inset 3px 0 0 #6f6f6f;background:#efefef;">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <span style="font-family:ui-monospace,Consolas,monospace;font-size:12px;color:#8a8a8a;">SVD-4102</span>
+          <span style="font-size:11px;color:#8a8a8a;border:1px solid #bdbdbd;border-radius:999px;padding:2px 8px;">Pendiente</span>
+        </div>
+        <div style="font-size:14px;font-weight:600;color:#3a3a3a;margin-top:4px;">Alarma perimetral desactivada tras mantenimiento</div>
+        <div style="font-size:12px;color:#7d7d7d;margin-top:3px;line-height:1.35;max-height:2.7em;overflow:hidden;">Motivo IA: la alarma quedó desactivada tras un mantenimiento; el perímetro está sin vigilancia ahora.</div>
+        <div style="display:flex;gap:8px;margin-top:6px;flex-wrap:wrap;"><span style="display:inline-block;border:1.5px dashed #9a9a9a;border-radius:999px;background:#efefef;padding:3px 9px;font-size:11px;color:#6b6b6b;">Brecha de seguridad · sug.</span><span style="display:inline-block;border:1.5px dashed #9a9a9a;border-radius:999px;background:#efefef;padding:3px 9px;font-size:11px;color:#6b6b6b;">Crítica</span></div>
+      </div><div style="border-top:1px solid #d8d8d8;padding:12px 16px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <span style="font-family:ui-monospace,Consolas,monospace;font-size:12px;color:#8a8a8a;">SVD-4108</span>
+          <span style="font-size:11px;color:#8a8a8a;border:1px solid #bdbdbd;border-radius:999px;padding:2px 8px;">Pendiente</span>
+        </div>
+        <div style="font-size:14px;font-weight:600;color:#3a3a3a;margin-top:4px;">Puerta de emergencia abierta sin alarma en Edificio B, planta 3</div>
+        <div style="font-size:12px;color:#7d7d7d;margin-top:3px;line-height:1.35;max-height:2.7em;overflow:hidden;">Motivo IA: la puerta quedó abierta y el sensor no lanzó alarma; acceso sin control.</div>
+        <div style="display:flex;gap:8px;margin-top:6px;flex-wrap:wrap;"><span style="display:inline-block;border:1.5px dashed #9a9a9a;border-radius:999px;background:#efefef;padding:3px 9px;font-size:11px;color:#6b6b6b;">Brecha de seguridad · sug.</span><span style="display:inline-block;border:1.5px dashed #9a9a9a;border-radius:999px;background:#efefef;padding:3px 9px;font-size:11px;color:#6b6b6b;">Crítica</span></div>
+      </div><div style="border-top:1px solid #d8d8d8;padding:12px 16px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <span style="font-family:ui-monospace,Consolas,monospace;font-size:12px;color:#8a8a8a;">SVD-4110</span>
+          <span style="font-size:11px;color:#8a8a8a;border:1px solid #bdbdbd;border-radius:999px;padding:2px 8px;">Pendiente</span>
+        </div>
+        <div style="font-size:14px;font-weight:600;color:#3a3a3a;margin-top:4px;">Lector de tarjetas sin respuesta en Perímetro exterior</div>
+        <div style="font-size:12px;color:#7d7d7d;margin-top:3px;line-height:1.35;max-height:2.7em;overflow:hidden;">Motivo IA: el lector no reconoce credenciales; hardware que no responde en zona crítica.</div>
+        <div style="display:flex;gap:8px;margin-top:6px;flex-wrap:wrap;"><span style="display:inline-block;border:1.5px dashed #9a9a9a;border-radius:999px;background:#efefef;padding:3px 9px;font-size:11px;color:#6b6b6b;">Equipo averiado · sug.</span><span style="display:inline-block;border:1.5px dashed #9a9a9a;border-radius:999px;background:#efefef;padding:3px 9px;font-size:11px;color:#6b6b6b;">Alta</span></div>
+      </div><div style="border-top:1px solid #d8d8d8;padding:12px 16px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <span style="font-family:ui-monospace,Consolas,monospace;font-size:12px;color:#8a8a8a;">SVD-4106</span>
+          <span style="font-size:11px;color:#8a8a8a;border:1px solid #bdbdbd;border-radius:999px;padding:2px 8px;">Pendiente</span>
+        </div>
+        <div style="font-size:14px;font-weight:600;color:#3a3a3a;margin-top:4px;">Solicitud de histórico de accesos en Perímetro exterior</div>
+        <div style="font-size:12px;color:#7d7d7d;margin-top:3px;line-height:1.35;max-height:2.7em;overflow:hidden;">Motivo IA: se piden datos ya existentes para auditoría; no hay incidencia que atender.</div>
+        <div style="display:flex;gap:8px;margin-top:6px;flex-wrap:wrap;"><span style="display:inline-block;border:1.5px dashed #9a9a9a;border-radius:999px;background:#efefef;padding:3px 9px;font-size:11px;color:#6b6b6b;">Petición de información · sug.</span><span style="display:inline-block;border:1.5px dashed #9a9a9a;border-radius:999px;background:#efefef;padding:3px 9px;font-size:11px;color:#6b6b6b;">Media</span></div>
+      </div>
+        <div style="padding:10px 16px;font-size:11px;color:#a5a5a5;">↕ scroll propio · … 55 más</div>
+      </div>
+    <div style="border:1px solid #cfcfcf;border-radius:10px;background:#fdfcfa;overflow:hidden;display:flex;flex-direction:column;">
+      <div style="flex:none;border-bottom:1px solid #d8d8d8;padding:12px 20px;display:flex;align-items:center;gap:12px;">
+        <div style="height:32px;border:1px solid #c4c4c4;border-radius:7px;background:#fff;display:flex;align-items:center;padding:0 12px;font-size:12px;color:#8a8a8a;">← Bandeja</div>
+        <span style="font-family:ui-monospace,Consolas,monospace;font-size:16px;font-weight:700;color:#444;">SVD-4102</span>
+        <span style="font-size:14px;color:#3a3a3a;">Alarma perimetral desactivada tras mantenimiento</span>
+        <span style="margin-left:auto;font-size:11px;color:#a5a5a5;border:1px solid #ccc;border-radius:5px;padding:2px 7px;">abierto</span>
+      </div>
+      <div style="flex:1;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:16px;"></div>
+    </div>
+  </div>
+  <div style="position:absolute;inset:0;background:rgba(60,60,60,.32);display:flex;align-items:flex-start;justify-content:center;padding:48px 16px;overflow-y:auto;">
+    <div style="width:520px;border:2px solid #6f6f6f;border-radius:12px;background:#fdfcfa;padding:28px;box-shadow:0 20px 60px rgba(0,0,0,.2);">
+      <div style="font-size:19px;font-weight:700;color:#444;">Nuevo ticket</div>
+      <div style="margin-top:18px;">
+        <div style="font-size:12px;color:#9a9a9a;">Título</div>
+        <div style="height:44px;border:1.5px solid #cfcfcf;border-radius:8px;background:#fff;margin-top:5px;padding:10px 12px;font-size:13px;color:#3a3a3a;">Lector de tarjetas no responde</div>
+        <div style="font-size:11px;color:#a5a5a5;margin-top:4px;">No escribas nombres, DNI, matrículas ni otros datos personales. 30/120.</div>
+      </div>
+      <div style="margin-top:14px;">
+        <div style="font-size:12px;color:#9a9a9a;">Descripción</div>
+        <div style="height:70px;border:1.5px solid #cfcfcf;border-radius:8px;background:#fff;margin-top:5px;padding:10px 12px;font-size:13px;color:#3a3a3a;line-height:1.4;">El lector de tarjetas de la entrada no responde desde esta mañana y nadie puede fichar.</div>
+        <div style="font-size:11px;color:#a5a5a5;margin-top:4px;">No escribas nombres, DNI, matrículas ni otros datos personales. 92/2000.</div>
+      </div>
+      <div style="margin-top:14px;display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+        <div><div style="font-size:12px;color:#9a9a9a;">Sistema afectado</div><div style="height:42px;border:1.5px solid #6f6f6f;border-radius:8px;background:#fff;margin-top:5px;display:flex;align-items:center;justify-content:space-between;padding:0 12px;font-size:13px;color:#444;">Control de accesos <span>▾</span></div></div>
+        <div><div style="font-size:12px;color:#9a9a9a;">Reportado por</div><div style="height:42px;border:1.5px solid #6f6f6f;border-radius:8px;background:#fff;margin-top:5px;display:flex;align-items:center;justify-content:space-between;padding:0 12px;font-size:13px;color:#444;">Guardia de seguridad <span>▾</span></div></div>
+      </div>
+      <div style="margin-top:14px;"><div style="font-size:12px;color:#9a9a9a;">Zona</div><div style="height:42px;border:1.5px solid #6f6f6f;border-radius:8px;background:#fff;margin-top:5px;display:flex;align-items:center;justify-content:space-between;padding:0 12px;font-size:13px;color:#444;">Perímetro exterior <span>▾</span></div></div>
+      <div style="margin-top:20px;display:flex;gap:10px;">
+        <div style="height:44px;border:1.5px solid #555;border-radius:9px;background:#3a3a3a;color:#fff;display:flex;align-items:center;padding:0 22px;font-size:14px;font-weight:700;">Crear ticket</div>
+        <div style="height:44px;border:1px solid #c4c4c4;border-radius:9px;background:#fff;color:#9a9a9a;display:flex;align-items:center;padding:0 20px;font-size:14px;">Cancelar</div>
+      </div>
+      <div style="margin-top:14px;font-size:11px;color:#a5a5a5;line-height:1.5;">Al crear: id SVD-4160 (siguiente libre), categoría por reglas fijas (no IA), nace Pendiente de confirmar. Se limpian los filtros de la bandeja para que se vea.</div>
+    </div>
+  </div>
+</section>
+<!-- ══════════ 6 · TRAS CONFIRMAR ══════════ -->
+<section data-label="Tras confirmar" data-speaker-notes="Confirmado y Corregido en sólido (ya no discontinuo/'sug.'); los pendientes siguen igual. Aviso 'Hay cambios sin exportar' en la barra superior. SVD-4160 es el ticket creado en la pantalla anterior: entra ordenado por su prioridad (Alta), no al principio ni al final." style="width:100%;height:100%;box-sizing:border-box;display:flex;flex-direction:column;font-family:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:#3a3a3a;background:#e4e4e4;position:relative;">
+  <div style="flex:none;background:#f4f4f4;border-bottom:1px solid #cfcfcf;padding:12px 28px;display:flex;align-items:center;gap:16px;">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <div style="width:30px;height:30px;border-radius:8px;background:#7f7f7f;color:#fff;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;">MSD</div>
+        <div style="font-size:15px;font-weight:700;color:#444;">Mini Service Desk</div>
+      </div>
+      <div style="display:flex;gap:4px;background:#e6e6e6;padding:4px;border-radius:10px;"><div style="height:34px;border-radius:8px;padding:0 16px;display:flex;align-items:center;font-size:14px;font-weight:700;color:#444;background:#fff;box-shadow:0 0 0 1px #cfcfcf;">Bandeja</div><div style="height:34px;border-radius:8px;padding:0 16px;display:flex;align-items:center;font-size:14px;color:#8a8a8a;">Métricas</div></div>
+      <div style="font-size:13px;font-weight:700;color:#7d5a00;">⚠ Hay cambios sin exportar</div>
+      <div style="margin-left:auto;height:38px;border:1px solid #c4c4c4;border-radius:8px;background:#fff;display:flex;align-items:center;padding:0 14px;font-size:13px;color:#8a8a8a;">Tema: claro</div>
+      <div style="height:38px;border:1.5px solid #6f6f6f;border-radius:8px;background:#fff;display:flex;align-items:center;padding:0 16px;font-size:14px;font-weight:600;color:#444;">Nuevo ticket</div>
+      <div style="height:38px;border:1.5px solid #444;background:#3a3a3a;color:#fff;border-radius:8px;display:flex;align-items:center;padding:0 16px;font-size:14px;font-weight:700;">Exportar JSON</div>
+    </div>
+  <div style="flex:none;padding:12px 28px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;border-bottom:1px solid #d8d8d8;">
+      <div style="font-size:12px;color:#9a9a9a;">Filtros:</div>
+      <div style="height:32px;border:1px solid #c4c4c4;border-radius:7px;background:#fff;display:flex;align-items:center;padding:0 10px;font-size:12px;color:#6b6b6b;">Estado triaje: Todos ▾</div>
+      <div style="height:32px;border:1px solid #c4c4c4;border-radius:7px;background:#fff;display:flex;align-items:center;padding:0 10px;font-size:12px;color:#8a8a8a;">Prioridad ▾</div>
+      <div style="height:32px;border:1px solid #c4c4c4;border-radius:7px;background:#fff;display:flex;align-items:center;padding:0 10px;font-size:12px;color:#8a8a8a;">Sistema ▾</div>
+      <div style="height:32px;border:1px solid #c4c4c4;border-radius:7px;background:#fff;display:flex;align-items:center;padding:0 10px;font-size:12px;color:#8a8a8a;">Zona ▾</div>
+      <div style="height:32px;border:1px solid #c4c4c4;border-radius:7px;background:#fff;display:flex;align-items:center;padding:0 10px;font-size:12px;color:#8a8a8a;">Estado ticket ▾</div>
+    </div>
+  <div style="flex:1;overflow:hidden;padding:16px 28px;display:grid;grid-template-columns:360px 1fr;gap:16px;">
+    <div style="border:1px solid #cfcfcf;border-radius:10px;background:#fff;overflow:hidden;display:flex;flex-direction:column;">
+        <div style="border-top:1px solid #d8d8d8;padding:12px 16px;box-shadow:inset 3px 0 0 #6f6f6f;background:#efefef;">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <span style="font-family:ui-monospace,Consolas,monospace;font-size:12px;color:#8a8a8a;">SVD-4143</span>
+          <span style="font-size:11px;color:#8a8a8a;border:1px solid #bdbdbd;border-radius:999px;padding:2px 8px;">✓ Corregido</span>
+        </div>
+        <div style="font-size:14px;font-weight:600;color:#3a3a3a;margin-top:4px;">Cámara 12 sin grabar en Nave logística 2</div>
+        <div style="font-size:12px;color:#7d7d7d;margin-top:3px;line-height:1.35;max-height:2.7em;overflow:hidden;">Clasificado a mano por el operador tras comprobación.</div>
+        <div style="display:flex;gap:8px;margin-top:6px;flex-wrap:wrap;"><span style="display:inline-block;border:1.5px solid #666;border-radius:999px;background:#e0e0e0;padding:3px 9px;font-size:11px;font-weight:600;color:#3a3a3a;">Equipo averiado</span><span style="display:inline-block;border:1.5px solid #666;border-radius:999px;background:#e0e0e0;padding:3px 9px;font-size:11px;font-weight:700;color:#3a3a3a;">Media</span></div>
+      </div><div style="border-top:1px solid #d8d8d8;padding:12px 16px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <span style="font-family:ui-monospace,Consolas,monospace;font-size:12px;color:#8a8a8a;">SVD-4102</span>
+          <span style="font-size:11px;color:#8a8a8a;border:1px solid #bdbdbd;border-radius:999px;padding:2px 8px;">✓ Confirmado</span>
+        </div>
+        <div style="font-size:14px;font-weight:600;color:#3a3a3a;margin-top:4px;">Alarma perimetral desactivada tras mantenimiento</div>
+        <div style="font-size:12px;color:#7d7d7d;margin-top:3px;line-height:1.35;max-height:2.7em;overflow:hidden;">Sugerencia aceptada tal cual.</div>
+        <div style="display:flex;gap:8px;margin-top:6px;flex-wrap:wrap;"><span style="display:inline-block;border:1.5px solid #666;border-radius:999px;background:#e0e0e0;padding:3px 9px;font-size:11px;font-weight:600;color:#3a3a3a;">Brecha de seguridad</span><span style="display:inline-block;border:1.5px solid #666;border-radius:999px;background:#e0e0e0;padding:3px 9px;font-size:11px;font-weight:700;color:#3a3a3a;">Crítica</span></div>
+      </div><div style="border-top:1px solid #d8d8d8;padding:12px 16px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <span style="font-family:ui-monospace,Consolas,monospace;font-size:12px;color:#8a8a8a;">SVD-4108</span>
+          <span style="font-size:11px;color:#8a8a8a;border:1px solid #bdbdbd;border-radius:999px;padding:2px 8px;">Pendiente</span>
+        </div>
+        <div style="font-size:14px;font-weight:600;color:#3a3a3a;margin-top:4px;">Puerta de emergencia abierta sin alarma en Edificio B, planta 3</div>
+        <div style="font-size:12px;color:#7d7d7d;margin-top:3px;line-height:1.35;max-height:2.7em;overflow:hidden;">Motivo IA: la puerta quedó abierta y el sensor no lanzó alarma.</div>
+        <div style="display:flex;gap:8px;margin-top:6px;flex-wrap:wrap;"><span style="display:inline-block;border:1.5px dashed #9a9a9a;border-radius:999px;background:#efefef;padding:3px 9px;font-size:11px;color:#6b6b6b;">Brecha de seguridad · sug.</span><span style="display:inline-block;border:1.5px dashed #9a9a9a;border-radius:999px;background:#efefef;padding:3px 9px;font-size:11px;color:#6b6b6b;">Alta</span></div>
+      </div><div style="border-top:1px solid #d8d8d8;padding:12px 16px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <span style="font-family:ui-monospace,Consolas,monospace;font-size:12px;color:#8a8a8a;">SVD-4160</span>
+          <span style="font-size:11px;color:#8a8a8a;border:1px solid #bdbdbd;border-radius:999px;padding:2px 8px;">Pendiente</span>
+        </div>
+        <div style="font-size:14px;font-weight:600;color:#3a3a3a;margin-top:4px;">Lector de tarjetas no responde</div>
+        <div style="font-size:12px;color:#7d7d7d;margin-top:3px;line-height:1.35;max-height:2.7em;overflow:hidden;">Clasificado por regla fija: «no responde» → Equipo de campo averiado.</div>
+        <div style="display:flex;gap:8px;margin-top:6px;flex-wrap:wrap;"><span style="display:inline-block;border:1.5px dashed #9a9a9a;border-radius:999px;background:#efefef;padding:3px 9px;font-size:11px;color:#6b6b6b;">Equipo averiado · sug.</span><span style="display:inline-block;border:1.5px dashed #9a9a9a;border-radius:999px;background:#efefef;padding:3px 9px;font-size:11px;color:#6b6b6b;">Alta</span></div>
+      </div>
+        <div style="padding:10px 16px;font-size:11px;color:#a5a5a5;">↕ scroll propio · … 55 más</div>
+      </div>
+    <div style="border:1px solid #cfcfcf;border-radius:10px;background:#fdfcfa;overflow:hidden;display:flex;flex-direction:column;">
+      <div style="flex:none;border-bottom:1px solid #d8d8d8;padding:12px 20px;display:flex;align-items:center;gap:12px;">
+        <div style="height:32px;border:1px solid #c4c4c4;border-radius:7px;background:#fff;display:flex;align-items:center;padding:0 12px;font-size:12px;color:#8a8a8a;">← Bandeja</div>
+        <span style="font-family:ui-monospace,Consolas,monospace;font-size:16px;font-weight:700;color:#444;">SVD-4143</span>
+        <span style="font-size:14px;color:#3a3a3a;">Cámara 12 sin grabar en Nave logística 2</span>
+        <span style="margin-left:auto;font-size:11px;color:#a5a5a5;border:1px solid #ccc;border-radius:5px;padding:2px 7px;">abierto</span>
+      </div>
+      <div style="flex:1;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:16px;"><div style="border:1px solid #cfcfcf;border-radius:10px;background:#fdfcfa;padding:20px;">
+        <div style="font-size:11px;letter-spacing:.1em;color:#9a9a9a;font-weight:700;">DATOS DEL TICKET</div>
+        <div style="margin-top:14px;display:flex;flex-direction:column;gap:14px;">
+          <div><div style="font-size:11px;color:#9a9a9a;">Descripción</div><div style="font-size:14px;color:#3a3a3a;margin-top:3px;line-height:1.5;">La cámara 12 de Nave logística 2 lleva 12 días sin grabar.</div></div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+            <div><div style="font-size:11px;color:#9a9a9a;">Sistema afectado</div><div style="font-size:14px;color:#3a3a3a;margin-top:3px;">CCTV / videovigilancia</div></div><div><div style="font-size:11px;color:#9a9a9a;">Zona</div><div style="font-size:14px;color:#3a3a3a;margin-top:3px;">Nave logística 2</div></div><div><div style="font-size:11px;color:#9a9a9a;">Reportado por</div><div style="font-size:14px;color:#3a3a3a;margin-top:3px;">Técnico de mantenimiento</div></div><div><div style="font-size:11px;color:#9a9a9a;">Fecha</div><div style="font-size:14px;color:#3a3a3a;margin-top:3px;">2026-09-01</div></div>
+          </div>
+        </div>
+      </div><div style="border:2px solid #7f7f7f;background:#fff;border-radius:10px;padding:20px;">
+        <div style="font-size:12px;letter-spacing:.08em;color:#7d7d7d;font-weight:700;">CLASIFICACIÓN · CORREGIDO</div>
+        <div style="margin-top:16px;display:grid;grid-template-columns:1fr 1fr;gap:14px;"><div><div style="font-size:11px;color:#9a9a9a;">Categoría</div><div style="font-size:14px;color:#3a3a3a;margin-top:3px;">Equipo de campo averiado</div></div><div><div style="font-size:11px;color:#9a9a9a;">Prioridad (matriz)</div><div style="font-size:14px;color:#3a3a3a;margin-top:3px;">Media</div></div><div><div style="font-size:11px;color:#9a9a9a;">Urgencia</div><div style="font-size:14px;color:#3a3a3a;margin-top:3px;">Media</div></div><div><div style="font-size:11px;color:#9a9a9a;">Impacto</div><div style="font-size:14px;color:#3a3a3a;margin-top:3px;">Medio</div></div></div>
+        <div style="margin-top:14px;padding-top:12px;border-top:1px solid #d3d3d3;"><div><div style="font-size:11px;color:#9a9a9a;">Motivo de la IA</div><div style="font-size:14px;color:#3a3a3a;margin-top:3px;">Clasificado a mano por el operador tras comprobación en sitio.</div></div></div>
+        <div style="margin-top:12px;"><div><div style="font-size:11px;color:#9a9a9a;">Sugerencia original de la IA</div><div style="font-size:14px;color:#3a3a3a;margin-top:3px;">Sin clasificar</div></div></div>
+        <div style="margin-top:12px;font-size:11px;color:#9a9a9a;">La prioridad la calcula la app a partir de urgencia × impacto; no se sugiere ni se edita a mano.</div>
+      </div><div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;"><div style="height:44px;border-radius:9px;display:flex;align-items:center;padding:0 22px;font-size:14px;font-weight:700;border:1px solid #c4c4c4;background:#fff;color:#9a9a9a;">Deshacer</div><div style="margin-left:auto;font-size:11px;color:#a5a5a5;max-width:220px;text-align:right;"></div></div></div>
+    </div>
+  </div>
+</section>
+<!-- ══════════ 7 · EXPORTAR ══════════ -->
+<section data-label="Exportar" data-speaker-notes="Tras pulsar 'Exportar JSON': incluye los 60 originales más cualquier ticket creado a mano (R10), con su sugerencia, su triaje y sus notas (R9). La cabecera deja de avisar de cambios sin exportar." style="width:100%;height:100%;box-sizing:border-box;display:flex;flex-direction:column;font-family:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:#3a3a3a;background:#e4e4e4;position:relative;">
+  <div style="flex:none;background:#f4f4f4;border-bottom:1px solid #cfcfcf;padding:12px 28px;display:flex;align-items:center;gap:16px;">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <div style="width:30px;height:30px;border-radius:8px;background:#7f7f7f;color:#fff;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;">MSD</div>
+        <div style="font-size:15px;font-weight:700;color:#444;">Mini Service Desk</div>
+      </div>
+      <div style="display:flex;gap:4px;background:#e6e6e6;padding:4px;border-radius:10px;"><div style="height:34px;border-radius:8px;padding:0 16px;display:flex;align-items:center;font-size:14px;font-weight:700;color:#444;background:#fff;box-shadow:0 0 0 1px #cfcfcf;">Bandeja</div><div style="height:34px;border-radius:8px;padding:0 16px;display:flex;align-items:center;font-size:14px;color:#8a8a8a;">Métricas</div></div>
+      
+      <div style="margin-left:auto;height:38px;border:1px solid #c4c4c4;border-radius:8px;background:#fff;display:flex;align-items:center;padding:0 14px;font-size:13px;color:#8a8a8a;">Tema: claro</div>
+      <div style="height:38px;border:1.5px solid #6f6f6f;border-radius:8px;background:#fff;display:flex;align-items:center;padding:0 16px;font-size:14px;font-weight:600;color:#444;">Nuevo ticket</div>
+      <div style="height:38px;border:1px solid #9a9a9a;background:#eee;color:#7d7d7d;border-radius:8px;display:flex;align-items:center;padding:0 16px;font-size:14px;font-weight:700;">Exportar JSON</div>
+    </div>
+  <div style="flex:none;padding:10px 28px;font-size:12px;color:#8a8a8a;">Sin cambios pendientes · exportado 2026-09-24 17:04</div>
+  <div style="flex:1;padding:16px 28px;display:flex;flex-direction:column;gap:10px;filter:grayscale(1);opacity:.5;">
+    <div style="border:1px solid #cfcfcf;border-radius:9px;background:#fff;height:64px;"></div>
+    <div style="border:1px solid #cfcfcf;border-radius:9px;background:#fff;height:64px;"></div>
+  </div>
   <div style="position:absolute;inset:0;background:rgba(60,60,60,.32);display:flex;align-items:center;justify-content:center;">
-    <div style="width:560px;border:2px solid #6f6f6f;border-radius:12px;background:#fdfcfa;padding:32px;box-shadow:0 20px 60px rgba(0,0,0,.2);">
-      <div style="display:flex;align-items:center;gap:12px;">
-        <div style="width:40px;height:40px;border:1.5px solid #6f6f6f;border-radius:9px;background:#e0e0e0;display:flex;align-items:center;justify-content:center;font-size:20px;color:#555;">✓</div>
-        <div style="font-size:22px;font-weight:700;color:#444;">Descarga completada</div>
+    <div style="width:520px;border:2px solid #6f6f6f;border-radius:12px;background:#fdfcfa;padding:28px;box-shadow:0 20px 60px rgba(0,0,0,.2);">
+      <div style="display:flex;align-items:center;gap:12px;"><div style="width:36px;height:36px;border-radius:9px;background:#e0e0e0;display:flex;align-items:center;justify-content:center;font-size:18px;color:#555;">✓</div><div style="font-size:20px;font-weight:700;color:#444;">Descarga completada</div></div>
+      <div style="margin-top:16px;border:1px solid #cfcfcf;border-radius:8px;background:#fff;padding:14px;display:flex;align-items:center;gap:12px;">
+        <div style="width:30px;height:38px;border:1px solid #b6b6b6;border-radius:5px;background:#ededed;display:flex;align-items:center;justify-content:center;font-size:9px;color:#888;">JSON</div>
+        <div><div style="font-family:ui-monospace,Consolas,monospace;font-size:14px;color:#3a3a3a;">tickets-triaje-2026-09-24.json</div><div style="font-size:12px;color:#8a8a8a;margin-top:2px;">61 tickets (60 + 1 creado a mano) · campos originales + sugerencia + triaje + notas</div></div>
       </div>
-      <div style="margin-top:18px;border:1px solid #cfcfcf;border-radius:8px;background:#fff;padding:16px;display:flex;align-items:center;gap:12px;">
-        <div style="width:34px;height:42px;border:1px solid #b6b6b6;border-radius:5px;background:#ededed;display:flex;align-items:center;justify-content:center;font-size:10px;color:#888;">JSON</div>
-        <div>
-          <div style="font-family:ui-monospace,Consolas,monospace;font-size:15px;color:#3a3a3a;">tickets-triaje-2026-09-22.json</div>
-          <div style="font-size:13px;color:#8a8a8a;margin-top:3px;">60 tickets · campos originales + sugerencia + triaje</div>
-        </div>
-      </div>
-      <div style="margin-top:16px;font-size:14px;color:#6b6b6b;line-height:1.5;">El archivo se ha guardado en tus descargas. Súbelo al repo sustituyendo <span style="font-family:ui-monospace,Consolas,monospace;">data/tickets.json</span>. La cabecera vuelve a estar sin el aviso de cambios sin exportar.</div>
-      <div style="margin-top:24px;display:flex;justify-content:flex-end;gap:12px;">
-        <div style="height:46px;border:1.5px solid #555;border-radius:9px;background:#dcdcdc;display:flex;align-items:center;padding:0 24px;font-size:15px;font-weight:700;color:#3a3a3a;">Entendido</div>
-      </div>
+      <div style="margin-top:14px;font-size:13px;color:#6b6b6b;line-height:1.5;">Un ticket creado con "Nuevo ticket" se exporta igual que los 60 originales (R10). Sube el archivo al repo sustituyendo <span style="font-family:ui-monospace,Consolas,monospace;">data/tickets.json</span>.</div>
+      <div style="margin-top:20px;display:flex;justify-content:flex-end;"><div style="height:42px;border:1.5px solid #555;border-radius:9px;background:#3a3a3a;color:#fff;display:flex;align-items:center;padding:0 22px;font-size:14px;font-weight:700;">Entendido</div></div>
     </div>
   </div>
 </section>
-
-<!-- ══════════ 7 · MÉTRICAS ══════════ -->
-<section data-label="Métricas" data-speaker-notes="Panel de métricas, solo lectura: tickets por prioridad, tickets por categoría, pendientes de confirmar, y la tasa de corrección (Corregido sobre el total revisado), también desglosada por categoría porque una tasa global baja puede esconder una categoría que falla casi siempre." style="width:100%;height:100%;box-sizing:border-box;display:flex;font-family:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:#3a3a3a;background:#e4e4e4;">
-  <aside style="width:230px;flex:none;background:#f4f4f4;border-right:1px solid #cfcfcf;padding:24px 16px;display:flex;flex-direction:column;gap:22px;">
-    <div style="display:flex;align-items:center;gap:10px;">
-      <div style="width:34px;height:34px;border:1px solid #b6b6b6;border-radius:7px;background:#e2e2e2;display:flex;align-items:center;justify-content:center;font-size:11px;color:#777;">MSD</div>
-      <div style="font-size:14px;font-weight:600;color:#555;line-height:1.15;">Mini Service<br>Desk</div>
+<!-- ══════════ 8 · MÉTRICAS ══════════ -->
+<section data-label="Métricas" data-speaker-notes="Panel de métricas, solo lectura, sin cambios estructurales del rediseño. Los KPI cuentan también el ticket creado a mano (61 en vez de 60)." style="width:100%;height:100%;box-sizing:border-box;display:flex;flex-direction:column;font-family:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:#3a3a3a;background:#e4e4e4;position:relative;">
+  <div style="flex:none;background:#f4f4f4;border-bottom:1px solid #cfcfcf;padding:12px 28px;display:flex;align-items:center;gap:16px;">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <div style="width:30px;height:30px;border-radius:8px;background:#7f7f7f;color:#fff;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;">MSD</div>
+        <div style="font-size:15px;font-weight:700;color:#444;">Mini Service Desk</div>
+      </div>
+      <div style="display:flex;gap:4px;background:#e6e6e6;padding:4px;border-radius:10px;"><div style="height:34px;border-radius:8px;padding:0 16px;display:flex;align-items:center;font-size:14px;color:#8a8a8a;">Bandeja</div><div style="height:34px;border-radius:8px;padding:0 16px;display:flex;align-items:center;font-size:14px;font-weight:700;color:#444;background:#fff;box-shadow:0 0 0 1px #cfcfcf;">Métricas</div></div>
+      
+      <div style="margin-left:auto;height:38px;border:1px solid #c4c4c4;border-radius:8px;background:#fff;display:flex;align-items:center;padding:0 14px;font-size:13px;color:#8a8a8a;">Tema: claro</div>
+      
+      <div style="height:38px;border:1px solid #9a9a9a;background:#eee;color:#7d7d7d;border-radius:8px;display:flex;align-items:center;padding:0 16px;font-size:14px;font-weight:700;">Exportar JSON</div>
     </div>
-    <div style="height:38px;border:1px solid #cbcbcb;border-radius:7px;background:#ededed;display:flex;align-items:center;padding:0 12px;font-size:13px;color:#9a9a9a;">Buscar…</div>
-    <div>
-      <div style="font-size:11px;letter-spacing:.14em;color:#9a9a9a;font-weight:700;margin-bottom:10px;">TRIAJE</div>
-      <div style="display:flex;flex-direction:column;gap:4px;">
-        <div style="height:40px;border:1px solid transparent;border-radius:7px;display:flex;align-items:center;padding:0 12px;font-size:15px;color:#7d7d7d;">Bandeja</div>
-        <div style="height:40px;border:1px solid #bdbdbd;border-radius:7px;background:#e0e0e0;display:flex;align-items:center;padding:0 12px;font-size:15px;font-weight:600;color:#444;">Métricas</div>
+  <div style="flex:1;overflow:hidden;padding:24px 28px;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:auto 1fr;gap:18px;">
+    <div style="grid-column:1 / span 2;display:grid;grid-template-columns:repeat(3,1fr);gap:18px;">
+      <div style="border:1px solid #cfcfcf;border-radius:10px;background:#fdfcfa;padding:18px 20px;"><div style="font-size:11px;letter-spacing:.1em;color:#9a9a9a;font-weight:700;">PENDIENTES DE CONFIRMAR</div><div style="font-size:38px;font-weight:700;color:#444;margin-top:6px;">59</div><div style="font-size:12px;color:#8a8a8a;">de 61 (60 + 1 creado a mano)</div></div>
+      <div style="border:1px solid #cfcfcf;border-radius:10px;background:#fdfcfa;padding:18px 20px;"><div style="font-size:11px;letter-spacing:.1em;color:#9a9a9a;font-weight:700;">TASA DE CORRECCIÓN</div><div style="font-size:38px;font-weight:700;color:#444;margin-top:6px;">50%</div><div style="font-size:12px;color:#8a8a8a;">1 corregido / 2 revisados</div></div>
+      <div style="border:1px solid #cfcfcf;border-radius:10px;background:#fdfcfa;padding:18px 20px;"><div style="font-size:11px;letter-spacing:.1em;color:#9a9a9a;font-weight:700;">REVISADOS</div><div style="font-size:38px;font-weight:700;color:#444;margin-top:6px;">2</div><div style="font-size:12px;color:#8a8a8a;">1 confirmado · 1 corregido</div></div>
+    </div>
+    <div style="border:1px solid #cfcfcf;border-radius:10px;background:#fdfcfa;padding:20px;">
+      <div style="font-size:11px;letter-spacing:.1em;color:#9a9a9a;font-weight:700;">TICKETS POR PRIORIDAD</div>
+      <div style="margin-top:16px;display:flex;flex-direction:column;gap:12px;">
+        <div style="display:flex;align-items:center;gap:10px;"><div style="width:60px;font-size:13px;color:#555;">Crítica</div><div style="flex:1;height:18px;background:#ededed;border:1px solid #cfcfcf;border-radius:4px;"><div style="width:18%;height:100%;background:#8a8a8a;"></div></div><div style="width:26px;font-size:13px;text-align:right;">11</div></div>
+        <div style="display:flex;align-items:center;gap:10px;"><div style="width:60px;font-size:13px;color:#555;">Alta</div><div style="flex:1;height:18px;background:#ededed;border:1px solid #cfcfcf;border-radius:4px;"><div style="width:44%;height:100%;background:#8a8a8a;"></div></div><div style="width:26px;font-size:13px;text-align:right;">27</div></div>
+        <div style="display:flex;align-items:center;gap:10px;"><div style="width:60px;font-size:13px;color:#555;">Media</div><div style="flex:1;height:18px;background:#ededed;border:1px solid #cfcfcf;border-radius:4px;"><div style="width:25%;height:100%;background:#8a8a8a;"></div></div><div style="width:26px;font-size:13px;text-align:right;">15</div></div>
+        <div style="display:flex;align-items:center;gap:10px;"><div style="width:60px;font-size:13px;color:#555;">Baja</div><div style="flex:1;height:18px;background:#ededed;border:1px solid #cfcfcf;border-radius:4px;"><div style="width:15%;height:100%;background:#8a8a8a;"></div></div><div style="width:26px;font-size:13px;text-align:right;">8</div></div>
       </div>
     </div>
-  </aside>
-
-  <div style="flex:1;display:flex;flex-direction:column;min-width:0;">
-    <div style="flex:none;background:#fafafa;border-bottom:1px solid #cfcfcf;padding:18px 32px;display:flex;align-items:center;gap:16px;">
-      <div style="font-size:22px;font-weight:700;color:#444;">Métricas del triaje</div>
-      <div style="font-size:13px;color:#8a8a8a;">Solo lectura</div>
-    </div>
-
-    <div style="flex:1;overflow:hidden;padding:28px 32px;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:auto 1fr;gap:22px;">
-      <!-- KPIs -->
-      <div style="grid-column:1 / span 2;display:grid;grid-template-columns:repeat(3,1fr);gap:22px;">
-        <div style="border:1px solid #cfcfcf;border-radius:10px;background:#fdfcfa;padding:20px 22px;">
-          <div style="font-size:12px;letter-spacing:.1em;color:#9a9a9a;font-weight:700;">PENDIENTES DE CONFIRMAR</div>
-          <div style="font-size:44px;font-weight:700;color:#444;margin-top:6px;">58</div>
-          <div style="font-size:13px;color:#8a8a8a;">de 60 tickets</div>
-        </div>
-        <div style="border:1px solid #cfcfcf;border-radius:10px;background:#fdfcfa;padding:20px 22px;">
-          <div style="font-size:12px;letter-spacing:.1em;color:#9a9a9a;font-weight:700;">TASA DE CORRECCIÓN</div>
-          <div style="font-size:44px;font-weight:700;color:#444;margin-top:6px;">50%</div>
-          <div style="font-size:13px;color:#8a8a8a;">1 corregido / 2 revisados</div>
-        </div>
-        <div style="border:1px solid #cfcfcf;border-radius:10px;background:#fdfcfa;padding:20px 22px;">
-          <div style="font-size:12px;letter-spacing:.1em;color:#9a9a9a;font-weight:700;">REVISADOS</div>
-          <div style="font-size:44px;font-weight:700;color:#444;margin-top:6px;">2</div>
-          <div style="font-size:13px;color:#8a8a8a;">1 confirmado · 1 corregido</div>
-        </div>
+    <div style="border:1px solid #cfcfcf;border-radius:10px;background:#fdfcfa;padding:20px;">
+      <div style="font-size:11px;letter-spacing:.1em;color:#9a9a9a;font-weight:700;">TICKETS POR CATEGORÍA (sugerida)</div>
+      <div style="margin-top:14px;display:flex;flex-direction:column;gap:8px;font-size:12px;color:#555;">
+        <div style="display:flex;align-items:center;gap:10px;"><div style="width:140px;">Brecha de seguridad</div><div style="flex:1;height:14px;background:#ededed;border:1px solid #cfcfcf;"></div><div style="width:20px;text-align:right;">12</div></div>
+        <div style="display:flex;align-items:center;gap:10px;"><div style="width:140px;">Equipo averiado</div><div style="flex:1;height:14px;background:#ededed;border:1px solid #cfcfcf;"></div><div style="width:20px;text-align:right;">13</div></div>
+        <div style="display:flex;align-items:center;gap:10px;"><div style="width:140px;">Pérdida de registro</div><div style="flex:1;height:14px;background:#ededed;border:1px solid #cfcfcf;"></div><div style="width:20px;text-align:right;">12</div></div>
+        <div style="display:flex;align-items:center;gap:10px;"><div style="width:140px;">Sin clasificar</div><div style="flex:1;height:14px;background:#ededed;border:1px solid #cfcfcf;"></div><div style="width:20px;text-align:right;">4</div></div>
       </div>
-
-      <!-- Por prioridad -->
-      <div style="border:1px solid #cfcfcf;border-radius:10px;background:#fdfcfa;padding:22px;display:flex;flex-direction:column;">
-        <div style="font-size:12px;letter-spacing:.1em;color:#9a9a9a;font-weight:700;">TICKETS POR PRIORIDAD</div>
-        <div style="margin-top:18px;display:flex;flex-direction:column;gap:14px;flex:1;justify-content:center;">
-          <div style="display:flex;align-items:center;gap:12px;"><div style="width:70px;font-size:14px;color:#555;">Crítica</div><div style="flex:1;height:22px;background:#ededed;border:1px solid #cfcfcf;border-radius:4px;"><div style="width:18%;height:100%;background:#8a8a8a;border-radius:3px;"></div></div><div style="width:34px;font-size:14px;color:#555;text-align:right;">11</div></div>
-          <div style="display:flex;align-items:center;gap:12px;"><div style="width:70px;font-size:14px;color:#555;">Alta</div><div style="flex:1;height:22px;background:#ededed;border:1px solid #cfcfcf;border-radius:4px;"><div style="width:42%;height:100%;background:#8a8a8a;border-radius:3px;"></div></div><div style="width:34px;font-size:14px;color:#555;text-align:right;">25</div></div>
-          <div style="display:flex;align-items:center;gap:12px;"><div style="width:70px;font-size:14px;color:#555;">Media</div><div style="flex:1;height:22px;background:#ededed;border:1px solid #cfcfcf;border-radius:4px;"><div style="width:25%;height:100%;background:#8a8a8a;border-radius:3px;"></div></div><div style="width:34px;font-size:14px;color:#555;text-align:right;">15</div></div>
-          <div style="display:flex;align-items:center;gap:12px;"><div style="width:70px;font-size:14px;color:#555;">Baja</div><div style="flex:1;height:22px;background:#ededed;border:1px solid #cfcfcf;border-radius:4px;"><div style="width:15%;height:100%;background:#8a8a8a;border-radius:3px;"></div></div><div style="width:34px;font-size:14px;color:#555;text-align:right;">9</div></div>
-        </div>
-      </div>
-
-      <!-- Por categoría -->
-      <div style="border:1px solid #cfcfcf;border-radius:10px;background:#fdfcfa;padding:22px;display:flex;flex-direction:column;">
-        <div style="font-size:12px;letter-spacing:.1em;color:#9a9a9a;font-weight:700;">TICKETS POR CATEGORÍA</div>
-        <div style="margin-top:16px;display:flex;flex-direction:column;gap:9px;flex:1;justify-content:center;font-size:13px;color:#555;">
-          <div style="display:flex;align-items:center;gap:10px;"><div style="width:150px;">Brecha de seguridad</div><div style="flex:1;height:16px;background:#ededed;border:1px solid #cfcfcf;border-radius:3px;"><div style="width:100%;height:100%;background:#9a9a9a;"></div></div><div style="width:24px;text-align:right;">12</div></div>
-          <div style="display:flex;align-items:center;gap:10px;"><div style="width:150px;">Equipo averiado</div><div style="flex:1;height:16px;background:#ededed;border:1px solid #cfcfcf;border-radius:3px;"><div style="width:100%;height:100%;background:#9a9a9a;"></div></div><div style="width:24px;text-align:right;">12</div></div>
-          <div style="display:flex;align-items:center;gap:10px;"><div style="width:150px;">Pérdida de registro</div><div style="flex:1;height:16px;background:#ededed;border:1px solid #cfcfcf;border-radius:3px;"><div style="width:100%;height:100%;background:#9a9a9a;"></div></div><div style="width:24px;text-align:right;">12</div></div>
-          <div style="display:flex;align-items:center;gap:10px;"><div style="width:150px;">Fallo de integración</div><div style="flex:1;height:16px;background:#ededed;border:1px solid #cfcfcf;border-radius:3px;"><div style="width:66%;height:100%;background:#9a9a9a;"></div></div><div style="width:24px;text-align:right;">8</div></div>
-          <div style="display:flex;align-items:center;gap:10px;"><div style="width:150px;">Petición de acceso</div><div style="flex:1;height:16px;background:#ededed;border:1px solid #cfcfcf;border-radius:3px;"><div style="width:66%;height:100%;background:#9a9a9a;"></div></div><div style="width:24px;text-align:right;">8</div></div>
-          <div style="display:flex;align-items:center;gap:10px;"><div style="width:150px;">Falsa alarma recurrente</div><div style="flex:1;height:16px;background:#ededed;border:1px solid #cfcfcf;border-radius:3px;"><div style="width:33%;height:100%;background:#9a9a9a;"></div></div><div style="width:24px;text-align:right;">4</div></div>
-          <div style="display:flex;align-items:center;gap:10px;"><div style="width:150px;">Petición de información</div><div style="flex:1;height:16px;background:#ededed;border:1px solid #cfcfcf;border-radius:3px;"><div style="width:33%;height:100%;background:#9a9a9a;"></div></div><div style="width:24px;text-align:right;">4</div></div>
-        </div>
-        <div style="margin-top:10px;font-size:12px;color:#a5a5a5;">Tasa de corrección desglosada por categoría en la vista ampliada.</div>
-      </div>
+      <div style="margin-top:10px;font-size:11px;color:#a5a5a5;">Agrupado por la categoría que sugirió la IA (R7), no por la final.</div>
     </div>
   </div>
 </section>
