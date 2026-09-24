@@ -2,26 +2,7 @@
 // callback; no hace fetch ni lee/escribe localStorage (eso lo hace app.js).
 import { SISTEMAS, REPORTADO_POR, ZONAS, LIMITES_TITULO, LIMITES_DESCRIPCION } from "../utils/constantes.js";
 import { crearCampoTexto } from "./campo-texto.js";
-
-function crearCampoSelect(etiqueta, opciones) {
-  const label = document.createElement("label");
-  label.className = "dato__etiqueta";
-  label.textContent = etiqueta;
-  const select = document.createElement("select");
-  select.className = "select-corregir";
-  // aria-label explícito: si no, el nombre accesible del <select> concatena el texto de todas
-  // sus opciones (aquí "Reportado por" incluye la opción "Coordinador de zona" y ambigua con
-  // "Zona"), y un lector de pantalla leería las 12 opciones como parte del nombre del campo.
-  select.setAttribute("aria-label", etiqueta);
-  for (const op of opciones) {
-    const option = document.createElement("option");
-    option.value = op;
-    option.textContent = op;
-    select.append(option);
-  }
-  label.append(select);
-  return { label, select };
-}
+import { crearCampoSelect } from "./campo-select.js";
 
 export function crearFormularioNuevoTicket({ onCrear, onCancelar }) {
   const dialogo = document.createElement("div");
@@ -36,9 +17,9 @@ export function crearFormularioNuevoTicket({ onCrear, onCancelar }) {
   titulo.textContent = "Nuevo ticket";
   caja.append(titulo);
 
-  const { label: labelSistema, select: selectSistema } = crearCampoSelect("Sistema afectado", SISTEMAS);
-  const { label: labelReportado, select: selectReportado } = crearCampoSelect("Reportado por", REPORTADO_POR);
-  const { label: labelZona, select: selectZona } = crearCampoSelect("Zona", ZONAS);
+  const { cont: contSistema, select: selectSistema } = crearCampoSelect({ etiqueta: "Sistema afectado", opciones: SISTEMAS });
+  const { cont: contReportado, select: selectReportado } = crearCampoSelect({ etiqueta: "Reportado por", opciones: REPORTADO_POR });
+  const { cont: contZona, select: selectZona } = crearCampoSelect({ etiqueta: "Zona", opciones: ZONAS });
 
   const crear = document.createElement("button");
   crear.type = "button";
@@ -75,7 +56,7 @@ export function crearFormularioNuevoTicket({ onCrear, onCancelar }) {
   acciones.className = "ficha__acciones";
   acciones.append(crear, cancelar);
 
-  caja.append(campoTitulo.cont, campoDesc.cont, labelSistema, labelReportado, labelZona, acciones);
+  caja.append(campoTitulo.cont, campoDesc.cont, contSistema, contReportado, contZona, acciones);
   dialogo.append(caja);
   return dialogo;
 }

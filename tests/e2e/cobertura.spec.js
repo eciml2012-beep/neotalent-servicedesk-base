@@ -130,6 +130,6 @@ test("cobertura del JS de la app en un recorrido completo", { tag: ["@cobertura"
   await info.attach("cobertura.txt", { body: texto, contentType: "text/plain" });
   console.log(`\nCobertura JS (V8, aproximada)\n${texto}\n`);
 
-  expect(archivos).toHaveLength(14);
+  expect(archivos).toHaveLength(15);
   expect(total).toBeGreaterThanOrEqual(UMBRAL);
 });

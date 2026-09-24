@@ -7,6 +7,7 @@ import { calcularPrioridad, urgenciasPermitidas } from "../utils/prioridad.js";
 import { estadoAlGuardar } from "../utils/estado-ticket.js";
 import { formatearFecha, formatearFechaHora } from "../utils/formato.js";
 import { crearCampoTexto } from "./campo-texto.js";
+import { crearCampoSelect } from "./campo-select.js";
 
 function fila(etiqueta, valor) {
   const div = document.createElement("div");
@@ -85,7 +86,7 @@ function crearPanelDatos(ticket, zonasCriticas) {
 // Aceptar/Corregir/Deshacer fuera (docs/diseno.md, la regla que de verdad importa).
 function crearCajaSugerencia(ticket) {
   const caja = document.createElement("div");
-  const confirmado = ticket.estadoTriaje !== "Pendiente de confirmar";
+  const confirmado = ticket.estadoTriaje !== ESTADOS_TRIAJE.PENDIENTE;
   caja.className = `caja-ia ${confirmado ? "caja-ia--confirmada" : "caja-ia--pendiente"}`;
 
   const cabecera = document.createElement("div");
@@ -132,8 +133,8 @@ function crearAcciones(ticket, { onAceptar, onCorregir, onDeshacer }) {
   const barra = document.createElement("div");
   barra.className = "ficha__acciones";
 
-  const puedeAceptar = ticket.estadoTriaje === "Pendiente de confirmar" && ticket.categoria !== SIN_CLASIFICAR;
-  const puedeDeshacer = ticket.estadoTriaje !== "Pendiente de confirmar";
+  const puedeAceptar = ticket.estadoTriaje === ESTADOS_TRIAJE.PENDIENTE && ticket.categoria !== SIN_CLASIFICAR;
+  const puedeDeshacer = ticket.estadoTriaje !== ESTADOS_TRIAJE.PENDIENTE;
 
   if (puedeAceptar) {
     const aceptar = document.createElement("button");
@@ -161,7 +162,7 @@ function crearAcciones(ticket, { onAceptar, onCorregir, onDeshacer }) {
 
   const nota = document.createElement("p");
   nota.className = "ficha__acciones-nota";
-  nota.textContent = ticket.categoria === SIN_CLASIFICAR && ticket.estadoTriaje === "Pendiente de confirmar"
+  nota.textContent = ticket.categoria === SIN_CLASIFICAR && ticket.estadoTriaje === ESTADOS_TRIAJE.PENDIENTE
     ? "Sin botón Aceptar: no hay sugerencia que aceptar. Solo se puede Corregir."
     : "Las acciones de la persona van fuera de la caja de la IA.";
   barra.append(nota);
@@ -243,33 +244,6 @@ export function crearFichaVer(ticket, zonasCriticas, callbacks) {
 
   cuerpo.append(columnaIzquierda, columnaDerecha);
   cont.append(cuerpo);
-  return cont;
-}
-
-function crearSelectCorregir({ etiqueta, valor, opciones, deshabilitado, notaBloqueo, onChange }) {
-  const cont = document.createElement("div");
-  const label = document.createElement("label");
-  label.className = "dato__etiqueta";
-  label.textContent = etiqueta;
-  const select = document.createElement("select");
-  select.className = "select-corregir";
-  for (const op of opciones) {
-    const option = document.createElement("option");
-    option.value = op;
-    option.textContent = op;
-    if (op === valor) option.selected = true;
-    select.append(option);
-  }
-  select.disabled = deshabilitado;
-  select.addEventListener("change", () => onChange(select.value));
-  label.append(select);
-  cont.append(label);
-  if (notaBloqueo) {
-    const nota = document.createElement("p");
-    nota.className = "campo-corregir__nota";
-    nota.textContent = notaBloqueo;
-    cont.append(nota);
-  }
   return cont;
 }
 
@@ -371,28 +345,27 @@ export function crearFichaCorregir(ticket, zonasCriticas, callbacks) {
       : null;
 
     camposCont.append(
-      crearSelectCorregir({
+      crearCampoSelect({
         etiqueta: "Categoría",
         valor: categoria,
         opciones: [...CATEGORIAS, SIN_CLASIFICAR],
-        deshabilitado: false,
         onChange: (v) => { categoria = v; pintarCampos(); pintarPrioridad(); pintarGuardar(); },
-      }),
-      crearSelectCorregir({
+      }).cont,
+      crearCampoSelect({
         etiqueta: "Urgencia",
         valor: urgencia ?? "—",
         opciones: esSinClasificar ? ["—"] : opcionesUrgencia,
         deshabilitado: esSinClasificar || opcionesUrgencia.length === 1,
         notaBloqueo: esSinClasificar ? "Sin categoría, no hay urgencia que fijar." : notaUrgencia,
         onChange: (v) => { urgencia = v; pintarPrioridad(); pintarGuardar(); },
-      }),
-      crearSelectCorregir({
+      }).cont,
+      crearCampoSelect({
         etiqueta: "Impacto",
         valor: impacto ?? "—",
         opciones: esSinClasificar ? ["—"] : IMPACTOS,
         deshabilitado: esSinClasificar,
         onChange: (v) => { impacto = v; pintarPrioridad(); pintarGuardar(); },
-      })
+      }).cont
     );
   }
 
