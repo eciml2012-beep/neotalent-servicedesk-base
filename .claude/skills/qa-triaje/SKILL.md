@@ -90,6 +90,16 @@ por el motivo correcto. La suite actual se validó sembrando 8 bugs a mano: los 
 app y 6 de las propias pruebas y sus herramientas (comentarios que se leían como código, contraste mal medido,
 cobertura perdida al navegar…). Nunca "arregles" un test para que pase sin mirar el spec.
 
+**Colaborador, no oráculo** *(Sesión 4, 24/09/2026)*. El código de la IA se evalúa por sus
+resultados, como el de un compañero nuevo: ni se rechaza "porque lo hizo una IA" ni se acepta
+"porque ya lo revisó la herramienta". Los tests sustituyen a leer cada línea **solo si** su
+resultado esperado sale del spec; por eso lo que una persona lee de verdad son el spec, los tests y
+el conjunto final (revisión de código y fidelidad al diseño), no cada línea.
+
+**La deuda invisible se paga antes de publicar.** Código que nadie ha leído, capturas que nadie ha
+aprobado y pantallas que nadie ha comparado con el wireframe son deuda aunque `npm test` esté en
+verde. Lo que quede sin revisar se escribe en "Qué no se ha probado"; nunca se da por hecho.
+
 ## Flujo para cualquier cambio
 
 1. **Impacto:** qué requisitos toca el cambio (`docs/pruebas/matriz-trazabilidad.md`). Un cambio
@@ -104,6 +114,46 @@ cobertura perdida al navegar…). Nunca "arregles" un test para que pase sin mir
 6. **Registra:** actualiza la matriz si hay requisito nuevo y añade al informe lo que se
    encontró (formato abajo).
 
+**Funcionalidad nueva: spec → test → código → navegador → rúbrica** *(práctica del profe, Sesión 4)*:
+
+1. **Primero las reglas.** Si el requisito no está en `docs/spec.md`, se propone (`R10`, `R11`…)
+   y se revisa contra `docs/constitution.md`: si choca con un principio, se propone la enmienda
+   mínima. Se enseña el diff de los dos archivos y se espera el OK de una persona. La constitución
+   solo cambia por decisión humana. Si la función ya existe, el paso 1 es revisar spec y app, decir
+   qué quedó sin resolver y proponer algo pequeño.
+2. **Rojo:** escribe solo el test, con su etiqueta, y ejecútalo. Tiene que fallar porque la función
+   no existe; enséñalo antes de seguir.
+3. **Verde:** el código mínimo para que pase. Después, `npm test` **completo**, no solo el test
+   nuevo: se dice si sigue sin romper nada de lo que ya había. Se actualiza la matriz de trazabilidad.
+4. **Refactor:** simplifica (ponytail) con la suite en verde.
+5. **Navegador:** una persona lo prueba con Live Server con un caso real del spec y comprueba el
+   resultado esperado (categoría, pendiente de confirmar). Claude no marca este paso por ella.
+6. **Rúbrica de 6 puntos** (abajo), con prueba por punto. Commits separados: reglas, pruebas, código.
+
+**Revisión del conjunto** (antes de una demo o al cerrar fase, además de la UAT):
+
+- **Código:** revisión como un revisor senior que no lo ha escrito — seguridad, datos raros,
+  duplicación, lo no cubierto por tests. Lista priorizada (bloqueante / importante / menor) con
+  archivo y línea; no se cambia nada en la misma pasada.
+- **Diseño:** la app contra `docs/diseno.md` y los wireframes de `docs/wireframes-fase3/`, pantalla
+  por pantalla: qué coincide, qué difiere y si la diferencia es una decisión registrada en
+  `diseno.md` o una desviación a corregir.
+
+**Rúbrica de 6 puntos** *(Sesión 4, 24/09/2026 — del curso de agentes de Microsoft/GitHub)*.
+Todo cambio pasa por ella antes de darlo por terminado. Cada punto se contesta con ✅ / ⚠️ / ❌ y
+**una prueba concreta del repo** (archivo, test, commit o acta); la palabra de Claude no cuenta:
+
+| Punto | Pregunta | Qué cuenta como prueba aquí |
+|---|---|---|
+| **Intención** | ¿Se entiende qué se quería conseguir? | El requisito (R*n*) o la petición, citados en el commit o el registro |
+| **Alcance** | ¿Lo que cambió es lo que se pidió? | `git diff --stat` contra lo pedido; toda sorpresa, listada |
+| **Evidencia** | ¿Algo demuestra que funciona? | `npm test` en verde, tests con la etiqueta del requisito, el test visto en rojo antes |
+| **Propiedad** | ¿Lo ha mirado alguien del grupo? | Nombre de la persona que revisó código o capturas, o UAT firmada. Si no hay, es ❌: Claude no lo marca por nadie |
+| **Política** | ¿Respeta constitución y spec? | Principios y R citados; `@estatico` en verde; enmienda de la constitución solo si la decidió una persona |
+| **Plan de respaldo** | ¿Sabéis volver atrás? | Etiqueta de la última versión buena y comando para volver (`docs/vuelta-atras.md`) |
+
+Con algún ❌ el cambio no se da por cerrado: se dice qué falta y quién lo tiene que hacer.
+
 ## Cuándo se prueba
 
 | Momento | Qué se ejecuta | Por qué |
@@ -114,6 +164,9 @@ cobertura perdida al navegar…). Nunca "arregles" un test para que pase sin mir
 | Justo después de integrar en `main` | `npm test` completo | Lo que se prueba es lo que queda, no lo que había en cada rama |
 | Tras cambiar `data/tickets.json` (reclasificar) | `npm test` completo | El dataset alimenta casi todas las pruebas |
 | Tras un cambio visual intencionado | `npm run test:capturas` + revisión humana | Una captura nueva no está aprobada hasta que alguien la mira |
+| Tras una pasada de diseño (frontend-design) | `npm test` + capturas + revisión de fidelidad al diseño | Un rediseño puede cambiar la dirección visual: tiene que quedar registrado en `diseno.md` |
+| Al añadir funcionalidad | TDD: test en rojo antes del código | El test sale del spec, no de lo que acabe haciendo el código |
+| Al terminar cualquier cambio | Rúbrica de 6 puntos | Sin ella no se sabe si el cambio es lo pedido ni si alguien lo ha mirado |
 | Antes de una demo o al cerrar una fase | `npm test` + UAT (`docs/pruebas/uat.md`) + informe | Criterio de salida de la fase |
 
 Con varias ramas vivas, la regresión completa no se sustituye por la de cada rama: lo que se
@@ -155,6 +208,7 @@ Añade al informe (`docs/pruebas/informe-de-pruebas.md`) o a uno nuevo por fase:
 **Defectos de la app:** defecto → cómo se encontró → arreglo → requisito.
 **Defectos de las propias pruebas:** error → efecto (falso rojo / falso verde) → arreglo.
 **Qué no se ha probado:** y por qué.
+**Rúbrica:** Intención ✅/⚠️/❌ · Alcance · Evidencia · Propiedad · Política · Respaldo, cada uno con su prueba.
 ```
 
 La sección de defectos de las propias pruebas no es opcional: es lo que hace creíble el resto.
