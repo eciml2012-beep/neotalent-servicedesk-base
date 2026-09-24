@@ -52,6 +52,7 @@ probó, lo que falló y lo que no se ha probado.
 | [`matriz-trazabilidad.md`](matriz-trazabilidad.md) | Cada requisito (P1–P6, R1–R9, casos límite, CF1–CF10) → qué pruebas lo cubren | Al añadir un requisito o una prueba |
 | [`uat.md`](uat.md) | Guion de aceptación para una persona (9 historias + revisión visual) y acta | Antes de cada demo o cierre de fase |
 | [`informe-de-pruebas.md`](informe-de-pruebas.md) | Resultados, defectos de la app, defectos de las propias pruebas, riesgos residuales | Después de cada pasada importante |
+| [`../vuelta-atras.md`](../vuelta-atras.md) | Etiquetas de versión, cómo revertir un commit o volver entera a una versión, qué pasa con `localStorage`, quién decide | Al etiquetar una versión nueva |
 | `../pruebas-fase3.md` | Registro histórico de las pruebas manuales de la Fase 3, antes de la suite | No se toca |
 
 ## La suite (`tests/`)
