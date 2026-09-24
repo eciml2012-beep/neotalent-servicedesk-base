@@ -1,15 +1,17 @@
 // Orquesta la Fase 3: carga data/tickets.json (una vez), gestiona el estado del
 // triaje en localStorage y monta la pantalla. Único archivo que hace fetch.
 
-import { CLAVE_TRIAJE, CLAVE_TEMA, ZONAS_CRITICAS, ESTADOS_TRIAJE } from "./utils/constantes.js";
+import { CLAVE_TRIAJE, CLAVE_TEMA, ZONAS_CRITICAS, ESTADOS_TRIAJE, SIGUIENTE_ID_NUEVO_INICIAL } from "./utils/constantes.js";
 import { derivarTicket, snapshotDeSugerencia, estadoAlGuardar } from "./utils/estado-ticket.js";
 import { ordenarBandeja, filtrarTickets, valoresUnicos, calcularMetricas } from "./utils/filtros.js";
 import { crearFilaTicket } from "./components/fila-ticket.js";
 import { crearBarraFiltros } from "./components/barra-filtros.js";
 import { crearFichaVer, crearFichaCorregir } from "./components/ficha-ticket.js";
 import { crearPanelMetricas } from "./components/panel-metricas.js";
+import { crearFormularioNuevoTicket } from "./components/nuevo-ticket.js";
 import { formatearFechaHora, fechaLocal } from "./utils/formato.js";
 import { unirNotas } from "./utils/texto-operador.js";
+import { clasificarTicketNuevo } from "./utils/clasificador-nuevo-ticket.js";
 
 const raiz = document.getElementById("app");
 
@@ -20,6 +22,7 @@ const estado = {
   localStorageDisponible: true,
   filtrosBandeja: { estadoTriaje: "pendientes", prioridad: null, sistema: null, zona: null, estado: null },
   enfocarSeleccion: false,
+  mostrarFormularioNuevo: false,
 };
 
 function probarLocalStorage() {
@@ -112,6 +115,26 @@ function anadirNota(id, texto) {
   estado.triaje._notas = { ...estado.triaje._notas, [id]: [...notasDe(id), { texto, fecha: new Date().toISOString() }] };
   marcarModificacion();
   guardarTriaje();
+}
+
+// R10: el ticket nuevo se guarda en svd-triaje._nuevos (misma clave que las notas, R6 sigue con
+// dos claves) y se mezcla en estado.tickets para pasar por el mismo derivarTicket que cualquier
+// otro ticket: nace "Pendiente de confirmar", nunca clasificado de entrada (principio 1).
+function crearTicketNuevo({ titulo, descripcion, sistema_afectado, reportado_por, zona }) {
+  const siguiente = estado.triaje._meta?.siguienteIdNuevo ?? SIGUIENTE_ID_NUEVO_INICIAL;
+  const id = `SVD-${siguiente}`;
+  const ticket = {
+    id, titulo, descripcion, sistema_afectado, reportado_por, zona,
+    fecha: fechaLocal(new Date()),
+    estado: "abierto",
+    sugerencia: clasificarTicketNuevo({ titulo, descripcion, zona }),
+  };
+  estado.triaje._nuevos = [...(estado.triaje._nuevos ?? []), ticket];
+  estado.triaje._meta = { ...estado.triaje._meta, siguienteIdNuevo: siguiente + 1 };
+  estado.tickets = [...estado.tickets, ticket];
+  marcarModificacion();
+  guardarTriaje();
+  return id;
 }
 
 function deshacerConfirmacion(id) {
@@ -272,12 +295,21 @@ function crearVistaBandeja(ruta) {
     filaSuperior.append(nota);
   }
 
+  const botonNuevo = document.createElement("button");
+  botonNuevo.type = "button";
+  botonNuevo.className = "boton boton--secundario";
+  botonNuevo.textContent = "Nuevo ticket";
+  botonNuevo.addEventListener("click", () => {
+    estado.mostrarFormularioNuevo = true;
+    render();
+  });
+
   const botonExportar = document.createElement("button");
   botonExportar.type = "button";
   botonExportar.className = "boton boton--primario cabecera__exportar";
   botonExportar.textContent = "Exportar JSON";
   botonExportar.addEventListener("click", exportar);
-  filaSuperior.append(botonExportar);
+  filaSuperior.append(botonNuevo, botonExportar);
   cabecera.append(filaSuperior);
 
   cabecera.append(
@@ -341,6 +373,23 @@ function crearVistaBandeja(ruta) {
   }
   cuerpo.append(ficha);
   main.append(cuerpo);
+
+  if (estado.mostrarFormularioNuevo) {
+    main.append(
+      crearFormularioNuevoTicket({
+        onCrear: (datos) => {
+          const id = crearTicketNuevo(datos);
+          estado.mostrarFormularioNuevo = false;
+          estado.filtrosBandeja.estadoTriaje = "pendientes";
+          navegar(`#/ticket/${id}`);
+        },
+        onCancelar: () => {
+          estado.mostrarFormularioNuevo = false;
+          render();
+        },
+      })
+    );
+  }
 
   return main;
 }
@@ -469,6 +518,8 @@ async function iniciar() {
 
   sembrarTriajeDesdeJSON();
   descartarHuerfanos();
+  // R10: los tickets creados a mano se cargan junto a los 60, con el mismo pipeline.
+  estado.tickets = [...estado.tickets, ...(estado.triaje._nuevos ?? [])];
 
   window.addEventListener("hashchange", render);
   window.addEventListener("beforeunload", (evento) => {

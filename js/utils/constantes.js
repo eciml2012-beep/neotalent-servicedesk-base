@@ -39,3 +39,21 @@ export const CLAVE_TEMA = "svd-tema";
 export const LIMITES_NOTA = { min: 1, max: 500 };
 export const LIMITES_MOTIVO_CORRECCION = { min: 10, max: 200 };
 export const AVISO_DATOS_PERSONALES = "No escribas nombres, DNI, matrículas ni otros datos personales.";
+
+// R10: enums del dataset, para el formulario de "Nuevo ticket" (mismos valores que data/tickets.json).
+export const SISTEMAS = [
+  "Control de accesos", "SailPoint (identidades)", "CCTV / videovigilancia",
+  "Central de alarmas", "Centralita de guardia", "App de rondas",
+];
+export const REPORTADO_POR = [
+  "Guardia de seguridad", "Jefe de turno", "Coordinador de zona",
+  "Recepción cliente", "Administración", "Técnico de mantenimiento",
+];
+export const ZONAS = [
+  "Aparcamiento -1", "Nave logística 2", "Perímetro exterior", "Sala de servidores",
+  "Torre de control", "Edificio B, planta 3", "Almacén Norte", "Acceso peatonal Este",
+  "Oficinas centrales", "Muelle de carga", "Recepción Principal", "Vestuarios de personal",
+];
+export const LIMITES_TITULO = { min: 5, max: 120 };
+export const LIMITES_DESCRIPCION = { min: 20, max: 2000 };
+export const SIGUIENTE_ID_NUEVO_INICIAL = 4160;

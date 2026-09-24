@@ -28,6 +28,7 @@ Estado: ✅ probado automáticamente · 👤 probado a mano (UAT) · ⚠️ parc
 | R7 | Métricas y tasa de corrección por categoría sugerida | `unit/filtros`, `e2e/metricas`, `e2e/aceptacion` (H7) | Casos calculados a mano | ✅ |
 | R8 | Coherencia de la sugerencia y bloqueo de urgencia en la UI | `unit/prioridad`, `unit/dataset`, `e2e/ficha` (las 7 categorías), `e2e/casos-limite` | Tabla de decisión | ✅ |
 | R9 | Notas (se añaden, sobreviven a Deshacer, se exportan, se unen al reimportar) y motivo de corrección (obligatorio solo en un Corregido, 10-200) | `unit/texto-operador`, `e2e/notas`, `e2e/integracion` (ida y vuelta), `e2e/aceptacion` (H8, H9) | Valores límite, transición de estados, casos de uso | ✅ |
+| R10 | Crear un ticket nuevo: clasificador de reglas fijas (no IA), id SVD-4160+, Pendiente de confirmar, dos claves de localStorage, export junto con los 60 | `unit/clasificador-nuevo-ticket`, `e2e/nuevo-ticket`, `e2e/cobertura` | Tabla de decisión (R2/R8 reaplicada), casos de uso, XSS | ✅ |
 
 ## Spec — casos límite
 

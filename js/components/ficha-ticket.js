@@ -2,14 +2,11 @@
 // caja) y modo "corregir" (desplegables + Guardar/Cancelar). Recibe datos por
 // parámetro, no hace fetch ni lee localStorage.
 
-import {
-  CATEGORIAS, SIN_CLASIFICAR, URGENCIAS, IMPACTOS, ESTADOS_TRIAJE,
-  LIMITES_NOTA, LIMITES_MOTIVO_CORRECCION, AVISO_DATOS_PERSONALES,
-} from "../utils/constantes.js";
+import { CATEGORIAS, SIN_CLASIFICAR, URGENCIAS, IMPACTOS, ESTADOS_TRIAJE, LIMITES_NOTA, LIMITES_MOTIVO_CORRECCION } from "../utils/constantes.js";
 import { calcularPrioridad, urgenciasPermitidas } from "../utils/prioridad.js";
 import { estadoAlGuardar } from "../utils/estado-ticket.js";
-import { validarTextoOperador } from "../utils/texto-operador.js";
 import { formatearFecha, formatearFechaHora } from "../utils/formato.js";
+import { crearCampoTexto } from "./campo-texto.js";
 
 function fila(etiqueta, valor) {
   const div = document.createElement("div");
@@ -21,47 +18,6 @@ function fila(etiqueta, valor) {
   val.textContent = valor;
   div.append(et, val);
   return div;
-}
-
-let siguienteId = 0;
-
-// R9: campo de texto libre del operador. El aviso de datos personales va siempre a la
-// vista (principio 3) y el error explica por qué no se puede guardar.
-function crearCampoTexto({ etiqueta, valor = "", limites, filas, onInput }) {
-  const cont = document.createElement("div");
-  cont.className = "campo-texto";
-  const idAviso = `campo-texto-aviso-${++siguienteId}`;
-
-  const label = document.createElement("label");
-  label.className = "dato__etiqueta";
-  label.textContent = etiqueta;
-  const area = document.createElement("textarea");
-  area.className = "campo-texto__area";
-  area.rows = filas;
-  area.maxLength = limites.max;
-  area.value = valor;
-  area.setAttribute("aria-describedby", idAviso);
-  label.append(area);
-
-  const aviso = document.createElement("p");
-  aviso.id = idAviso;
-  aviso.className = "campo-corregir__nota";
-  const error = document.createElement("p");
-  error.className = "campo-texto__error";
-  error.setAttribute("aria-live", "polite");
-
-  function validar() {
-    const resultado = validarTextoOperador(area.value, limites);
-    aviso.textContent = `${AVISO_DATOS_PERSONALES} ${resultado.texto.length}/${limites.max}.`;
-    // Un campo vacío no es un error que haya que gritar: basta con el botón deshabilitado.
-    error.textContent = resultado.texto && resultado.error ? resultado.error : "";
-    return resultado;
-  }
-  area.addEventListener("input", () => onInput(validar()));
-  validar();
-
-  cont.append(label, aviso, error);
-  return { cont, validar };
 }
 
 function crearCabecera(ticket, { onVolver, extra } = {}) {

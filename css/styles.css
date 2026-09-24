@@ -667,6 +667,32 @@ a {
   overflow-wrap: anywhere;
 }
 
+/* --- Modal "Nuevo ticket" (R10) -------------------------------------------- */
+
+.modal {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 48px 16px;
+  overflow-y: auto;
+  background: color-mix(in srgb, var(--color-texto) 40%, transparent);
+}
+
+.modal__caja {
+  width: 100%;
+  max-width: 520px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  background: var(--color-panel);
+  border: 1px solid var(--color-borde);
+  border-radius: var(--radio);
+  padding: 24px;
+}
+
 /* --- Botones ------------------------------------------------------------- */
 
 .boton {
