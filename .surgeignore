@@ -1,0 +1,36 @@
+# .surgeignore — Mini Service Desk
+# La app solo necesita index.html, css/, js/ y data/tickets.json.
+# Todo lo demás es documentación de trabajo, herramientas de desarrollo o material de diseño:
+# no hace falta para que la app funcione en el navegador (docs/auditoria.md, 24/09/2026).
+
+# Instrucciones y skills internas de Claude Code
+.claude/
+
+# Documentación del proyecto (spec, constitución, QA, wireframes, esta auditoría)
+docs/
+deep-research/
+CLAUDE.md
+README.md
+
+# Material de diseño de referencia (nombra marcas de terceros; no lo usa la app)
+assets/
+
+# Suite de pruebas y su configuración
+tests/
+playwright.config.js
+test-results/
+playwright-report/
+
+# Herramientas de desarrollo (constitución, principio 6: la app no las necesita)
+node_modules/
+package.json
+package-lock.json
+
+# Control de versiones y CI
+.git/
+.github/
+.gitignore
+.gitattributes
+
+# Otros artefactos locales
+.playwright-mcp/
