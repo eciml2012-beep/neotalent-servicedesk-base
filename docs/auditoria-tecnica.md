@@ -1,6 +1,6 @@
 # Análisis técnico completo — Mini Service Desk
 
-Hecho con la skill `auditoria-tecnica-completa` el 24/09/2026. Objetivo: que alguien que nunca ha
+Hecho con la skill `auditoria-completa` el 24/09/2026 (renombrada ese mismo día; antes se llamaba `auditoria-tecnica-completa`). Objetivo: que alguien que nunca ha
 visto este repo pueda leer este único documento y salir sabiendo cómo funciona, dónde tocar para
 cambiar algo concreto, y qué riesgos hay. No reescribe nada; no publica nada.
 

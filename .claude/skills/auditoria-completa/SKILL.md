@@ -1,5 +1,5 @@
 ---
-name: auditoria-tecnica-completa
+name: auditoria-completa
 description: Análisis técnico completo del Mini Service Desk (arquitectura, principios SOLID, patrones, deuda técnica, seguridad, responsive, despliegue, trazabilidad requisito→código→test) que documenta el repo entero para alguien que nunca lo ha visto, en docs/auditoria-tecnica.md con 30 secciones. Úsala cuando pidan "análisis técnico completo", "documenta el repo", "entiende la arquitectura", "onboarding técnico", "auditoría con SOLID/patrones/deuda técnica", o antes de que alguien nuevo se incorpore al proyecto o de publicarlo. Distinta de auditoria-antes-de-publicar (esa es el chequeo rápido de 4 puntos antes de un despliegue; esta es el análisis exhaustivo de comprensión + documentación). No modifica código ni publica nada: solo escribe el documento.
 ---
 
