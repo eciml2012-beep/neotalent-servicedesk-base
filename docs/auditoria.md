@@ -1,6 +1,7 @@
 # Auditoría antes de publicar — Mini Service Desk
 
-Hecha con la skill `auditoria-antes-de-publicar` el 24/09/2026, antes de un despliegue en Surge.
+Hecha con la skill global `auditoria-antes-de-publicar` (en `~/.claude/skills/`, no en este repo) el
+24/09/2026, antes de un despliegue en Surge.
 Este documento **no modifica nada**: es un informe para que una persona decida qué arreglar.
 
 ## 1. Cómo se hizo esta auditoría
