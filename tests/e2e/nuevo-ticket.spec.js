@@ -95,6 +95,17 @@ test.describe("R10 · crear un ticket nuevo", { tag: ["@R10", "@humo"] }, () => 
     await expect(page.getByRole("button", { name: "Aceptar" })).toHaveCount(0);
   });
 
+  test("un filtro de sistema puesto antes de crear no deja el ticket nuevo oculto (bug encontrado a mano)", async ({ page }) => {
+    await abrir(page);
+    // Filtro que NO coincide con el sistema del ticket que se va a crear (DATOS.sistema = "Central de alarmas").
+    await page.getByLabel("Sistema afectado").selectOption("App de rondas");
+    await crearTicket(page);
+    await expect(page.getByRole("dialog")).toHaveCount(0); // el diálogo se cierra antes de mirar la lista
+    // El filtro de sistema tiene que haberse limpiado, si no el ticket queda oculto sin explicación.
+    await expect(page.getByLabel("Sistema afectado")).toHaveValue("");
+    await expect(fila(page, "SVD-4160")).toBeVisible();
+  });
+
   test("el texto se pinta como texto, nunca como HTML (XSS)", { tag: "@seguridad" }, async ({ page }) => {
     await crearTicket(page, { ...DATOS, titulo: '<img src=x onerror="window.__xss=1">' });
     await page.getByLabel("Estado del triaje").selectOption("todos");

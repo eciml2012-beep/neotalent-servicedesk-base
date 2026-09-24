@@ -110,6 +110,38 @@ pantalla cambió a propósito. **Hay que aprobarlas en la UAT.**
 **Qué no se ha probado:** nombres propios en el texto del operador (no detectables, límite
 declarado); Firefox y WebKit, igual que el resto de la suite.
 
+## R10: "Nuevo ticket" (24/09/2026)
+
+**Alcance:** nuevo requisito R10 (crear un ticket a mano, con un clasificador de reglas fijas, no
+IA). Enmienda los principios 1 y 3 de la constitución. Flujo TDD completo: enseñado el diff de
+constitución/spec, tests en rojo antes del código, código, refactor (`campo-texto.js` extraído de
+`ficha-ticket.js` y reutilizado, la suite se mantuvo en verde antes y después).
+
+**Cómo:** `npm test` completo; unitarias del clasificador en Node; sistema en Chromium
+(`e2e/nuevo-ticket`); recorrido de `e2e/cobertura` ampliado para pasar por "Nuevo ticket".
+
+**Resultado:** 283 / 283 en verde a la primera pasada (15 pruebas nuevas). Cobertura 97,1 %.
+
+**Defectos de la app:**
+
+| # | Defecto | Cómo se encontró | Arreglo | Requisito |
+|---|---|---|---|---|
+| D4 | Al crear un ticket solo se limpiaba el filtro de estado del triaje. Un filtro de sistema, zona o prioridad puesto antes dejaba el ticket nuevo creado pero invisible en la lista, sin ningún aviso | **A mano, por una persona probando la app** — ninguna de las 15 pruebas automáticas cubría "hay un filtro puesto antes de crear" | `app.js`: se limpian los cinco filtros de la bandeja al crear, no solo el de estado del triaje | R10 |
+
+**Defectos de las propias pruebas:**
+
+| # | Error | Efecto | Arreglo |
+|---|---|---|---|
+| T8 | Dos `<select>` con el mismo nombre accesible (el filtro de la barra y el del diálogo de "Nuevo ticket") daban locator ambiguo en varios tests nuevos | Falso rojo | Las consultas del formulario se limitan a `page.getByRole("dialog", ...)` |
+| T9 | El nombre accesible de un `<select>` envuelto en `<label>` concatena el texto de **todas sus opciones**: "Reportado por" incluye la opción "Coordinador de zona", ambigua con el campo "Zona" | Falso rojo, y era también un fallo real de accesibilidad (un lector de pantalla leería las 12 opciones como parte del nombre del campo) | `aria-label` explícito en cada `<select>` de `nuevo-ticket.js` |
+| T10 | La prueba del defecto D4 comprobaba el filtro justo tras pulsar "Crear ticket", sin esperar a que el diálogo se cerrara: coincidía con el `<select>` del propio formulario, todavía en el DOM | Falso rojo | Se espera `expect(page.getByRole("dialog")).toHaveCount(0)` antes de mirar el filtro |
+
+**Qué esto dice del propio QA (rúbrica, punto Evidencia):** las 15 pruebas escritas antes de
+enseñar el cambio pasaban en verde y aun así se escapó D4. La cobertura y el verde miden que el
+código hace lo que los tests dicen, no que los tests cubran todos los casos: el hueco lo encontró
+una persona probando a mano, no la suite. Se registra como recordatorio, no solo como defecto
+cerrado.
+
 ## Rediseño: vista C con paleta índigo (24/09/2026)
 
 **Alcance:** decisión de `docs/diseno.md` (rediseño del 24/09/2026). Lista y ficha lado a lado con

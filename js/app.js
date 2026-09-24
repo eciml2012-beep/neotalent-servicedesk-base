@@ -380,7 +380,10 @@ function crearVistaBandeja(ruta) {
         onCrear: (datos) => {
           const id = crearTicketNuevo(datos);
           estado.mostrarFormularioNuevo = false;
-          estado.filtrosBandeja.estadoTriaje = "pendientes";
+          // Un filtro de sistema, zona, prioridad o estado del ticket puesto antes de crear
+          // podía dejar el ticket nuevo fuera de la lista sin que nada lo explicara en pantalla
+          // (bug encontrado a mano, 24/09/2026): se limpian todos, no solo el de estado del triaje.
+          estado.filtrosBandeja = { estadoTriaje: "pendientes", prioridad: null, sistema: null, zona: null, estado: null };
           navegar(`#/ticket/${id}`);
         },
         onCancelar: () => {
