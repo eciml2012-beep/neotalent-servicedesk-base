@@ -71,6 +71,22 @@ test("cobertura del JS de la app en un recorrido completo", { tag: ["@cobertura"
   await page.getByLabel("Categoría").selectOption("Falsa alarma recurrente");
   await boton("Cancelar");
   await ir("#/ticket/SVD-4102"); await boton("Deshacer");
+  // R10: crear un ticket nuevo (con dato personal rechazado primero, para pasar por el error).
+  await boton("Nuevo ticket");
+  const dialogoNuevo = page.getByRole("dialog", { name: "Nuevo ticket" });
+  await dialogoNuevo.getByLabel("Título").fill("Aviso de 12345678Z en recepción");
+  await dialogoNuevo.getByLabel("Descripción").fill("Descripción inventada para la cobertura, sin sentido real.");
+  await expect(dialogoNuevo.getByRole("button", { name: "Crear ticket" })).toBeDisabled();
+  await dialogoNuevo.getByLabel("Título").fill("Alarma desactivada en el muelle de carga");
+  await dialogoNuevo.getByLabel("Sistema afectado").selectOption("Central de alarmas");
+  await dialogoNuevo.getByLabel("Reportado por").selectOption("Jefe de turno");
+  await dialogoNuevo.getByLabel("Zona").selectOption("Muelle de carga");
+  await dialogoNuevo.getByRole("button", { name: "Crear ticket" }).click();
+  await boton("Nuevo ticket"); // segundo, sin regla que encaje: Sin clasificar
+  const dialogoNuevo2 = page.getByRole("dialog", { name: "Nuevo ticket" });
+  await dialogoNuevo2.getByLabel("Título").fill("Cosa rara sin más detalle");
+  await dialogoNuevo2.getByLabel("Descripción").fill("Pasó algo que no sé explicar bien del todo, sin más.");
+  await dialogoNuevo2.getByRole("button", { name: "Cancelar" }).click();
   await ir("#/ticket/SVD-9999");
   // Métricas, tema, exportar
   await ir("#/metricas");
@@ -114,6 +130,6 @@ test("cobertura del JS de la app en un recorrido completo", { tag: ["@cobertura"
   await info.attach("cobertura.txt", { body: texto, contentType: "text/plain" });
   console.log(`\nCobertura JS (V8, aproximada)\n${texto}\n`);
 
-  expect(archivos).toHaveLength(11);
+  expect(archivos).toHaveLength(14);
   expect(total).toBeGreaterThanOrEqual(UMBRAL);
 });
