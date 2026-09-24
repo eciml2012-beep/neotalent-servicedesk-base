@@ -142,6 +142,15 @@ código hace lo que los tests dicen, no que los tests cubran todos los casos: el
 una persona probando a mano, no la suite. Se registra como recordatorio, no solo como defecto
 cerrado.
 
+**Rúbrica de 6 puntos:** Intención ✅ (R10 citado en los commits) · Alcance ✅ (`git diff --stat`
+frente a lo pedido, más el refactor de `campo-texto.js` declarado en el paso 4) · Evidencia ✅
+(284/284, con la salvedad de arriba) · **Propiedad ✅ — probado en el navegador por el operador**:
+encontró D4 a mano (ticket oculto por un filtro) y, tras el arreglo, confirmó que el ticket sale en
+su sitio correcto en la lista (3er puesto, por prioridad Alta) · Política ✅ (enmiendas de los
+principios 1 y 3, enseñadas antes de tocar código) · Plan de respaldo ✅ (`v1.3-rediseno` +
+`docs/vuelta-atras.md`; para deshacer solo R10: `git revert --no-edit 5b078a0 cd916c0 effb7a1
+023ca54`).
+
 ## Rediseño: vista C con paleta índigo (24/09/2026)
 
 **Alcance:** decisión de `docs/diseno.md` (rediseño del 24/09/2026). Lista y ficha lado a lado con
