@@ -16,6 +16,13 @@ a partir de la urgencia y el impacto ya confirmados (principio 5).
 **Cómo se comprueba:** en los datos, un ticket sin confirmación del operador aparece como
 "pendiente de confirmar", nunca como clasificado.
 
+**Enmienda del 24/09/2026 (R10, "Nuevo ticket").** Un ticket creado a mano en el navegador no
+puede esperar a que Claude Code lo clasifique. Su sugerencia sale de un **clasificador de reglas
+fijas de palabras clave**, una función pura más de `js/utils/`, no de un modelo: es la misma
+garantía por otro mecanismo, más barato. Si ninguna regla encaja, el ticket sale «Sin clasificar»,
+igual que cuando la sugerencia de Claude Code no es válida. La regla de fondo no cambia: **nunca
+hay un ticket clasificado sin que el operador lo confirme o lo corrija.**
+
 ## 2. Ninguna acción sobre personas ni sobre el mundo físico
 
 El sistema solo clasifica y muestra. No bloquea credenciales, no avisa a guardias y no escala
@@ -35,9 +42,16 @@ salidas son pintar en pantalla, escribir en `localStorage` y descargar un archiv
 Nunca se usan nombres, documentos de identidad, matrículas ni patrones de acceso de personas
 reales, tampoco en pruebas.
 
-**Cómo se comprueba:** el dataset está cerrado en 60 tickets, de `SVD-4100` a `SVD-4159`. No se
-añaden tickets nuevos en este proyecto, así que se comprueba con un comando antes de subir
-cualquier cambio del dataset:
+**Enmienda del 24/09/2026 (R10, "Nuevo ticket").** El operador puede crear tickets a mano desde
+el navegador, con ids desde `SVD-4160`. No tocan `data/tickets.json`: viven solo en
+`localStorage`, igual que las notas de R9, y se exportan junto con los 60 al descargar el JSON.
+Siguen siendo **datos inventados**, nunca de una persona o incidente real, y el título y la
+descripción llevan la misma protección de datos personales que las notas (aviso a la vista y
+bloqueo de lo que tenga forma de DNI, NIE o matrícula).
+
+**Cómo se comprueba:** el archivo `data/tickets.json` sigue cerrado en 60 tickets, de `SVD-4100`
+a `SVD-4159`; el comando de abajo no cambia y sigue sin ver los tickets creados en el navegador,
+porque esos nunca se escriben ahí:
 
 ```bash
 python -c "import json;t=json.load(open('data/tickets.json',encoding='utf-8'));ids=[x['id'] for x in t];assert len(t)==60 and ids[0]=='SVD-4100' and ids[-1]=='SVD-4159' and len(set(ids))==60;print('dataset intacto: 60 tickets, SVD-4100 a SVD-4159')"

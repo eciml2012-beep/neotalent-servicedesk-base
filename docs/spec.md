@@ -305,6 +305,39 @@ Esto no choca con el principio 1: el operador sigue decidiendo qué categoría t
 es la decisión de fondo. Lo que la interfaz impide es describir un ticket de forma contradictoria
 consigo misma.
 
+### R10. Crear un ticket nuevo desde la bandeja
+
+Amplía el spec el 24/09/2026 (TDD, skill `qa-triaje`). Enmienda los principios 1 y 3 de la
+constitución (ver `docs/constitution.md`).
+
+**Historia:** Como operador, quiero crear un ticket a mano desde la bandeja, para registrar una
+incidencia que no llegó por ninguno de los 6 sistemas.
+
+- Botón **«Nuevo ticket»** en la cabecera de la bandeja, junto a Exportar.
+- Formulario: `titulo` (5–120 caracteres), `descripcion` (20–2000 caracteres), `sistema_afectado`
+  y `reportado_por` (los mismos enums que el dataset), `zona` (las 12 de siempre). `fecha` es la
+  de hoy y `estado` es siempre `abierto`; ninguno de los dos se elige a mano.
+- `titulo` y `descripcion` llevan la misma protección de datos personales que las notas de R9:
+  aviso a la vista y bloqueo de DNI, NIE o matrícula (constitución, principio 3).
+- **Id:** `SVD-4160`, `SVD-4161`… El siguiente número se guarda en `localStorage` y nunca se
+  reutiliza, aunque el ticket no llegue a confirmarse.
+- **La sugerencia sale de un clasificador de reglas fijas** (`js/utils/clasificador-nuevo-ticket.js`),
+  no de una IA (constitución, enmienda del principio 1): busca palabras clave del título y la
+  descripción para las 7 categorías de `docs/categorias-triaje.md`, con la urgencia y el impacto
+  de R2 y R8. Si ninguna regla encaja, `categoria` es `"Sin clasificar"` con un motivo que dice
+  que el texto no dio ninguna coincidencia. El motivo mide siempre al menos 40 caracteres, igual
+  que R1.
+- **El ticket entra siempre `Pendiente de confirmar`**, nunca clasificado ni confirmado de
+  entrada: pasa por el mismo `derivarTicket` que cualquier otro (constitución, principio 1). No
+  hay una vía especial para los tickets creados a mano.
+- **Persistencia:** los tickets nuevos viven en `svd-triaje._nuevos` (un array), junto a `_notas`
+  y `_meta`. Siguen siendo **dos claves de `localStorage`** (R6): no se añade una tercera.
+- **Export:** un ticket creado a mano se exporta igual que los 60, con su `sugerencia`, su
+  `triaje` (o `null`) y su `notas`. El criterio de finalización 5 (JSON válido) se aplica también
+  a estos.
+- Fuera de alcance: editar o borrar un ticket creado a mano, y crear un ticket ya clasificado o
+  confirmado.
+
 ### R9. Notas y motivo de corrección del operador
 
 El operador puede cuestionar a la IA y dejar constancia de lo que sabe, sin tocar lo que se
