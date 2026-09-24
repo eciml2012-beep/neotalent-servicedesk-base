@@ -1,29 +1,31 @@
-/* Mini Service Desk — piel KirriDesk sobre la paleta de la Fase 2 (docs/diseno.md).
+/* Mini Service Desk — vista C con paleta índigo (docs/diseno.md, rediseño del 24/09/2026).
    Sin fuentes externas: pila del sistema (principio 6, constitución). */
 
 :root {
-  --color-fondo: #f4f3ef;
-  --color-panel: #fdfcfa;
-  --color-borde: #d8d5ce;
-  --color-texto: #2e2c28;
-  --color-texto-tenue: #726f67;
-  --color-accion: #1f6f6b;
+  --color-fondo: #f2f4f7;
+  --color-panel: #fbfcfd;
+  --color-borde: #d9dee5;
+  --color-texto: #172030;
+  --color-texto-tenue: #5b6576;
+  --color-accion: #3a4bc4;
   --color-accion-texto: #ffffff;
-  --color-abierto: #a5601a;
-  --color-brecha: #8a2f1e;
-  --radio: 10px;
+  --color-abierto: #9a5b00;
+  --color-brecha: #b3261e;
+  --color-seleccion: #e7eaf8;
+  --radio: 14px;
 }
 
 :root[data-tema="oscuro"] {
-  --color-fondo: #16202b;
-  --color-panel: #1e2a38;
-  --color-borde: #34424f;
-  --color-texto: #e8e6e1;
-  --color-texto-tenue: #9aa7b0;
-  --color-accion: #59b7b0;
-  --color-accion-texto: #0f2422;
-  --color-abierto: #dc9a52;
-  --color-brecha: #e2745f;
+  --color-fondo: #0e131b;
+  --color-panel: #161d28;
+  --color-borde: #2a3444;
+  --color-texto: #e6eaf0;
+  --color-texto-tenue: #9aa6b8;
+  --color-accion: #9aa8ff;
+  --color-accion-texto: #10143a;
+  --color-abierto: #f0a93b;
+  --color-brecha: #ff8a7a;
+  --color-seleccion: #232b45;
 }
 
 * {
@@ -41,12 +43,19 @@ body {
   color: var(--color-texto);
   font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   font-size: 14px;
-  line-height: 1.45;
+  line-height: 1.5;
 }
 
 button,
-select {
+select,
+textarea {
   font-family: inherit;
+}
+
+/* Foco propio, igual en los dos temas: 2 px del color de acción (≥ 3:1 contra el fondo). */
+:focus-visible {
+  outline: 2px solid var(--color-accion);
+  outline-offset: 2px;
 }
 
 a {
@@ -55,20 +64,20 @@ a {
 
 .app {
   display: flex;
-  min-height: 100vh;
+  flex-direction: column;
+  height: 100vh;
 }
 
-/* --- Rail de navegación ------------------------------------------------ */
+/* --- Barra superior (antes rail lateral; mismas clases) ------------------- */
 
 .rail {
-  width: 230px;
   flex: none;
-  background: var(--color-panel);
-  border-right: 1px solid var(--color-borde);
-  padding: 24px 16px;
   display: flex;
-  flex-direction: column;
-  gap: 22px;
+  align-items: center;
+  gap: 20px;
+  padding: 10px 24px;
+  background: var(--color-panel);
+  border-bottom: 1px solid var(--color-borde);
 }
 
 .rail__marca {
@@ -78,52 +87,61 @@ a {
 }
 
 .rail__icono {
-  width: 34px;
-  height: 34px;
-  border: 1px solid var(--color-borde);
-  border-radius: 7px;
+  width: 32px;
+  height: 32px;
+  border-radius: 9px;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 12px;
-  color: var(--color-texto-tenue);
+  font-weight: 700;
+  background: var(--color-accion);
+  color: var(--color-accion-texto);
 }
 
 .rail__nombre {
-  font-weight: 600;
+  font-weight: 650;
+  letter-spacing: -0.01em;
 }
 
+.rail nav {
+  display: flex;
+  gap: 4px;
+  padding: 4px;
+  border-radius: 12px;
+  background: var(--color-fondo);
+}
+
+/* Con dos secciones, la etiqueta de grupo no aporta nada en una barra horizontal. */
 .rail__nav-etiqueta {
-  font-size: 12px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--color-texto-tenue);
-  font-weight: 700;
-  margin-bottom: 10px;
+  display: none;
 }
 
 .rail__enlace {
   display: flex;
   align-items: center;
   height: 44px;
-  padding: 0 12px;
-  border-radius: 7px;
+  padding: 0 18px;
+  border-radius: 9px;
   color: var(--color-texto-tenue);
   text-decoration: none;
-  font-size: 15px;
+  font-size: 14px;
+  font-weight: 550;
 }
 
 .rail__enlace[aria-current] {
-  background: var(--color-fondo);
+  background: var(--color-panel);
   color: var(--color-texto);
-  font-weight: 600;
+  box-shadow: 0 0 0 1px var(--color-borde);
+  font-weight: 650;
 }
 
 .rail__tema {
-  margin-top: auto;
+  margin-left: auto;
   height: 44px;
+  padding: 0 16px;
   border: 1px solid var(--color-borde);
-  border-radius: 7px;
+  border-radius: 10px;
   background: none;
   color: var(--color-texto-tenue);
   cursor: pointer;
@@ -142,15 +160,39 @@ a {
 .main {
   flex: 1;
   min-width: 0;
-  padding: 28px 32px;
+  min-height: 0;
+  padding: 20px 24px;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 16px;
   overflow-y: auto;
 }
 
-.main--ficha {
-  padding: 0;
+/* Vista C: la bandeja no hace scroll; lo hacen la lista y la ficha, cada una por su lado. */
+.main--bandeja {
+  overflow: hidden;
+}
+
+.bandeja__cuerpo {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: minmax(340px, 420px) minmax(0, 1fr);
+  gap: 16px;
+}
+
+.bandeja__ficha {
+  min-height: 0;
+  overflow-y: auto;
+  background: var(--color-panel);
+  border: 1px solid var(--color-borde);
+  border-radius: var(--radio);
+}
+
+.bandeja__ficha-vacia {
+  margin: 0;
+  padding: 32px;
+  color: var(--color-texto-tenue);
 }
 
 .cabecera {
@@ -167,7 +209,9 @@ a {
 }
 
 .cabecera__titulo {
-  font-size: 26px;
+  font-size: 24px;
+  font-weight: 650;
+  letter-spacing: -0.015em;
   margin: 0;
 }
 
@@ -206,7 +250,7 @@ a {
 .filtro-select {
   height: 44px;
   border: 1px solid var(--color-borde);
-  border-radius: 7px;
+  border-radius: 10px;
   background: var(--color-panel);
   color: var(--color-texto);
   padding: 0 10px;
@@ -214,41 +258,74 @@ a {
 }
 
 /* --- Lista de tickets ---------------------------------------------------- */
+/* Columna izquierda de la vista C: un panel con separadores finos y scroll propio. */
 
 .lista-tickets {
+  min-height: 0;
+  overflow-y: auto;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  background: var(--color-panel);
+  border: 1px solid var(--color-borde);
+  border-radius: var(--radio);
 }
 
 .lista-tickets__vacio {
   color: var(--color-texto-tenue);
+  margin: 0;
+  padding: 22px;
 }
 
 .fila-ticket {
   display: grid;
-  grid-template-columns: 120px 1fr 220px 160px 150px;
-  gap: 16px;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-areas:
+    "id prioridad"
+    "principal principal"
+    "categoria estado";
+  gap: 6px 12px;
   align-items: center;
   text-align: left;
   width: 100%;
-  background: var(--color-panel);
-  border: 1px solid var(--color-borde);
-  border-radius: 9px;
-  padding: 16px 18px;
+  flex: none;
+  background: transparent;
+  border: 0;
+  border-top: 1px solid var(--color-borde);
+  padding: 12px 16px;
   color: inherit;
   font-size: inherit;
   cursor: pointer;
 }
 
+.fila-ticket:first-child {
+  border-top: 0;
+}
+
 .fila-ticket:hover {
-  border-color: var(--color-accion);
+  background: var(--color-fondo);
+}
+
+/* Dentro del panel el contorno va hacia dentro: si no, el borde del panel lo recorta. */
+.fila-ticket:focus-visible {
+  outline-offset: -3px;
+}
+
+/* El ticket abierto al lado: fondo teñido y barra del color de acción. */
+.fila-ticket[aria-current="true"] {
+  background: var(--color-seleccion); /* color fijo medido: ≥ 4,9:1 con todo el texto de la fila */
+  box-shadow: inset 4px 0 0 var(--color-accion);
 }
 
 /* Decisión 4: "Sin clasificar" pendiente, destacado con borde más grueso (no con color). */
 .fila-ticket--destacada {
-  border: 2px solid var(--color-texto-tenue);
+  box-shadow: inset 4px 0 0 var(--color-texto-tenue);
 }
+
+.fila-ticket__id { grid-area: id; font-size: 13px; color: var(--color-texto-tenue); }
+.fila-ticket__principal { grid-area: principal; min-width: 0; }
+.fila-ticket__categoria { grid-area: categoria; min-width: 0; }
+.fila-ticket__prioridad { grid-area: prioridad; justify-self: end; }
+.fila-ticket__estado-col { grid-area: estado; justify-self: end; }
 
 .fila-ticket__motivo--aviso {
   color: var(--color-abierto);
@@ -257,20 +334,29 @@ a {
 
 .fila-ticket__id {
   font-family: ui-monospace, "Cascadia Mono", Consolas, monospace;
+  font-variant-numeric: tabular-nums;
 }
 
 .fila-ticket__titulo {
   font-weight: 600;
+  line-height: 1.35;
 }
 
+/* El motivo, 2 líneas como máximo. El texto entero sigue en el DOM (lectores de pantalla,
+   pruebas) y en el title; completo, en la ficha. */
 .fila-ticket__motivo {
   font-size: 13px;
   color: var(--color-texto-tenue);
-  margin-top: 5px;
+  margin-top: 3px;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
 }
 
 .fila-ticket__sin-prioridad {
-  font-size: 13px;
+  font-size: 12px;
   color: var(--color-texto-tenue);
   font-style: italic;
 }
@@ -278,16 +364,16 @@ a {
 .fila-ticket__estado-col {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
 }
 
-/* docs/diseno.md: verde azulado para cerrado. */
+/* Verde azulado → color de acción para cerrado, como en el resto de la paleta índigo. */
 .fila-ticket__cerrado {
   font-size: 12px;
   color: var(--color-accion);
   border: 1px solid var(--color-accion);
-  border-radius: 4px;
-  padding: 1px 6px;
+  border-radius: 999px;
+  padding: 1px 8px;
 }
 
 /* --- Insignias ------------------------------------------------------------ */
@@ -295,11 +381,19 @@ a {
 .badge {
   display: inline-block;
   border: 1px solid var(--color-borde);
-  border-radius: 6px;
-  padding: 5px 10px;
-  font-size: 13px;
+  border-radius: 999px;
+  padding: 3px 10px;
+  font-size: 12px;
   font-weight: 600;
 }
+
+/* Prioridad por peso (diseno.md, rediseño 24/09/2026): Crítica pesa más que Baja sin colores
+   nuevos. Sugerida sigue en discontinuo; confirmada, sólida y Crítica rellena. */
+.badge--prio-critica { border-width: 2px; border-color: var(--color-texto); color: var(--color-texto); font-weight: 700; }
+.badge--prio-alta { border-width: 1.5px; border-color: var(--color-texto); color: var(--color-texto); }
+.badge--prio-media { border-color: var(--color-texto-tenue); }
+.badge--prio-baja { font-weight: 500; }
+.badge--prio-critica.badge--solido { background: var(--color-texto); color: var(--color-panel); }
 
 .badge--solido {
   background: var(--color-fondo);
@@ -336,11 +430,9 @@ a {
 }
 
 .panel__titulo {
-  font-size: 12px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--color-texto-tenue);
-  font-weight: 700;
+  font-size: 14px;
+  color: var(--color-texto);
+  font-weight: 650;
 }
 
 .panel__cuerpo {
@@ -378,8 +470,9 @@ a {
 .ficha__cabecera {
   display: flex;
   align-items: center;
-  gap: 16px;
-  padding: 18px 32px;
+  flex-wrap: wrap;
+  gap: 12px 16px;
+  padding: 16px 24px;
   border-bottom: 1px solid var(--color-borde);
   background: var(--color-panel);
 }
@@ -418,9 +511,16 @@ a {
 .ficha__cuerpo {
   flex: 1;
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 26px;
-  padding: 28px 32px;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 18px;
+  padding: 20px 24px 28px;
+}
+
+/* En la vista C la ficha va dentro de su panel: los paneles internos pierden el marco. */
+.bandeja__ficha .ficha .panel {
+  border: 0;
+  padding: 0;
+  background: transparent;
 }
 
 .ficha__columna {
@@ -572,7 +672,7 @@ a {
 .boton {
   height: 44px;
   padding: 0 22px;
-  border-radius: 9px;
+  border-radius: 10px;
   font-size: 15px;
   font-weight: 600;
   cursor: pointer;
@@ -657,7 +757,7 @@ a {
 
 .barra-metrica {
   display: grid;
-  grid-template-columns: 170px 1fr 30px 50px;
+  grid-template-columns: minmax(90px, 170px) minmax(0, 1fr) 30px 50px;
   align-items: center;
   gap: 10px;
   font-size: 13px;
@@ -687,23 +787,74 @@ a {
 
 @media (max-width: 900px) {
   .app {
-    flex-direction: column;
+    height: auto;
+    min-height: 100vh;
   }
 
   .rail {
-    width: auto;
-    flex-direction: row;
-    align-items: center;
     flex-wrap: wrap;
+    gap: 10px 12px;
+    padding: 10px 16px;
   }
 
-  .rail__tema {
-    margin-left: auto;
-    margin-top: 0;
+  .rail nav {
+    order: 3;
+    flex: 1 0 100%;
   }
 
-  .fila-ticket,
-  .ficha__cuerpo,
+  .rail__enlace {
+    flex: 1;
+    justify-content: center;
+  }
+
+  .rail__aviso {
+    flex: 1 0 100%;
+    order: 4;
+  }
+
+  .main,
+  .main--bandeja {
+    padding: 16px;
+    overflow: visible;
+  }
+
+  .barra-filtros {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .barra-filtros__label,
+  .barra-filtros .filtro-select:first-of-type {
+    grid-column: 1 / -1;
+  }
+
+  .filtro-select {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .bandeja__cuerpo {
+    display: block;
+  }
+
+  .lista-tickets,
+  .bandeja__ficha {
+    overflow: visible;
+  }
+
+  /* Sin ticket abierto se ve la lista; con ticket, la ficha la sustituye («← Bandeja» vuelve). */
+  .main--bandeja:not(.main--con-ficha) .bandeja__ficha,
+  .main--con-ficha .lista-tickets,
+  .main--con-ficha .cabecera {
+    display: none;
+  }
+
+  .ficha__cabecera,
+  .ficha__cuerpo {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
   .panel__grid,
   .metricas__kpis,
   .metricas__filas {

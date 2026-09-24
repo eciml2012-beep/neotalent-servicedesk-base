@@ -61,7 +61,7 @@ peor, un falso verde.
 | T5 | La cobertura se perdía en cada `page.goto` (Chromium descarta los contadores al navegar) | Cobertura falsa del 41 % | Navegación por hash y recogida antes de cada recarga |
 | T6 | El script de mutación restauraba los archivos con saltos de línea de Windows | 5 archivos marcados como modificados sin cambio real | Restaurados desde git; el script debe escribir con `newline=""` |
 
-## Observaciones de UX (no son defectos; para la UAT y la Sesión 4)
+## Observaciones de UX (resueltas el 24/09/2026 con el rediseño)
 
 1. **Densidad de la bandeja:** con motivos de ~190 caracteres cada fila mide ~180 px y caben 3 en
    pantalla. `diseno.md` pide "filas compactas" y el spec, decidir sin leer los 60 uno a uno.
@@ -109,6 +109,29 @@ pantalla cambió a propósito. **Hay que aprobarlas en la UAT.**
 
 **Qué no se ha probado:** nombres propios en el texto del operador (no detectables, límite
 declarado); Firefox y WebKit, igual que el resto de la suite.
+
+## Rediseño: vista C con paleta índigo (24/09/2026)
+
+**Alcance:** decisión de `docs/diseno.md` (rediseño del 24/09/2026). Lista y ficha lado a lado con
+scroll independiente, aceptar/guardar pasa al siguiente pendiente, flechas ↑/↓ en la lista (roving
+tabindex), paleta índigo en claro y oscuro, barra superior en vez de rail. Resuelve las tres
+observaciones de UX de abajo. Sin cambios en `js/utils/`.
+
+**Cómo:** `npm test` completo; revisión a mano en 1440, 1024 y 375 px.
+
+**Resultado:** 265 / 265 en verde. Las 11 capturas de `@visual` se regeneraron: **pendientes de
+aprobar**.
+
+**Defectos de la app encontrados por la suite al rediseñar:**
+
+| # | Defecto | Cómo se encontró | Arreglo |
+|---|---|---|---|
+| D2 | El fondo de la fila seleccionada con `color-mix()` no se podía medir y la prueba de contraste daba 1,28:1 | `@accesibilidad` (WCAG 1.4.3) | Color fijo `--color-seleccion`, medido ≥ 4,9:1 |
+| D3 | Métricas desbordaba a 320 px de ancho (344 px) | `@accesibilidad` (WCAG 1.4.10) | Columna de etiqueta de las barras con `minmax(90px, 170px)` |
+
+**Pruebas cambiadas, y por qué:** los ayudantes `aceptar` y `corregir` y la prueba de teclado
+esperaban volver a `#/bandeja`; el diseño nuevo pasa al siguiente pendiente, así que ahora esperan
+salir del ticket. Los textos del botón de tema pasan a minúscula («Tema: claro»).
 
 ## Recomendación
 

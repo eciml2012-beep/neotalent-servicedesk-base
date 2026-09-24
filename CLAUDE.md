@@ -29,6 +29,9 @@ busca antes una referencia y compárala con los 6 criterios de `assets/referenci
   de R8), deshacer, exportar, cambio de tema y los 9 criterios de finalización de `spec.md`.
 - **R9 (23/09/2026):** notas del operador y motivo de corrección obligatorio, tras enmendar el
   principio 3. Validación en `js/utils/texto-operador.js`; criterio de finalización 10.
+- **Rediseño (24/09/2026):** vista C (lista y ficha lado a lado, scroll independiente, aceptar pasa
+  al siguiente pendiente) con paleta índigo. Decisión en `docs/diseno.md`; sustituye a la paleta de
+  la Fase 2 y al rail lateral.
 
 Cuando termine una fase, actualiza esta sección y, si cambió la estructura, la tabla del
 `README.md`.

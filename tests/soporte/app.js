@@ -49,11 +49,14 @@ export async function exportar(page) {
   return { nombre: descarga.suggestedFilename(), datos };
 }
 
+/** Tras decidir un ticket, la app pasa al siguiente pendiente, o a la bandeja si no quedan (diseno.md, 24/09/2026). */
+const salirDe = (page, id) => expect(page).not.toHaveURL(new RegExp(`#/ticket/${id}(/corregir)?$`));
+
 /** Acepta la sugerencia de un ticket desde su ficha. */
 export async function aceptar(page, id) {
   await abrir(page, `#/ticket/${id}`);
   await page.getByRole("button", { name: "Aceptar" }).click();
-  await expect(page).toHaveURL(/#\/bandeja$/);
+  await salirDe(page, id);
 }
 
 export const MOTIVO_CORRECCION = "El texto del ticket no encaja con lo sugerido (motivo inventado para la prueba).";
@@ -69,5 +72,5 @@ export async function corregir(page, id, cambios = {}, { motivo = MOTIVO_CORRECC
   }
   await page.getByLabel("Motivo de la corrección").fill(motivo);
   await page.getByRole("button", { name: "Guardar corrección" }).click();
-  await expect(page).toHaveURL(/#\/bandeja$/);
+  await salirDe(page, id);
 }

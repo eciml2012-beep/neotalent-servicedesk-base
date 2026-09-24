@@ -102,7 +102,7 @@ function crearPanelDatos(ticket, zonasCriticas) {
 
   const titulo = document.createElement("div");
   titulo.className = "panel__titulo";
-  titulo.textContent = "DATOS DEL TICKET";
+  titulo.textContent = "Datos del ticket";
   panel.append(titulo);
 
   const cuerpo = document.createElement("div");
@@ -136,10 +136,10 @@ function crearCajaSugerencia(ticket) {
   cabecera.className = "caja-ia__cabecera";
   const { aviso } = ticket.sugerenciaEfectiva;
   cabecera.textContent = confirmado
-    ? `CLASIFICACIÓN · ${ticket.estadoTriaje}`
+    ? `Clasificación · ${ticket.estadoTriaje}`
     : aviso
-    ? `SUGERENCIA DE LA IA · ${aviso.toLowerCase()}`
-    : "SUGERENCIA DE LA IA · sin confirmar";
+    ? `Sugerencia de la IA · ${aviso.toLowerCase()}`
+    : "Sugerencia de la IA · sin confirmar";
   caja.append(cabecera);
 
   const grid = document.createElement("div");
@@ -221,7 +221,7 @@ function crearPanelNotas(notas, { onAnadirNota }) {
 
   const titulo = document.createElement("div");
   titulo.className = "panel__titulo";
-  titulo.textContent = "NOTAS DEL OPERADOR";
+  titulo.textContent = "Notas del operador";
   panel.append(titulo);
 
   const cuerpo = document.createElement("div");
@@ -345,7 +345,7 @@ export function crearFichaCorregir(ticket, zonasCriticas, callbacks) {
   caja.className = "caja-corregir";
   const cabeceraCaja = document.createElement("div");
   cabeceraCaja.className = "caja-ia__cabecera";
-  cabeceraCaja.textContent = "CORRIGE LA CLASIFICACIÓN";
+  cabeceraCaja.textContent = "Corrige la clasificación";
   caja.append(cabeceraCaja);
 
   const resumenPrioridad = document.createElement("div");

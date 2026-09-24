@@ -131,6 +131,64 @@ directa a esa sugerencia y se lee mejor al lado.
 | Botón primario negro | Verde azulado `#1F6F6B` | El negro sólido sobre hueso pesa demasiado en una pantalla que se mira todo el día |
 | Avatares y fotos de persona | Nada | Principio 3: solo datos sintéticos, tampoco caras |
 
+## Rediseño del 24/09/2026: vista C con paleta índigo
+
+**Decidido por el equipo el 24/09/2026. Sustituye a la paleta de la Fase 2 y al rail lateral de
+KirriDesk.** De KirriDesk se mantiene la idea principal: la lista y el ticket a la vista a la vez,
+y la caja de la IA separada de las acciones de la persona. Prototipo aprobado:
+`vista C, índigo` (60 tickets reales, scroll independiente).
+
+### Estructura: bandeja con la ficha al lado
+
+```
+┌ barra: marca · Bandeja | Métricas · aviso · Exportar JSON · Tema ─── fija ┐
+├ filtros en una línea ─────────────────────────────────────────── fija ┤
+├ lista (400 px) ─────────┬ ficha del ticket seleccionado ─────────────┤
+│ scroll propio           │ scroll propio; vuelve arriba al cambiar     │
+└─────────────────────────┴───────────────────────────────────────────┘
+```
+
+- La página no hace scroll: lo hacen la lista y la ficha, cada una por separado.
+- Elegir un ticket lo abre al lado y cambia la dirección a `#/ticket/:id` (se puede recargar y
+  compartir).
+- **Aceptar pasa al siguiente pendiente**; la lista se desplaza solo si no se ve, y **no pierde
+  su posición** al repintar.
+- Teclado: ↑ y ↓ recorren la lista y actualizan la ficha; Tab pasa a la ficha.
+- Menos de 900 px: una sola columna. La ficha sustituye a la lista y vuelve con «← Bandeja».
+
+### Paleta índigo (WCAG AA en los dos temas, peor par 5,2:1)
+
+| Token | Claro | Oscuro | Uso |
+|---|---|---|---|
+| fondo | `#F2F4F7` | `#0E131B` | Fondo de la app |
+| panel | `#FBFCFD` | `#161D28` | Lista, ficha, barra |
+| borde | `#D9DEE5` | `#2A3444` | Separadores |
+| texto | `#172030` | `#E6EAF0` | Texto |
+| tenue | `#5B6576` | `#9AA6B8` | Etiquetas, sugerido |
+| acción | `#3A4BC4` | `#9AA8FF` | Un solo color de acción, selección |
+| abierto | `#9A5B00` | `#F0A93B` | Estado abierto y avisos |
+| brecha | `#B3261E` | `#FF8A7A` | Solo «Brecha de seguridad activa» |
+
+Siguen igual: pila de fuentes del sistema, ids en monoespaciada, 44 px en controles, 12 px como
+mínimo, foco visible y sugerido con borde discontinuo frente a confirmado con borde sólido.
+
+### Prioridad por peso, no por color
+
+«Crítica» es una píldora rellena de tinta; «Alta», contorno fuerte; «Media», contorno fino;
+«Baja», gris. Ordena la vista sin añadir colores con significado nuevo.
+
+### Qué cambia respecto a lo anterior
+
+- Sin mayúsculas espaciadas en las etiquetas («Datos del ticket», no «DATOS DEL TICKET»).
+- Barra superior en lugar del rail lateral.
+- «Exportar JSON» en lugar de «Exportar ↓».
+
+**Aplicado el 24/09/2026** en `css/styles.css`, `js/app.js` y los componentes. Tras decidir un
+ticket, la app pasa al siguiente pendiente (`#/ticket/:id`) o a `#/bandeja` si no quedan;
+«Deshacer» se queda en el mismo ticket. La fila seleccionada usa un color fijo (`--color-seleccion`,
+≥ 4,9:1 con todo su texto) en lugar de una mezcla, para que el contraste se pueda medir.
+Las 11 capturas de `@visual` están regeneradas y **pendientes de aprobar en la UAT**.
+
 ## Pendiente del spec (Fase 1)
 
 La **prioridad** aparece en el diseño como hueco vacío a propósito. Sus valores no existen todavía

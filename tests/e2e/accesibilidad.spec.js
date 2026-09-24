@@ -93,7 +93,7 @@ test.describe("WCAG · estructura, nombres y teclado", { tag: ["@accesibilidad",
       await page.keyboard.press("Tab");
     }
     await page.keyboard.press("Enter");
-    await expect(page).toHaveURL(/#\/bandeja$/);
+    await expect(page).not.toHaveURL(/#\/ticket\/SVD-4102$/); // pasa al siguiente pendiente
   });
 
   test("2.4.7 el foco se ve", async ({ page }) => {

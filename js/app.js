@@ -19,6 +19,7 @@ const estado = {
   tema: "claro",
   localStorageDisponible: true,
   filtrosBandeja: { estadoTriaje: "pendientes", prioridad: null, sistema: null, zona: null, estado: null },
+  enfocarSeleccion: false,
 };
 
 function probarLocalStorage() {
@@ -119,6 +120,22 @@ function deshacerConfirmacion(id) {
   guardarTriaje();
 }
 
+const listaVisible = () => ordenarBandeja(filtrarTickets(ticketsDerivados(), estado.filtrosBandeja));
+
+// Tras decidir un ticket, el siguiente pendiente en el orden de la bandeja: el que venía
+// detrás de él y sigue en la lista; si no hay, el primero que quede; si no, ninguno.
+function siguientePendiente(idsAntes, id) {
+  const pendientes = listaVisible().filter((t) => t.esSugerido).map((t) => t.id);
+  const detras = idsAntes.slice(idsAntes.indexOf(id) + 1).find((x) => pendientes.includes(x));
+  return detras ?? pendientes.find((x) => x !== id) ?? null;
+}
+
+function irAlSiguiente(idsAntes, id) {
+  const siguiente = siguientePendiente(idsAntes, id);
+  estado.enfocarSeleccion = true;
+  navegar(siguiente ? `#/ticket/${siguiente}` : "#/bandeja");
+}
+
 function exportar() {
   const hoy = fechaLocal(new Date());
   const datos = estado.tickets.map((t) => {
@@ -188,15 +205,16 @@ function crearRail(vista) {
   const nav = document.createElement("nav");
   const etiqueta = document.createElement("div");
   etiqueta.className = "rail__nav-etiqueta";
-  etiqueta.textContent = "TRIAJE";
+  etiqueta.textContent = "Triaje";
   nav.append(etiqueta);
 
   for (const [ruta, texto] of [["#/bandeja", "Bandeja"], ["#/metricas", "Métricas"]]) {
+    // Bandeja sigue activa con un ticket abierto: la ficha vive dentro de la bandeja.
     const enlace = document.createElement("a");
     enlace.href = ruta;
     enlace.className = "rail__enlace";
     enlace.textContent = texto;
-    const activo = (ruta === "#/bandeja" && vista === "bandeja") || (ruta === "#/metricas" && vista === "metricas");
+    const activo = (ruta === "#/bandeja" && vista !== "metricas") || (ruta === "#/metricas" && vista === "metricas");
     if (activo) enlace.setAttribute("aria-current", "page");
     nav.append(enlace);
   }
@@ -205,7 +223,7 @@ function crearRail(vista) {
   const tema = document.createElement("button");
   tema.type = "button";
   tema.className = "rail__tema";
-  tema.textContent = estado.tema === "claro" ? "Tema: Claro" : "Tema: Oscuro";
+  tema.textContent = estado.tema === "claro" ? "Tema: claro" : "Tema: oscuro";
   tema.addEventListener("click", () => {
     estado.tema = estado.tema === "claro" ? "oscuro" : "claro";
     guardarTema();
@@ -224,12 +242,11 @@ function crearRail(vista) {
   return aside;
 }
 
-function crearVistaBandeja() {
+function crearVistaBandeja(ruta) {
   const main = document.createElement("main");
-  main.className = "main";
+  main.className = ruta.id ? "main main--bandeja main--con-ficha" : "main main--bandeja";
 
-  const derivados = ticketsDerivados();
-  const filtrados = ordenarBandeja(filtrarTickets(derivados, estado.filtrosBandeja));
+  const filtrados = listaVisible();
 
   const cabecera = document.createElement("div");
   cabecera.className = "cabecera";
@@ -258,7 +275,7 @@ function crearVistaBandeja() {
   const botonExportar = document.createElement("button");
   botonExportar.type = "button";
   botonExportar.className = "boton boton--primario cabecera__exportar";
-  botonExportar.textContent = "Exportar ↓";
+  botonExportar.textContent = "Exportar JSON";
   botonExportar.addEventListener("click", exportar);
   filaSuperior.append(botonExportar);
   cabecera.append(filaSuperior);
@@ -276,6 +293,9 @@ function crearVistaBandeja() {
   );
   main.append(cabecera);
 
+  const cuerpo = document.createElement("div");
+  cuerpo.className = "bandeja__cuerpo";
+
   const lista = document.createElement("div");
   lista.className = "lista-tickets";
   if (filtrados.length === 0) {
@@ -284,41 +304,73 @@ function crearVistaBandeja() {
     vacio.textContent = "Ningún ticket coincide con estos filtros.";
     lista.append(vacio);
   } else {
+    // Roving tabindex: Tab entra en la lista por una sola fila (la seleccionada o la primera)
+    // y las flechas recorren el resto. Así Tab no pasa por las 60 filas para llegar a la ficha.
+    const tabulable = filtrados.some((t) => t.id === ruta.id) ? ruta.id : filtrados[0].id;
     for (const ticket of filtrados) {
-      lista.append(crearFilaTicket(ticket, { onAbrir: (id) => navegar(`#/ticket/${id}`) }));
+      lista.append(
+        crearFilaTicket(ticket, {
+          seleccionado: ticket.id === ruta.id,
+          tabulable: ticket.id === tabulable,
+          onAbrir: (id) => navegar(`#/ticket/${id}`),
+        })
+      );
     }
+    lista.addEventListener("keydown", (evento) => {
+      if (evento.key !== "ArrowDown" && evento.key !== "ArrowUp") return;
+      evento.preventDefault();
+      const filas = [...lista.querySelectorAll(".fila-ticket")];
+      const i = filas.indexOf(document.activeElement);
+      const destino = filas[Math.max(0, Math.min(filas.length - 1, i + (evento.key === "ArrowDown" ? 1 : -1)))];
+      estado.enfocarSeleccion = true;
+      navegar(`#/ticket/${destino.dataset.id}`);
+    });
   }
-  main.append(lista);
+  cuerpo.append(lista);
+
+  const ficha = document.createElement("section");
+  ficha.className = "bandeja__ficha";
+  ficha.setAttribute("aria-label", "Ficha del ticket");
+  if (ruta.id) {
+    ficha.append(crearVistaFicha(ruta.id, ruta.modo));
+  } else {
+    const vacio = document.createElement("p");
+    vacio.className = "bandeja__ficha-vacia";
+    vacio.textContent = "Elige un ticket de la lista para ver su sugerencia y decidir.";
+    ficha.append(vacio);
+  }
+  cuerpo.append(ficha);
+  main.append(cuerpo);
 
   return main;
 }
 
 function crearVistaFicha(id, modo) {
-  const main = document.createElement("main");
-  main.className = "main main--ficha";
   const ticket = buscarDerivado(id);
 
   if (!ticket) {
     const aviso = document.createElement("p");
+    aviso.className = "bandeja__ficha-vacia";
     aviso.textContent = `No existe ningún ticket con id ${id}.`;
-    main.append(aviso);
-    return main;
+    return aviso;
   }
+  const idsAntes = listaVisible().map((t) => t.id);
 
   const callbacks = {
     onVolver: () => navegar("#/bandeja"),
     onAceptar: () => {
       guardarConfirmacion(id, { estadoTriaje: ESTADOS_TRIAJE.CONFIRMADO, categoria: ticket.categoria, urgencia: ticket.urgencia, impacto: ticket.impacto });
-      navegar("#/bandeja");
+      irAlSiguiente(idsAntes, id);
     },
     onCorregir: () => navegar(`#/ticket/${id}/corregir`),
+    // Deshacer se queda en el mismo ticket: vuelve a estar pendiente y se ve al momento.
     onDeshacer: () => {
       deshacerConfirmacion(id);
-      navegar("#/bandeja");
+      render();
     },
     onGuardar: (valores) => {
       guardarConfirmacion(id, { estadoTriaje: estadoAlGuardar(ticket.sugerenciaEfectiva, valores), ...valores });
-      navegar("#/bandeja");
+      irAlSiguiente(idsAntes, id);
     },
     onAnadirNota: (texto) => {
       anadirNota(id, texto);
@@ -327,12 +379,9 @@ function crearVistaFicha(id, modo) {
     onCancelar: () => navegar(`#/ticket/${id}`),
   };
 
-  main.append(
-    modo === "corregir"
-      ? crearFichaCorregir(ticket, ZONAS_CRITICAS, callbacks)
-      : crearFichaVer({ ...ticket, notas: notasDe(id) }, ZONAS_CRITICAS, callbacks)
-  );
-  return main;
+  return modo === "corregir"
+    ? crearFichaCorregir(ticket, ZONAS_CRITICAS, callbacks)
+    : crearFichaVer({ ...ticket, notas: notasDe(id) }, ZONAS_CRITICAS, callbacks);
 }
 
 function crearVistaMetricas() {
@@ -383,14 +432,24 @@ function descartarHuerfanos() {
   guardarTriaje();
 }
 
+// Se repinta todo en cada cambio, pero la lista conserva su posición: si no, aceptar un
+// ticket devolvería la lista arriba del todo (diseno.md, rediseño 24/09/2026).
 function render() {
   const ruta = rutaActual();
+  const scrollLista = raiz.querySelector(".lista-tickets")?.scrollTop ?? 0;
   raiz.replaceChildren();
   raiz.append(crearRail(ruta.vista));
 
-  if (ruta.vista === "ficha") raiz.append(crearVistaFicha(ruta.id, ruta.modo));
-  else if (ruta.vista === "metricas") raiz.append(crearVistaMetricas());
-  else raiz.append(crearVistaBandeja());
+  if (ruta.vista === "metricas") raiz.append(crearVistaMetricas());
+  else raiz.append(crearVistaBandeja(ruta));
+
+  const lista = raiz.querySelector(".lista-tickets");
+  if (!lista) return;
+  lista.scrollTop = scrollLista;
+  const seleccionada = lista.querySelector('.fila-ticket[aria-current="true"]');
+  seleccionada?.scrollIntoView({ block: "nearest" }); // solo se mueve si no se ve
+  if (estado.enfocarSeleccion) seleccionada?.focus({ preventScroll: true });
+  estado.enfocarSeleccion = false;
 }
 
 async function iniciar() {

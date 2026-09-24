@@ -32,10 +32,10 @@ test.describe("R6 · localStorage", { tag: ["@R6"] }, () => {
 
   test("el tema oscuro se recuerda al recargar", async ({ page }) => {
     await abrir(page);
-    await page.getByRole("button", { name: "Tema: Claro" }).click();
+    await page.getByRole("button", { name: "Tema: claro" }).click();
     await page.reload();
     await expect(page.locator("html")).toHaveAttribute("data-tema", "oscuro");
-    await expect(page.getByRole("button", { name: "Tema: Oscuro" })).toBeVisible();
+    await expect(page.getByRole("button", { name: "Tema: oscuro" })).toBeVisible();
   });
 
   test("con localStorage bloqueado la app sigue funcionando y avisa de exportar", async ({ page }) => {
