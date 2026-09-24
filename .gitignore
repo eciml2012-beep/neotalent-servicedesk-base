@@ -7,3 +7,7 @@
 node_modules/
 test-results/
 playwright-report/
+
+# Archivo local de Surge (recuerda el dominio de despliegue en esta máquina); cada persona
+# publica al dominio de su propia sala, no hace falta compartirlo en el repo.
+CNAME
