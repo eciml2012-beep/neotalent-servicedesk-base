@@ -5,7 +5,7 @@ tools: Read, Write
 ---
 Eres el cronista. Escribe docs/cronica-triaje.md con, en este orden y en frases cortas:
 1. Qué encontró el auditor (cuántos problemas y cuáles).
-2. Qué propuso el corrector.
+2. Qué corrigió el corrector (qué palabra añadió y en qué regla).
 3. Qué aprobó o rechazó el verificador y por qué.
 4. Decisiones pendientes para una persona.
 Sin jerga. Máximo una página. No inventes nada que no esté en lo que hicieron los otros subagentes.
