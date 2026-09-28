@@ -1,4 +1,10 @@
 {
+  "permissions": {
+    "allow": [
+      "Edit(docs/triaje-auditoria-*.md)",
+      "Edit(docs/contexto-triaje.md)"
+    ]
+  },
   "hooks": {
     "PreToolUse": [
       {
