@@ -11,7 +11,6 @@ on:
 
 permissions:
   contents: write          # para poder subir el diagnóstico al repo
-  id-token: write          # lo pide la Action de Claude para autenticarse
 
 jobs:
   triage:
@@ -21,29 +20,26 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Triar ticket más antiguo sin clasificar
-        uses: anthropics/claude-code-action@v1
+      - name: Instalar Node
+        uses: actions/setup-node@v4
         with:
-          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
-          prompt: |
-            Lee data/tickets.json. Cada ticket trae su categoría en sugerencia.categoria
-            (las reglas están en js/utils/clasificador-nuevo-ticket.js; léelas, no las reinventes).
+          node-version: 24
 
-            De los tickets cuya categoría sea "Sin clasificar", localiza el que tenga el campo
-            "fecha" más antiguo. Si hay empate de fecha, el de id menor.
+      - name: Instalar Claude Code
+        run: npm install -g @anthropic-ai/claude-code
 
-            Según docs/constitution.md y js/utils/prioridad.js, un ticket "Sin clasificar" no
-            tiene prioridad asignable: no la calcules, indica solo que no aplica.
-
-            Escribe el diagnóstico en un archivo NUEVO docs/diagnostico-<id>.md (sustituye <id>
-            por el id real del ticket) con: id, título, zona, fecha, estado, categoría
-            ("Sin clasificar"), el motivo que trae el ticket, qué palabras clave de las reglas
-            habría necesitado para clasificarse, y una nota de por qué no tiene prioridad.
-
-            Si ese archivo ya existe, no lo toques y termina diciendo que ya estaba hecho.
-            No modifiques ni borres ningún otro archivo del repositorio.
-          claude_args: |
-            --allowedTools "Read,Write,Glob,Grep"
+      - name: Triar ticket más antiguo sin clasificar (claude -p, modo headless)
+        env:
+          CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+        run: |
+          claude -p "Lee data/tickets.json. Cada ticket trae su categoría en sugerencia.categoria (las reglas están en js/utils/clasificador-nuevo-ticket.js; léelas, no las reinventes).
+          De los tickets cuya categoría sea 'Sin clasificar', localiza el que tenga el campo fecha más antiguo. Si hay empate de fecha, el de id menor.
+          Según docs/constitution.md y js/utils/prioridad.js, un ticket 'Sin clasificar' no tiene prioridad asignable: no la calcules, indica solo que no aplica.
+          Escribe el diagnóstico en un archivo NUEVO docs/diagnostico-<id>.md (sustituye <id> por el id real del ticket) con: id, título, zona, fecha, estado, categoría ('Sin clasificar'), el motivo que trae el ticket, qué palabras clave de las reglas habría necesitado para clasificarse, y una nota de por qué no tiene prioridad.
+          Si ese archivo ya existe, no lo toques y termina diciendo que ya estaba hecho.
+          No modifiques ni borres ningún otro archivo del repositorio." \
+            --allowedTools "Read,Write,Glob,Grep" \
+            --permission-mode dontAsk \
             --max-turns 15
 
       - name: Subir el diagnóstico al repo
