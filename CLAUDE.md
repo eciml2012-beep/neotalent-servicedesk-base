@@ -48,6 +48,7 @@ El orden importa. Si dos documentos chocan, gana el de más arriba:
 | — | `docs/revision-qa-spec.md` | Primera revisión QA del spec, **ya resuelta**. Registro de qué se detectó y qué se decidió, con el archivo donde quedó cada decisión |
 | — | `docs/revision-qa-spec-2.md` | Segunda revisión QA, cruzando spec con diseño, **ya resuelta** (20/20, la última tanda el 23/09/2026). Mismo formato que la primera |
 | — | `docs/pruebas/` | Plan de pruebas, matriz de trazabilidad requisito → test, guion de UAT e informe de resultados (ISO/IEC/IEEE 29119-3). La skill `qa-triaje` explica cómo usarlos |
+| — | `docs/auditoria.md` | Auditoría antes de publicar (seguridad, responsive, despliegue, arquitectura). Se genera y se actualiza con la skill `auditoria-antes-de-publicar` (`.claude/skills/`), la misma que usa el profesor en la v2 de su repo |
 | — | `docs/pruebas-fase3.md` | Registro histórico de las pruebas manuales de la Fase 3, antes de que existiera la suite |
 | — | `docs/categorias-triaje.md` | Las 7 categorías de triaje con su definición y su reparto sobre los 60 tickets |
 | — | `assets/referencias/` | Las capturas de la Fase 2, los 6 criterios con los que se filtraron y la comparación. La estructura elegida es **KirriDesk** (`dribbble/captura-2.png`) |
