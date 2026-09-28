@@ -28,6 +28,8 @@ jobs:
       - name: Instalar Claude Code
         run: npm install -g @anthropic-ai/claude-code
 
+      # Hook (freno determinista): antes de cada comando Bash, si contiene 'git push', lo bloquea
+      # sin preguntar al modelo (exit 2). El push lo hace el paso siguiente, no Claude.
       - name: Triar ticket más antiguo sin clasificar (claude -p, modo headless)
         env:
           CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
@@ -40,7 +42,8 @@ jobs:
           No modifiques ni borres ningún otro archivo del repositorio." \
             --allowedTools "Read,Write,Glob,Grep" \
             --permission-mode dontAsk \
-            --max-turns 15
+            --max-turns 15 \
+            --settings '{"hooks":{"PreToolUse":[{"matcher":"Bash","hooks":[{"type":"command","command":"jq -r .tool_input.command | grep -q \"git push\" && { echo \"Bloqueado por hook: Claude no puede hacer git push\" >&2; exit 2; } || exit 0"}]}]}}'
 
       - name: Subir el diagnóstico al repo
         run: |
