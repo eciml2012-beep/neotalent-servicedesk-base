@@ -5,10 +5,13 @@ import { SIN_CLASIFICAR, ZONAS_CRITICAS } from "./constantes.js";
 
 // Orden importa: la primera regla que encuentre una palabra clave en el texto decide la
 // categoría. Urgencia según R2 (qué señal observable hay en el texto).
+// NO añadir claves para «cámara sin grabar / pantalla en negro»: ese patrón se queda en
+// «Sin clasificar» a propósito (decisión cerrada del 23/09/2026, docs/categorias-triaje.md).
+// El texto no permite decidir si el equipo falla o si solo ha dejado de guardar.
 const REGLAS = [
   { categoria: "Brecha de seguridad activa", claves: ["sin vigilar", "desactivada", "sin revocar", "abierta sin alarma", "no está grabando", "no esta grabando", "sigue activa"], urgencia: "Alta" },
-  { categoria: "Equipo de campo averiado", claves: ["no responde", "averiado", "no funciona", "tarda más de", "tarda mas de", "lento", "sin grabar", "pantalla en negro"], urgencia: "Media" },
-  { categoria: "Pérdida de registro o evidencia", claves: ["no registrado", "doble fichaje", "no guarda", "no se guardó", "no se guardo", "checkpoint"], urgencia: "Media" },
+  { categoria: "Equipo de campo averiado", claves: ["no responde", "averiado", "no funciona", "tarda más de", "tarda mas de", "lento", "sin respuesta"], urgencia: "Media" },
+  { categoria: "Pérdida de registro o evidencia", claves: ["no registrado", "doble fichaje", "no guarda", "no se guardó", "no se guardo", "checkpoint", "corte de grabación", "corte de grabacion"], urgencia: "Media" },
   { categoria: "Fallo de integración entre sistemas", claves: ["no sincronizado", "sin sincronizar", "no llega a", "no se ha sincronizado"], urgencia: "Media" },
   { categoria: "Falsa alarma recurrente", claves: ["sin causa aparente", "salta sin causa", "falsa alarma"], urgencia: "Baja" },
   { categoria: "Petición de información", claves: ["solicitud de histórico", "solicitud de historico", "solicita el histórico", "solicita el historico"], urgencia: "Baja" },
