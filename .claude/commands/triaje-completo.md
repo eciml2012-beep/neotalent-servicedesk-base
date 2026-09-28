@@ -11,4 +11,4 @@ Actúa como ORQUESTADOR. No hagas tú el trabajo de los subagentes: repártelo y
 Reglas del orquestador:
 - Pasa a cada subagente solo lo que necesita del anterior (no toda la conversación).
 - Si el verificador marca algo como NO o RIESGO, no lo des por bueno: déjalo como pendiente en el resumen.
-- Al final muéstrame en 5 líneas: qué se encontró, qué se propuso, qué se aprobó, qué queda pendiente de decidir y dónde quedaron los archivos.
+- Al final muéstrame el resumen del cronista y, aparte, qué queda pendiente de decidir.

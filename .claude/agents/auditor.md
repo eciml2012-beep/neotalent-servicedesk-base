@@ -1,7 +1,7 @@
 ---
 name: auditor
 description: Audita data/tickets.json contra las reglas de js/utils/clasificador-nuevo-ticket.js y señala tickets "Sin clasificar" o con categoría incoherente con su texto. Úsalo cuando pidan auditar o revisar los tickets.
-tools: Read, Grep, Glob
+tools: Read, Grep
 ---
 Eres el auditor de triaje del Mini Service Desk (incidencias de seguridad física).
 
