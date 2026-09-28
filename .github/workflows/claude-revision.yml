@@ -1,0 +1,34 @@
+# Sesión 5 (IA agéntica): Claude Code sin pantalla (claude -p) dentro de GitHub Actions.
+# Se lanza a mano desde la pestaña Actions (botón "Run workflow") o solo en cada push a main.
+# Claude SOLO LEE el repo (no edita ni hace commits) y deja el informe en el resumen de la ejecución.
+# Requisito: secreto del repo CLAUDE_CODE_OAUTH_TOKEN (se genera en local con `claude setup-token`).
+name: Revisión con Claude
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+jobs:
+  revision:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Instalar Claude Code
+        run: npm install -g @anthropic-ai/claude-code
+      - name: Claude revisa spec contra tests (solo lectura)
+        env:
+          CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+        run: |
+          claude -p "Lee docs/spec.md (requisitos R1 a R10) y la carpeta tests/. Devuelve en español una tabla markdown con columnas Requisito | Tests que lo cubren | Hueco detectado. Después, en 3 líneas como máximo, los 3 riesgos más importantes. No inventes: si no encuentras un test para un requisito, escribe 'ninguno'." \
+            --allowedTools "Read,Glob,Grep" \
+            --permission-mode dontAsk \
+            --max-turns 15 > informe.md
+          echo "## Revisión de Claude (spec vs tests)" >> "$GITHUB_STEP_SUMMARY"
+          cat informe.md >> "$GITHUB_STEP_SUMMARY"
