@@ -1,5 +1,5 @@
 # Sesión 5 (IA agéntica) – ejercicio del profesor adaptado a este repo.
-# Cada día a las 06:00 UTC (o a mano desde la pestaña Actions) Claude busca el ticket
+# Cada día a las 06:00 UTC, cada vez que cambia data/tickets.json en main, o a mano desde la pestaña Actions, Claude busca el ticket
 # "Sin clasificar" más antiguo y escribe su diagnóstico en docs/diagnostico-<id>.md.
 # Requisito: secreto del repo CLAUDE_CODE_OAUTH_TOKEN (se genera en local con `claude setup-token`).
 name: Triar ticket sin clasificar
@@ -8,6 +8,9 @@ on:
   schedule:
     - cron: '0 6 * * *'   # 06:00 UTC todos los días
   workflow_dispatch:       # botón "Run workflow" en la pestaña Actions
+  push:                    # y cada vez que cambian los tickets en main
+    branches: [main]
+    paths: ['data/tickets.json']
 
 permissions:
   contents: write          # para poder subir el diagnóstico al repo
