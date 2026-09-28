@@ -1,0 +1,70 @@
+# Sesión 5 – Práctica en salas, versión LITERAL del enunciado (paso 3):
+# trigger manual + anthropics/claude-code-base-action + secreto CLAUDE_CODE_OAUTH_TOKEN
+# + hook PreToolUse en settings que bloquea cualquier Bash que empiece por git push o rm.
+# (La otra versión, con `claude -p` explícito y horario, es triage-ticket.yml.)
+name: Triar ticket sin clasificar (base-action)
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  triage:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Triar ticket más antiguo sin clasificar
+        uses: anthropics/claude-code-base-action@beta
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          model: claude-sonnet-5
+          allowed_tools: "Read,Write,Glob,Bash"
+          prompt: |
+            Lee data/tickets.json. Cada ticket trae su categoría en sugerencia.categoria
+            (las reglas están en js/utils/clasificador-nuevo-ticket.js; léelas, no las reinventes).
+
+            De los tickets cuya categoría sea "Sin clasificar", localiza el que tenga el campo
+            "fecha" más antiguo. Si hay empate de fecha, el de id menor.
+
+            Según docs/constitution.md y js/utils/prioridad.js, un ticket "Sin clasificar" no
+            tiene prioridad asignable: no la calcules, indica solo que no aplica.
+
+            Escribe el diagnóstico en un archivo NUEVO docs/diagnostico-<id>.md (sustituye <id>
+            por el id real del ticket) con: id, título, zona, fecha, estado, categoría
+            ("Sin clasificar"), el motivo que trae el ticket, qué palabras clave de las reglas
+            habría necesitado para clasificarse, y una nota de por qué no tiene prioridad.
+
+            No modifiques ni borres ningún otro archivo del repositorio.
+          settings: |
+            {
+              "hooks": {
+                "PreToolUse": [
+                  {
+                    "matcher": "Bash",
+                    "hooks": [
+                      {
+                        "type": "command",
+                        "command": "cmd=$(jq -r '.tool_input.command // empty'); if echo \"$cmd\" | grep -Eq '^[[:space:]]*(git[[:space:]]+push|rm)([[:space:]]|$)|[;&|][[:space:]]*(git[[:space:]]+push|rm)([[:space:]]|$)'; then echo 'Bloqueado por hook: no se permite git push ni rm' >&2; exit 2; fi; exit 0"
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+
+      - name: Publicar diagnóstico
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/diagnostico-*.md
+          if git diff --cached --quiet; then
+            echo "No hay diagnóstico nuevo que publicar"
+            exit 0
+          fi
+          git commit -m "docs: diagnóstico automático de ticket sin clasificar"
+          git push
