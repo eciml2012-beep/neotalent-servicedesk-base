@@ -7,7 +7,7 @@ import { SIN_CLASIFICAR, ZONAS_CRITICAS } from "./constantes.js";
 // categoría. Urgencia según R2 (qué señal observable hay en el texto).
 const REGLAS = [
   { categoria: "Brecha de seguridad activa", claves: ["sin vigilar", "desactivada", "sin revocar", "abierta sin alarma", "no está grabando", "no esta grabando", "sigue activa"], urgencia: "Alta" },
-  { categoria: "Equipo de campo averiado", claves: ["no responde", "averiado", "no funciona", "tarda más de", "tarda mas de", "lento"], urgencia: "Media" },
+  { categoria: "Equipo de campo averiado", claves: ["no responde", "averiado", "no funciona", "tarda más de", "tarda mas de", "lento", "sin grabar", "pantalla en negro"], urgencia: "Media" },
   { categoria: "Pérdida de registro o evidencia", claves: ["no registrado", "doble fichaje", "no guarda", "no se guardó", "no se guardo", "checkpoint"], urgencia: "Media" },
   { categoria: "Fallo de integración entre sistemas", claves: ["no sincronizado", "sin sincronizar", "no llega a", "no se ha sincronizado"], urgencia: "Media" },
   { categoria: "Falsa alarma recurrente", claves: ["sin causa aparente", "salta sin causa", "falsa alarma"], urgencia: "Baja" },

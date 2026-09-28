@@ -12,6 +12,18 @@ test.describe("R10 · clasificador de reglas fijas (no IA)", { tag: ["@R10"] }, 
     expect(r.motivo.length).toBeGreaterThanOrEqual(40);
   });
 
+  // Los 4 tickets de cámara del dataset (SVD-4113, 4128, 4143, 4158) quedaron «Sin clasificar»
+  // porque decían "sin grabar" y la regla solo tenía "no está grabando": mismo sentido, otro texto.
+  test("«sin grabar» en zona crítica → Equipo de campo averiado, Media, Alto", () => {
+    const r = clasificarTicketNuevo({ titulo: "Cámara 8 sin grabar en Perímetro exterior", descripcion: "La cámara 8 lleva 19 días sin grabar, solo muestra pantalla en negro.", zona: "Perímetro exterior" });
+    expect(r).toMatchObject({ categoria: "Equipo de campo averiado", urgencia: "Media", impacto: "Alto" });
+  });
+
+  test("«pantalla en negro» en zona no crítica → Equipo de campo averiado, Media, Medio", () => {
+    const r = clasificarTicketNuevo({ titulo: "Cámara 10 caída", descripcion: "La cámara solo muestra pantalla en negro desde ayer.", zona: "Aparcamiento -1" });
+    expect(r).toMatchObject({ categoria: "Equipo de campo averiado", urgencia: "Media", impacto: "Medio" });
+  });
+
   test("«desactivada» en zona crítica → Brecha de seguridad activa, Alta, Alto", () => {
     const r = clasificarTicketNuevo({ titulo: "Alarma desactivada", descripcion: "La alarma quedó desactivada tras el mantenimiento de hoy.", zona: "Sala de servidores" });
     expect(r).toMatchObject({ categoria: "Brecha de seguridad activa", urgencia: "Alta", impacto: "Alto" });
