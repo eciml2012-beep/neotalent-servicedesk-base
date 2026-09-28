@@ -1,0 +1,56 @@
+# Sesión 5 (IA agéntica) – ejercicio del profesor adaptado a este repo.
+# Cada día a las 06:00 UTC (o a mano desde la pestaña Actions) Claude busca el ticket
+# "Sin clasificar" más antiguo y escribe su diagnóstico en docs/diagnostico-<id>.md.
+# Requisito: secreto del repo CLAUDE_CODE_OAUTH_TOKEN (se genera en local con `claude setup-token`).
+name: Triar ticket sin clasificar
+
+on:
+  schedule:
+    - cron: '0 6 * * *'   # 06:00 UTC todos los días
+  workflow_dispatch:       # botón "Run workflow" en la pestaña Actions
+
+permissions:
+  contents: write          # para poder subir el diagnóstico al repo
+  id-token: write          # lo pide la Action de Claude para autenticarse
+
+jobs:
+  triage:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Triar ticket más antiguo sin clasificar
+        uses: anthropics/claude-code-action@v1
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          prompt: |
+            Lee data/tickets.json. Cada ticket trae su categoría en sugerencia.categoria
+            (las reglas están en js/utils/clasificador-nuevo-ticket.js; léelas, no las reinventes).
+
+            De los tickets cuya categoría sea "Sin clasificar", localiza el que tenga el campo
+            "fecha" más antiguo. Si hay empate de fecha, el de id menor.
+
+            Según docs/constitution.md y js/utils/prioridad.js, un ticket "Sin clasificar" no
+            tiene prioridad asignable: no la calcules, indica solo que no aplica.
+
+            Escribe el diagnóstico en un archivo NUEVO docs/diagnostico-<id>.md (sustituye <id>
+            por el id real del ticket) con: id, título, zona, fecha, estado, categoría
+            ("Sin clasificar"), el motivo que trae el ticket, qué palabras clave de las reglas
+            habría necesitado para clasificarse, y una nota de por qué no tiene prioridad.
+
+            Si ese archivo ya existe, no lo toques y termina diciendo que ya estaba hecho.
+            No modifiques ni borres ningún otro archivo del repositorio.
+          claude_args: |
+            --allowedTools "Read,Write,Glob,Grep"
+            --max-turns 15
+
+      - name: Subir el diagnóstico al repo
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/diagnostico-*.md
+          git diff --cached --quiet && echo "Nada nuevo que subir" && exit 0
+          git commit -m "Diagnóstico automático del ticket sin clasificar más antiguo"
+          git push
