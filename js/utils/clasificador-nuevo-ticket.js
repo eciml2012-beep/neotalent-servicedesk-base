@@ -19,11 +19,16 @@ const REGLAS = [
 ];
 
 // R2: impacto Bajo si el texto describe a una sola persona (su credencial, su alta, su fichaje).
-const CLAVES_UNA_PERSONA = ["su tarjeta", "su credencial", "un guardia nuevo", "un empleado", "a un guardia"];
+const CLAVES_UNA_PERSONA = ["su tarjeta", "su credencial", "un guardia nuevo", "un empleado", "a un guardia", "un proveedor externo", "del mismo guardia"];
+
+// R2: un equipo o un enlace caídos dejan sin servicio a cualquiera que los use, así que nombrar a
+// una persona en el texto no los convierte en impacto Bajo — ahí manda la zona («un lector de
+// tarjetas que deja de reconocer a cualquiera no es una persona», spec R2).
+const CATEGORIAS_SIN_EXCEPCION_PERSONA = ["Equipo de campo averiado", "Fallo de integración entre sistemas"];
 
 function impactoDe(categoria, zona, texto) {
   if (categoria === "Brecha de seguridad activa") return ZONAS_CRITICAS.includes(zona) ? "Alto" : "Medio";
-  if (CLAVES_UNA_PERSONA.some((c) => texto.includes(c))) return "Bajo";
+  if (!CATEGORIAS_SIN_EXCEPCION_PERSONA.includes(categoria) && CLAVES_UNA_PERSONA.some((c) => texto.includes(c))) return "Bajo";
   return ZONAS_CRITICAS.includes(zona) ? "Alto" : "Medio";
 }
 

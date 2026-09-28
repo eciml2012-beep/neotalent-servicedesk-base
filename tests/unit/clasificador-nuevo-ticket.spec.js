@@ -27,6 +27,26 @@ test.describe("R10 · clasificador de reglas fijas (no IA)", { tag: ["@R10"] }, 
     expect(r).toMatchObject({ categoria: "Equipo de campo averiado", urgencia: "Media", impacto: "Alto" });
   });
 
+  // R2: el impacto Bajo por «una sola persona» manda sobre la zona (spec R2, «un alta de acceso de
+  // un guardia en Sala de servidores es impacto Bajo»). Auditoría del 28/09/2026: faltaban las dos
+  // formas con las que el dataset nombra a una persona.
+  test("«un proveedor externo» en zona crítica → Petición de acceso con impacto Bajo", () => {
+    const r = clasificarTicketNuevo({ titulo: "Acceso temporal de proveedor a Sala de servidores", descripcion: "Petición de acceso temporal a Sala de servidores para un proveedor externo, caduca en 19 días.", zona: "Sala de servidores" });
+    expect(r).toMatchObject({ categoria: "Petición de acceso", urgencia: "Baja", impacto: "Bajo" });
+  });
+
+  test("«del mismo guardia» → Pérdida de registro o evidencia con impacto Bajo", () => {
+    const r = clasificarTicketNuevo({ titulo: "Doble fichaje detectado en Oficinas centrales", descripcion: "Doble fichaje del mismo guardia en Oficinas centrales: aparece registrado en dos puestos a la misma hora.", zona: "Oficinas centrales" });
+    expect(r).toMatchObject({ categoria: "Pérdida de registro o evidencia", impacto: "Bajo" });
+  });
+
+  // El límite de esa excepción: un equipo caído deja sin servicio a cualquiera, así que nombrar a
+  // una persona no baja el impacto. Es el riesgo que señaló el verificador el 28/09/2026.
+  test("un equipo averiado no baja a Bajo aunque el texto nombre a una persona (R2)", () => {
+    const r = clasificarTicketNuevo({ titulo: "Lector sin respuesta en Sala de servidores", descripcion: "El lector que usa un proveedor externo no responde desde ayer.", zona: "Sala de servidores" });
+    expect(r).toMatchObject({ categoria: "Equipo de campo averiado", impacto: "Alto" });
+  });
+
   test("«corte de grabación» en zona no crítica → Pérdida de registro o evidencia, Media, Medio", () => {
     const r = clasificarTicketNuevo({ titulo: "Corte de grabación repetido en cámara 3", descripcion: "La grabación se corta cada noche a la misma hora.", zona: "Nave logística 2" });
     expect(r).toMatchObject({ categoria: "Pérdida de registro o evidencia", urgencia: "Media", impacto: "Medio" });
